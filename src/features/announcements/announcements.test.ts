@@ -120,11 +120,15 @@ describe('announcement list + create', () => {
     });
   });
 
-  it('reads the resident count, and a failure as 0 so it never blocks sending', async () => {
+  it('reads the resident count, and an unknown count as null (never a fake 0)', async () => {
     server.use(http.get(COUNT, () => HttpResponse.json({ count: 42 })));
     expect(await getResidentCount('7')).toBe(42);
-    server.use(http.get(COUNT, () => HttpResponse.json({}, { status: 500 })));
+    server.use(http.get(COUNT, () => HttpResponse.json({ count: 0 })));
     expect(await getResidentCount('7')).toBe(0);
+    server.use(http.get(COUNT, () => HttpResponse.json({}, { status: 500 })));
+    expect(await getResidentCount('7')).toBeNull();
+    server.use(http.get(COUNT, () => HttpResponse.json({ total: 3 })));
+    expect(await getResidentCount('7')).toBeNull();
   });
 
   it('validates title (≤100) and message (≤500)', () => {

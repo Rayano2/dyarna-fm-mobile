@@ -15,6 +15,8 @@ interface ScopeState extends ScopeSnapshot {
   /** Picking a project always clears the building: buildings belong to one project. */
   setProject(projectId: string | null): void;
   setBuilding(buildingId: string | null): void;
+  /** Forget the scope (logout): memory and storage, so the next account starts clean. */
+  reset(): void;
 }
 
 function persist(snapshot: ScopeSnapshot): void {
@@ -60,5 +62,13 @@ export const useScopeStore = create<ScopeState>((set, get) => ({
   setBuilding: (buildingId) => {
     set({ buildingId, hydrated: true });
     persist({ projectId: get().projectId, buildingId });
+  },
+
+  reset: () => {
+    // `hydrated: true` so a hydrate still in flight can't restore the old pick.
+    set({ projectId: null, buildingId: null, hydrated: true });
+    void Promise.resolve()
+      .then(() => prefStorage.remove(STORAGE_KEY))
+      .catch((error: unknown) => logger.warn('Failed to clear FM scope', error));
   },
 }));

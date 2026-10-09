@@ -24,7 +24,7 @@ export interface BookingFilterSheetProps {
   onChange: (next: DateRange) => void;
 }
 
-/** from/to dates for the agenda. `from` is inclusive, `to` exclusive — same as the web. */
+/** from/to dates for the agenda. Both picked days are included (see `toParam`). */
 export const BookingFilterSheet = forwardRef<BottomSheetRef, BookingFilterSheetProps>(
   function BookingFilterSheet({ value, onChange }, ref) {
     const { t } = useTranslation();

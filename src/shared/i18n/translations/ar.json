@@ -1658,7 +1658,8 @@
         "titleTooLong": "100 حرف كحد أقصى",
         "messageRequired": "الرسالة مطلوبة",
         "messageTooLong": "500 حرف كحد أقصى"
-      }
+      },
+      "residentsUnknown": "سيتم إشعار سكان هذا المشروع"
     },
     "facilities": {
       "title": "المرافق",
@@ -1727,15 +1728,6 @@
       "empty": "لا توجد مرافق",
       "emptyFilter": "لا توجد مرافق في هذا المبنى",
       "selectProject": "اختر مشروعًا",
-      "picker": {
-        "project": "المشروع",
-        "building": "المبنى",
-        "selectProject": "اختر مشروعًا",
-        "selectProjectBody": "اختر مشروعًا من الأعلى لعرض بياناته.",
-        "allBuildings": "كل المباني",
-        "projectA11y": "المشروع: {{value}}",
-        "buildingA11y": "المبنى: {{value}}"
-      },
       "errors": {
         "nameRequired": "الاسم مطلوب",
         "nameTooLong": "200 حرف كحد أقصى",
@@ -1809,7 +1801,8 @@
       "emptyFilter": "لا حجوزات مطابقة",
       "empty": "لا حجوزات بعد",
       "statusFilterNotice": "عرض {{status}} فقط",
-      "showAll": "عرض كل الحالات"
+      "showAll": "عرض كل الحالات",
+      "truncated": "عرض أول {{count}} حجز من هذا الأسبوع"
     },
     "buildingInfo": {
       "title": "معلومات المبنى",
@@ -1892,6 +1885,15 @@
         "bodyTooLong": "5000 حرف كحد أقصى",
         "categoryRequired": "اختر الفئة"
       }
+    },
+    "scope": {
+      "project": "المشروع",
+      "building": "المبنى",
+      "selectProject": "اختر مشروعًا",
+      "selectProjectBody": "اختر مشروعًا من الأعلى لعرض بياناته.",
+      "allBuildings": "كل المباني",
+      "projectA11y": "المشروع: {{value}}",
+      "buildingA11y": "المبنى: {{value}}"
     }
   }
 }

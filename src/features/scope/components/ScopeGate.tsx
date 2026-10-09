@@ -30,10 +30,7 @@ export function ScopeGate({ scope, children }: ScopeGateProps) {
     );
   } else {
     body = (
-      <EmptyState
-        title={t('fm.facilities.selectProject')}
-        body={t('fm.facilities.picker.selectProjectBody')}
-      />
+      <EmptyState title={t('fm.scope.selectProject')} body={t('fm.scope.selectProjectBody')} />
     );
   }
   return <View style={styles.center}>{body}</View>;

@@ -14,7 +14,7 @@ export { zodFormResolver, firstIssues } from './lib/zod-resolver';
 export { confirmAction, type ConfirmOptions } from './lib/confirm';
 export { useScope, type ScopeValue } from './hooks/useScope';
 export { useScopeProjects } from './hooks/useScopeProjects';
-export { useScopeStore } from './stores/scopeStore';
+export { useScopeStore } from '@/shared/stores/fmScopeStore';
 export {
   getScopeProjects,
   toScopeProjects,

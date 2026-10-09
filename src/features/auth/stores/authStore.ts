@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { logger } from '@/shared/lib/logger';
 import { queryClient } from '@/shared/query';
+import { useScopeStore } from '@/shared/stores/fmScopeStore';
 import { isStoredSessionUsable, userFromToken, type FmUser } from '../lib/fm-user';
 import { tokenStore } from '../lib/token-store';
 
@@ -58,6 +59,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     // further request may pick up the old token while the keychain write runs.
     set({ status: 'unauthenticated', token: null, user: null });
     queryClient.clear();
+    // The last picked project belongs to this account; never carry it to the next one.
+    useScopeStore.getState().reset();
     try {
       await tokenStore.clear();
     } catch (error) {

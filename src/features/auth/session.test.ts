@@ -5,6 +5,7 @@ import { bmsClient, communityClient, tmsClient, umsClient } from '@/shared/api/c
 import { apiRegistry, registerApiDependencies } from '@/shared/api/registry';
 import { secureStorage } from '@/shared/lib/storage';
 import { queryClient } from '@/shared/query';
+import { useScopeStore } from '@/shared/stores/fmScopeStore';
 import { guardRedirect } from './lib/boot-guard';
 import { FM_TOKEN_KEY } from './lib/token-store';
 import { wireSessionToApi } from './lib/wire-api';
@@ -113,6 +114,13 @@ describe('signed-in requests', () => {
     });
     expect(keychain.get(FM_TOKEN_KEY)).toBe(TOKEN);
     expect(useAuthStore.getState().status).toBe('authenticated');
+  });
+
+  it('logout forgets the community scope (project/building) of the old account', async () => {
+    useAuthStore.setState({ status: 'authenticated', token: TOKEN, user: null });
+    useScopeStore.setState({ projectId: '7', buildingId: '3', hydrated: true });
+    await useAuthStore.getState().logout();
+    expect(useScopeStore.getState()).toMatchObject({ projectId: null, buildingId: null });
   });
 
   it.each(CLIENTS)(

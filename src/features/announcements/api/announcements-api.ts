@@ -105,15 +105,19 @@ export async function deleteAnnouncement(id: string): Promise<void> {
   await communityClient.delete(`api/v1/posts/${encodeURIComponent(id)}`);
 }
 
-/** `GET api/bms/company-reps/projects/{id}/resident-count` → `{count}`. Any failure reads as 0. */
-export async function getResidentCount(projectId: string): Promise<number> {
+/**
+ * `GET api/bms/company-reps/projects/{id}/resident-count` → `{count}`.
+ * Null when the count is unknown (error or bad body) — the UI then shows a
+ * neutral line instead of a misleading "0". It never throws, so it can't block sending.
+ */
+export async function getResidentCount(projectId: string): Promise<number | null> {
   try {
     const res = await bmsClient
       .get(`api/bms/company-reps/projects/${encodeURIComponent(projectId)}/resident-count`)
       .json<unknown>();
     const count = (res as { count?: unknown } | null)?.count;
-    return typeof count === 'number' && Number.isFinite(count) && count > 0 ? count : 0;
+    return typeof count === 'number' && Number.isInteger(count) && count >= 0 ? count : null;
   } catch {
-    return 0;
+    return null;
   }
 }

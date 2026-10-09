@@ -14,7 +14,7 @@ import {
   listAllBookings,
   listBookings,
   updateBookingStatus,
-  type Booking,
+  type AllBookings,
   type BookingPage,
   type BookingQuery,
 } from '../api/bookings-api';
@@ -34,7 +34,7 @@ export function useBookingsAgenda(
   });
 }
 
-export function useBookingsWeek(query: BookingQuery | undefined): UseQueryResult<Booking[]> {
+export function useBookingsWeek(query: BookingQuery | undefined): UseQueryResult<AllBookings> {
   return useQuery({
     queryKey: [...PREFIX, 'week', query ?? null],
     queryFn: () => listAllBookings(query!),

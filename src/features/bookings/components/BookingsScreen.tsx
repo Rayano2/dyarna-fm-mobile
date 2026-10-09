@@ -22,6 +22,8 @@ import {
 } from '@/shared/ui';
 import {
   BOOKING_STATUSES,
+  SERVER_MAX_PAGE_SIZE,
+  WEEK_MAX_PAGES,
   type Booking,
   type BookingQuery,
   type BookingStatus,
@@ -31,7 +33,8 @@ import { countByDay } from '../lib/agenda';
 import {
   addDays,
   dayKey,
-  toInstantParam,
+  fromParam,
+  toParam,
   weekDays,
   weekFetchRange,
   weekStartDay,
@@ -88,8 +91,8 @@ export function BookingsScreen() {
           projectId,
           buildingId,
           status: statusParam,
-          from: range.from ? toInstantParam(range.from) : undefined,
-          to: range.to ? toInstantParam(range.to) : undefined,
+          from: range.from ? fromParam(range.from) : undefined,
+          to: range.to ? toParam(range.to) : undefined,
         }
       : undefined;
 
@@ -105,7 +108,7 @@ export function BookingsScreen() {
 
   const weekKeys = useMemo(() => new Set(days.map((d) => dayKey(d))), [days]);
   const weekBookings = useMemo(
-    () => (week.data ?? []).filter((b) => b.startTime && weekKeys.has(dayKey(b.startTime))),
+    () => (week.data?.items ?? []).filter((b) => b.startTime && weekKeys.has(dayKey(b.startTime))),
     [week.data, weekKeys],
   );
   const counts = useMemo(() => countByDay(weekBookings), [weekBookings]);
@@ -238,6 +241,11 @@ export function BookingsScreen() {
               setSelectedDay(null);
             }}
           />
+          {week.data?.truncated ? (
+            <Text style={[styles.noticeText, rtlText]} accessibilityLiveRegion="polite">
+              {t('fm.bookings.truncated', { count: SERVER_MAX_PAGE_SIZE * WEEK_MAX_PAGES })}
+            </Text>
+          ) : null}
           {status === 'ALL' ? null : (
             <View style={styles.notice}>
               <Text style={[styles.noticeText, rtlText]}>

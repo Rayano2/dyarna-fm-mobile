@@ -99,9 +99,9 @@ export interface BookingQuery {
   projectId: string;
   buildingId?: string | undefined;
   status?: BookingStatus | undefined;
-  /** ISO instant, inclusive. Build with `toInstantParam` — a bare date 500s. */
+  /** ISO instant, inclusive. Build with `fromParam` — a bare date 500s. */
   from?: string | undefined;
-  /** ISO instant, exclusive. */
+  /** ISO instant, exclusive on the server. Build with `toParam` (the day after the picked one). */
   to?: string | undefined;
 }
 
@@ -126,14 +126,20 @@ export async function listBookings(
 }
 
 /** Every booking in a window, paging at the server cap. Bounded so a runaway range can't loop. */
-export async function listAllBookings(query: BookingQuery): Promise<Booking[]> {
-  const all: Booking[] = [];
+export interface AllBookings {
+  items: Booking[];
+  /** True when the page cap stopped the fetch before the server's last page. */
+  truncated: boolean;
+}
+
+export async function listAllBookings(query: BookingQuery): Promise<AllBookings> {
+  const items: Booking[] = [];
   for (let page = 0; page < WEEK_MAX_PAGES; page++) {
     const res = await listBookings(query, page, SERVER_MAX_PAGE_SIZE);
-    all.push(...res.items);
-    if (res.last || res.items.length === 0) break;
+    items.push(...res.items);
+    if (res.last || res.items.length === 0) return { items, truncated: false };
   }
-  return all;
+  return { items, truncated: true };
 }
 
 /**

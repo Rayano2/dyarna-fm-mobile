@@ -92,7 +92,7 @@ const styles = StyleSheet.create((theme) => ({
     paddingHorizontal: theme.spacing[8],
     paddingVertical: theme.spacing[8],
   },
-  nav: { width: 36, height: 44, alignItems: 'center', justifyContent: 'center' },
+  nav: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
   days: { flex: 1, flexDirection: 'row', gap: theme.spacing[4] },
   day: {
     flex: 1,

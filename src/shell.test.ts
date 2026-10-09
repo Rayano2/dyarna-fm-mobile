@@ -21,7 +21,7 @@ describe('FM app shell', () => {
     expect(config.name).toBe('Dyarna FM Dev');
     expect(config.plugins).toContainEqual([
       './plugins/with-localized-app-name',
-      { en: 'Dyarna FM Dev', ar: 'مدير ديارنا Dev' },
+      expect.objectContaining({ en: 'Dyarna FM Dev', ar: 'مدير ديارنا Dev' }),
     ]);
   });
 
@@ -33,8 +33,20 @@ describe('FM app shell', () => {
     expect(config.slug).toBe('dyarna-fm');
     expect(config.plugins).toContainEqual([
       './plugins/with-localized-app-name',
-      { en: 'Dyarna FM', ar: 'مدير ديارنا' },
+      expect.objectContaining({ en: 'Dyarna FM', ar: 'مدير ديارنا' }),
     ]);
+  });
+
+  it('localizes a generic photo-library prompt (tickets + building documents)', async () => {
+    const config = await loadConfig('production');
+    const en = config.ios?.infoPlist?.NSPhotoLibraryUsageDescription as string;
+    expect(en).toMatch(/tickets/);
+    expect(en).toMatch(/building documents/);
+    const plugin = config.plugins?.find(
+      (p) => Array.isArray(p) && p[0] === './plugins/with-localized-app-name',
+    ) as [string, { iosUsage: Record<string, { NSPhotoLibraryUsageDescription: string }> }];
+    expect(plugin[1].iosUsage.en?.NSPhotoLibraryUsageDescription).toBe(en);
+    expect(plugin[1].iosUsage.ar?.NSPhotoLibraryUsageDescription).toMatch(/مستندات المبنى/);
   });
 
   it('ships the shell strings in both English and Arabic', () => {

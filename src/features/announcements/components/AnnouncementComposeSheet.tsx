@@ -186,7 +186,9 @@ export const AnnouncementComposeSheet = forwardRef<BottomSheetRef, AnnouncementC
             <Text style={[styles.residents, rtlText]} accessibilityLiveRegion="polite">
               {residents.isLoading
                 ? t('common.loading')
-                : t('fm.announcements.residents', { count: residents.data ?? 0 })}
+                : residents.data === null || residents.data === undefined
+                  ? t('fm.announcements.residentsUnknown')
+                  : t('fm.announcements.residents', { count: residents.data })}
             </Text>
           </View>
         )}

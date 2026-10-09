@@ -1,11 +1,12 @@
 /**
  * Date helpers for the bookings filters, agenda and week strip.
  *
- * Everything here works on the device's LOCAL calendar. The only wire format
- * is `toInstantParam`: Community declares `from`/`to` as `Instant`, and a bare
- * `yyyy-MM-dd` throws a type mismatch that surfaces as a 500. The web widens
- * the picked calendar date to UTC midnight (`client/src/lib/api.ts`
- * `toInstantParam`) and so do we, so both clients query the same window.
+ * Everything here works on the device's LOCAL calendar. The only wire formats
+ * are `fromParam` / `toParam`: Community declares `from`/`to` as `Instant`, and
+ * a bare `yyyy-MM-dd` throws a type mismatch that surfaces as a 500.
+ *
+ * Both bounds are LOCAL midnights serialized as instants. UTC midnight (what
+ * the web sends) loses 00:00–02:59 of the picked day in Riyadh (UTC+3).
  */
 
 function pad(n: number): string {
@@ -17,17 +18,25 @@ export function dayKey(date: Date): string {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 }
 
-/** The picked LOCAL calendar date as `yyyy-MM-ddT00:00:00.000Z` (from inclusive, to exclusive). */
-export function toInstantParam(date: Date): string {
-  return `${dayKey(date)}T00:00:00.000Z`;
-}
-
 export function startOfLocalDay(date: Date): Date {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
 export function addDays(date: Date, days: number): Date {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
+}
+
+/** `from` (inclusive on the server): local midnight starting the picked day. */
+export function fromParam(date: Date): string {
+  return startOfLocalDay(date).toISOString();
+}
+
+/**
+ * `to` (EXCLUSIVE on the server): local midnight ending the picked day, so
+ * "to 14 Oct" includes all of the 14th.
+ */
+export function toParam(date: Date): string {
+  return addDays(startOfLocalDay(date), 1).toISOString();
 }
 
 /**
@@ -65,13 +74,12 @@ export function weekDays(anchor: Date, firstDay: number): Date[] {
 }
 
 /**
- * The fetch window for a week: one day of padding on each side so a booking
- * near midnight is never lost to the UTC-midnight widening of the bounds.
- * Bookings are then grouped by their LOCAL day, client-side.
+ * The fetch window for a week: local midnight of its first day up to (not
+ * including) local midnight after its last. Local bounds need no padding.
  */
 export function weekFetchRange(anchor: Date, firstDay: number): { from: string; to: string } {
   const start = startOfWeek(anchor, firstDay);
-  return { from: toInstantParam(addDays(start, -1)), to: toInstantParam(addDays(start, 8)) };
+  return { from: fromParam(start), to: toParam(addDays(start, 6)) };
 }
 
 /** Exact duration in whole minutes, or undefined for a missing/inverted range. */

@@ -105,8 +105,8 @@ export function ProjectBuildingScope({
     [scope],
   );
 
-  const projectLabel = scope.project?.projectName ?? t('fm.facilities.picker.selectProject');
-  const buildingLabel = scope.building?.buildingName ?? t('fm.facilities.picker.allBuildings');
+  const projectLabel = scope.project?.projectName ?? t('fm.scope.selectProject');
+  const buildingLabel = scope.building?.buildingName ?? t('fm.scope.allBuildings');
 
   return (
     <View style={styles.row}>
@@ -115,7 +115,7 @@ export function ProjectBuildingScope({
           label={projectLabel}
           placeholder={!scope.project}
           disabled={scope.projects.length === 0}
-          accessibilityLabel={t('fm.facilities.picker.projectA11y', { value: projectLabel })}
+          accessibilityLabel={t('fm.scope.projectA11y', { value: projectLabel })}
           onPress={() => projectSheet.current?.present()}
         />
         {showBuilding ? (
@@ -123,7 +123,7 @@ export function ProjectBuildingScope({
             label={buildingLabel}
             placeholder={!scope.building}
             disabled={!scope.project}
-            accessibilityLabel={t('fm.facilities.picker.buildingA11y', { value: buildingLabel })}
+            accessibilityLabel={t('fm.scope.buildingA11y', { value: buildingLabel })}
             onPress={() => buildingSheet.current?.present()}
           />
         ) : null}
@@ -132,7 +132,7 @@ export function ProjectBuildingScope({
 
       <BottomSheet ref={projectSheet} scrollable snapPoints={['50%', '85%']}>
         <Text style={styles.sheetTitle} accessibilityRole="header">
-          {t('fm.facilities.picker.project')}
+          {t('fm.scope.project')}
         </Text>
         {scope.projects.map((p) => (
           <OptionRow
@@ -147,10 +147,10 @@ export function ProjectBuildingScope({
       {showBuilding ? (
         <BottomSheet ref={buildingSheet} scrollable snapPoints={['50%', '85%']}>
           <Text style={styles.sheetTitle} accessibilityRole="header">
-            {t('fm.facilities.picker.building')}
+            {t('fm.scope.building')}
           </Text>
           <OptionRow
-            label={t('fm.facilities.picker.allBuildings')}
+            label={t('fm.scope.allBuildings')}
             selected={!scope.buildingId}
             onPress={() => pickBuilding(null)}
           />

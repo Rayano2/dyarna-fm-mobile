@@ -33,11 +33,11 @@ export function useAnnouncements(
   });
 }
 
-/** Resident count for the confirm step. Never errors: a failure reads as 0 and must not block sending. */
+/** Resident count for the confirm step. Never errors: an unknown count is null and must not block sending. */
 export function useResidentCount(
   projectId: string | undefined,
   enabled: boolean,
-): UseQueryResult<number> {
+): UseQueryResult<number | null> {
   return useQuery({
     queryKey: queryKeys.bms.residentCount(projectId),
     queryFn: () => getResidentCount(projectId!),

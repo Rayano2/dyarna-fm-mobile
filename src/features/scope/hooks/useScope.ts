@@ -1,7 +1,8 @@
 import { useEffect, useMemo } from 'react';
 import type { ScopeBuilding, ScopeProject } from '../api/projects-buildings';
-import { useScopeStore } from '../stores/scopeStore';
+import { useScopeStore } from '@/shared/stores/fmScopeStore';
 import { useScopeProjects } from './useScopeProjects';
+import { reconcileScope } from '../lib/reconcile-scope';
 
 export interface ScopeValue {
   projects: ScopeProject[];
@@ -39,23 +40,19 @@ export function useScope(): ScopeValue {
   const building = project?.buildings.find((b) => b.buildingId === storedBuildingId);
 
   useEffect(() => {
-    if (!hydrated || !query.isSuccess) return;
-    if (storedProjectId && !project) {
-      // A stale pick (another account, or a project the rep lost access to).
-      setProject(projects.length === 1 ? projects[0]!.projectId : null);
-      return;
-    }
-    if (!storedProjectId && projects.length === 1) {
-      setProject(projects[0]!.projectId);
-      return;
-    }
-    if (project && storedBuildingId && !building) setBuilding(null);
+    const fix = reconcileScope({
+      hydrated,
+      loaded: query.isSuccess,
+      projects,
+      storedProjectId,
+      storedBuildingId,
+    });
+    if (fix?.kind === 'setProject') setProject(fix.projectId);
+    else if (fix?.kind === 'clearBuilding') setBuilding(null);
   }, [
     hydrated,
     query.isSuccess,
     projects,
-    project,
-    building,
     storedProjectId,
     storedBuildingId,
     setProject,

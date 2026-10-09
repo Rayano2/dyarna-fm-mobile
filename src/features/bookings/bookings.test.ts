@@ -9,7 +9,7 @@ import {
   type Booking,
 } from './api/bookings-api';
 import { groupAgenda } from './lib/agenda';
-import { durationMinutes, toInstantParam, weekDays, weekFetchRange } from './lib/booking-dates';
+import { durationMinutes, fromParam, toParam, weekDays, weekFetchRange } from './lib/booking-dates';
 import { rejectReasonError } from './lib/booking-meta';
 
 const URL_BOOKINGS = 'https://community.test.local/api/v1/facilities/bookings';
@@ -30,10 +30,13 @@ function booking(id: string, status: string, start: Date): Booking {
 }
 
 describe('from/to ISO formatting', () => {
-  it('widens the LOCAL calendar date to UTC midnight (never a bare date)', () => {
-    // 23:30 local on 14 Oct must still be "the 14th", whatever the TZ.
-    expect(toInstantParam(new Date(2026, 9, 14, 23, 30))).toBe('2026-10-14T00:00:00.000Z');
-    expect(toInstantParam(new Date(2026, 0, 5))).toBe('2026-01-05T00:00:00.000Z');
+  it('sends from as the local midnight starting the day and to as the one ending it', () => {
+    // 23:30 local on 14 Oct is still "the 14th".
+    expect(fromParam(new Date(2026, 9, 14, 23, 30))).toBe(new Date(2026, 9, 14).toISOString());
+    // `to` is exclusive on the server, so "to 14 Oct" must end at 15 Oct 00:00 local.
+    expect(toParam(new Date(2026, 9, 14, 8))).toBe(new Date(2026, 9, 15).toISOString());
+    // Month rollover.
+    expect(toParam(new Date(2026, 9, 31))).toBe(new Date(2026, 10, 1).toISOString());
   });
 
   it('sends from/to as instants on the wire', async () => {
@@ -48,26 +51,26 @@ describe('from/to ISO formatting', () => {
       {
         projectId: '7',
         status: 'PENDING',
-        from: toInstantParam(new Date(2026, 9, 1)),
-        to: toInstantParam(new Date(2026, 9, 8)),
+        from: fromParam(new Date(2026, 9, 1)),
+        to: toParam(new Date(2026, 9, 8)),
       },
       0,
     );
-    expect(url!.searchParams.get('from')).toBe('2026-10-01T00:00:00.000Z');
-    expect(url!.searchParams.get('to')).toBe('2026-10-08T00:00:00.000Z');
+    expect(url!.searchParams.get('from')).toBe(new Date(2026, 9, 1).toISOString());
+    expect(url!.searchParams.get('to')).toBe(new Date(2026, 9, 9).toISOString());
     expect(url!.searchParams.get('status')).toBe('PENDING');
     expect(url!.searchParams.get('size')).toBe('20');
     expect(url!.searchParams.has('buildingId')).toBe(false);
   });
 
-  it('pads the week fetch by a day on each side', () => {
+  it('fetches the week from its first local midnight to the one after its last day', () => {
     const anchor = new Date(2026, 9, 14); // Wed
     const days = weekDays(anchor, 0);
     expect(days).toHaveLength(7);
     expect(days[0]!.getDay()).toBe(0);
     expect(weekFetchRange(anchor, 0)).toEqual({
-      from: '2026-10-10T00:00:00.000Z',
-      to: '2026-10-19T00:00:00.000Z',
+      from: new Date(2026, 9, 11).toISOString(),
+      to: new Date(2026, 9, 18).toISOString(),
     });
   });
 
@@ -87,7 +90,28 @@ describe('from/to ISO formatting', () => {
     );
     const all = await listAllBookings({ projectId: '7' });
     expect(sizes).toEqual(['100', '100']);
-    expect(all.map((b) => b.id)).toEqual(['b0', 'b1']);
+    expect(all.items.map((b) => b.id)).toEqual(['b0', 'b1']);
+    expect(all.truncated).toBe(false);
+  });
+
+  it('stops at 5 pages and flags the result as truncated', async () => {
+    const pages: number[] = [];
+    server.use(
+      http.get(URL_BOOKINGS, ({ request }) => {
+        const page = Number(new URL(request.url).searchParams.get('page'));
+        pages.push(page);
+        return HttpResponse.json({
+          content: [{ id: `b${page}`, status: 'APPROVED' }],
+          number: page,
+          totalPages: 50,
+          last: false,
+        });
+      }),
+    );
+    const all = await listAllBookings({ projectId: '7' });
+    expect(pages).toEqual([0, 1, 2, 3, 4]);
+    expect(all.items).toHaveLength(5);
+    expect(all.truncated).toBe(true);
   });
 });
 

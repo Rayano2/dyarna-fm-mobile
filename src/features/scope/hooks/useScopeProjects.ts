@@ -6,7 +6,7 @@ import { getScopeProjects, type ScopeProject } from '../api/projects-buildings';
 /**
  * The rep's projects and buildings, for the scope pickers on the community
  * screens. Lives in `features/scope` until it is consolidated with the other
- * branches' copies (see the T10 brief); the key matches theirs.
+ * branches' project/building hooks (see the T10 brief).
  */
 export function useScopeProjects(): UseQueryResult<ScopeProject[]> {
   return useQuery({

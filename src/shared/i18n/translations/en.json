@@ -1658,7 +1658,8 @@
         "titleTooLong": "Max 100 characters",
         "messageRequired": "Message is required",
         "messageTooLong": "Max 500 characters"
-      }
+      },
+      "residentsUnknown": "Residents in this project will be notified"
     },
     "facilities": {
       "title": "Facilities",
@@ -1727,15 +1728,6 @@
       "empty": "No facilities yet",
       "emptyFilter": "No facilities in this building",
       "selectProject": "Select a project",
-      "picker": {
-        "project": "Project",
-        "building": "Building",
-        "selectProject": "Select a project",
-        "selectProjectBody": "Pick a project above to see its data.",
-        "allBuildings": "All buildings",
-        "projectA11y": "Project: {{value}}",
-        "buildingA11y": "Building: {{value}}"
-      },
       "errors": {
         "nameRequired": "Name is required",
         "nameTooLong": "Max 200 characters",
@@ -1809,7 +1801,8 @@
       "emptyFilter": "No bookings match",
       "empty": "No bookings yet",
       "statusFilterNotice": "Showing {{status}} only",
-      "showAll": "Show all statuses"
+      "showAll": "Show all statuses",
+      "truncated": "Showing the first {{count}} bookings of this week"
     },
     "buildingInfo": {
       "title": "Building info",
@@ -1892,6 +1885,15 @@
         "bodyTooLong": "Max 5000 characters",
         "categoryRequired": "Choose a category"
       }
+    },
+    "scope": {
+      "project": "Project",
+      "building": "Building",
+      "selectProject": "Select a project",
+      "selectProjectBody": "Pick a project above to see its data.",
+      "allBuildings": "All buildings",
+      "projectA11y": "Project: {{value}}",
+      "buildingA11y": "Building: {{value}}"
     }
   }
 }
