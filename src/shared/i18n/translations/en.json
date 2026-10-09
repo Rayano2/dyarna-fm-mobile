@@ -1435,7 +1435,9 @@
         "costHint": "Amount paid to fix this ticket",
         "confirmTitle": "Confirm?",
         "confirmBody": "This can't be undone",
-        "partialError": "Saved partly. Retry to finish",
+        "partialError": "Saved partly. Retry to finish. Photos that were uploading may appear twice.",
+        "noteSaved": "Note already saved",
+        "filesSaved": "Photos already uploaded",
         "errors": {
           "commentRequired": "Add a resolution note",
           "costInvalid": "Enter an amount from 0 to 100,000 with up to 2 decimals",

@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Text, View } from 'react-native';
+import { useFocusEffect } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
@@ -29,6 +30,8 @@ export function TicketActionBar({
   const { theme } = useUnistyles();
   const insets = useSafeAreaInsets();
   const [choosing, setChoosing] = useState(false);
+  // Leaving the screen closes the Resolved / Not actionable choice.
+  useFocusEffect(useCallback(() => () => setChoosing(false), []));
 
   if (action === 'none') return null;
 
@@ -62,24 +65,33 @@ export function TicketActionBar({
     }
     case 'takeAction': {
       content = choosing ? (
-        <View style={styles.row}>
-          <View style={styles.half}>
-            <Button
-              label={t('fm.tickets.markNotActionable')}
-              variant="secondary"
-              fullWidth
-              onPress={() => onResolve('NOT_ACTIONABLE')}
-              testID="fm-ticket-not-actionable"
-            />
+        <View style={styles.choice}>
+          <View style={styles.row}>
+            <View style={styles.half}>
+              <Button
+                label={t('fm.tickets.markNotActionable')}
+                variant="secondary"
+                fullWidth
+                onPress={() => onResolve('NOT_ACTIONABLE')}
+                testID="fm-ticket-not-actionable"
+              />
+            </View>
+            <View style={styles.half}>
+              <Button
+                label={t('fm.tickets.markResolved')}
+                fullWidth
+                onPress={() => onResolve('RESOLVED')}
+                testID="fm-ticket-resolve"
+              />
+            </View>
           </View>
-          <View style={styles.half}>
-            <Button
-              label={t('fm.tickets.markResolved')}
-              fullWidth
-              onPress={() => onResolve('RESOLVED')}
-              testID="fm-ticket-resolve"
-            />
-          </View>
+          <Button
+            label={t('common.cancel')}
+            variant="ghost"
+            fullWidth
+            onPress={() => setChoosing(false)}
+            testID="fm-ticket-action-cancel"
+          />
         </View>
       ) : (
         <Button
@@ -114,6 +126,7 @@ const styles = StyleSheet.create((theme) => ({
     borderTopWidth: 1,
     borderTopColor: theme.colors.borderHairline,
   },
+  choice: { gap: theme.spacing[8] },
   row: { flexDirection: 'row', gap: theme.spacing[12] },
   half: { flex: 1 },
   terminal: {

@@ -22,7 +22,6 @@ import { useTicket } from '../hooks/useTicket';
 import { useTicketComments } from '../hooks/useTicketComments';
 import { useResolveTicket, useUpdateTicketStatus } from '../hooks/useUpdateTicketStatus';
 import { ltr } from '../lib/ltr';
-import { resolveDrafts } from '../lib/resolve-drafts';
 import { getTicketAction, needsAssignment } from '../lib/ticket-status';
 import type { FmTicketDetail } from '../types';
 import { AttachmentsGallery } from './detail/AttachmentsGallery';
@@ -86,7 +85,11 @@ export function TicketDetailScreen({ ticketNumber }: { ticketNumber: string }): 
     );
   } else {
     body = (
+      // Keyed by ticket: the route stays mounted when only its param changes
+      // (e.g. a notification deep link), and no state of ticket A — form,
+      // resolution, open choice — may carry over to ticket B.
       <LoadedTicket
+        key={query.data.tktNumber}
         ticket={query.data}
         fetchedAt={query.dataUpdatedAt}
         onRefetch={() => void query.refetch()}
@@ -121,9 +124,8 @@ function LoadedTicket({
   const resolveSheet = useRef<BottomSheetRef>(null);
   const [resolution, setResolution] = useState<ResolutionStatus>('RESOLVED');
   const resolve = useResolveTicket(ticket.tktNumber, () => {
-    // Leaving the screen unmounts the sheet; dismissing it first would race
-    // its "re-open while submitting" guard.
-    resolveDrafts.clear(ticket.tktNumber);
+    // The hook already cleared the draft. Leaving the screen unmounts the
+    // sheet; dismissing it first would race its "re-open while submitting" guard.
     router.back();
   });
 
@@ -215,6 +217,7 @@ function LoadedTicket({
       />
 
       <ResolveTicketSheet
+        key={ticket.tktNumber}
         ref={resolveSheet}
         ticketId={ticket.ticketId}
         ticketNumber={ticket.tktNumber}

@@ -15,9 +15,8 @@ import {
   type BottomSheetRef,
 } from '@/shared/ui';
 import type { ResolutionStatus, ResolveTicketInput } from '../api/update-status';
-import { resolveDrafts } from '../lib/resolve-drafts';
+import { initialResolveValues, selectDoneSteps, useResolveDrafts } from '../lib/resolve-drafts';
 import {
-  RESOLVE_DEFAULTS,
   RESOLVE_MAX_FILES,
   parseRepairCost,
   resolveResolver,
@@ -53,7 +52,8 @@ export function toResolveInput(
  * Required note, optional repair cost (0-100000, 2 decimals) and up to 5
  * images. Confirm asks once more (it can't be undone). While submitting every
  * field is locked and the sheet re-opens if swiped away; on failure the draft
- * stays.
+ * stays. A field whose step already landed (note posted, photos uploaded) stays
+ * locked, because a retry skips that step and an edit would be lost.
  */
 export const ResolveTicketSheet = forwardRef<BottomSheetRef, ResolveTicketSheetProps>(
   function ResolveTicketSheet({ ticketId, ticketNumber, resolution, submitting, onSubmit }, ref) {
@@ -69,15 +69,19 @@ export const ResolveTicketSheet = forwardRef<BottomSheetRef, ResolveTicketSheetP
 
     const { control, handleSubmit, watch, formState } = useForm<ResolveFormValues>({
       resolver: resolveResolver,
-      defaultValues: resolveDrafts.get(ticketNumber) ?? RESOLVE_DEFAULTS,
+      defaultValues: initialResolveValues(ticketNumber),
       mode: 'onChange',
     });
 
     const saveDraft = useCallback(
-      (values: ResolveFormValues) => resolveDrafts.set(ticketNumber, values),
+      (values: ResolveFormValues) => useResolveDrafts.getState().setValues(ticketNumber, values),
       [ticketNumber],
     );
     useComposeDraft(watch, saveDraft);
+
+    const done = useResolveDrafts(selectDoneSteps(ticketNumber));
+    const noteSaved = done.includes('comment');
+    const filesSaved = done.includes('attachments');
 
     const comment = watch('comment');
     const canConfirm = comment.trim().length > 0 && !submitting;
@@ -144,7 +148,7 @@ export const ResolveTicketSheet = forwardRef<BottomSheetRef, ResolveTicketSheetP
               value={field.value}
               onChangeText={field.onChange}
               onBlur={field.onBlur}
-              editable={!submitting}
+              editable={!submitting && !noteSaved}
               minHeight={110}
               accessibilityLabelledBy="resolve-comment-label"
               accessibilityLabel={t('fm.tickets.resolve.commentLabel')}
@@ -152,6 +156,11 @@ export const ResolveTicketSheet = forwardRef<BottomSheetRef, ResolveTicketSheetP
             />
           )}
         />
+        {noteSaved ? (
+          <Text style={styles.saved} accessibilityLiveRegion="polite">
+            {t('fm.tickets.resolve.noteSaved')}
+          </Text>
+        ) : null}
 
         <Controller
           control={control}
@@ -180,7 +189,10 @@ export const ResolveTicketSheet = forwardRef<BottomSheetRef, ResolveTicketSheetP
           control={control}
           name="files"
           render={({ field }) => (
-            <View pointerEvents={submitting ? 'none' : 'auto'} style={submitting && styles.locked}>
+            <View
+              pointerEvents={submitting || filesSaved ? 'none' : 'auto'}
+              style={(submitting || filesSaved) && styles.locked}
+            >
               <ImagePickerRow
                 images={field.value}
                 onChange={field.onChange}
@@ -189,6 +201,11 @@ export const ResolveTicketSheet = forwardRef<BottomSheetRef, ResolveTicketSheetP
             </View>
           )}
         />
+        {filesSaved ? (
+          <Text style={styles.saved} accessibilityLiveRegion="polite">
+            {t('fm.tickets.resolve.filesSaved')}
+          </Text>
+        ) : null}
       </BottomSheet>
     );
   },
@@ -205,6 +222,11 @@ const styles = StyleSheet.create((theme) => ({
     color: theme.colors.textSecondary,
     marginTop: theme.spacing[4],
     marginBottom: theme.spacing[16],
+  },
+  saved: {
+    fontSize: theme.type.body.sm.size,
+    color: theme.colors.textSecondary,
+    marginTop: theme.spacing[4],
   },
   label: {
     fontSize: theme.type.label.lg.size,

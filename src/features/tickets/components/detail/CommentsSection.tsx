@@ -6,9 +6,9 @@ import { Skeleton } from '@/shared/ui';
 import type { TicketComment } from '../../types';
 
 /**
- * Read-only thread. The server hides comment ids and author names
- * (`TicketCommentResponse` @JsonIgnore), so each row is labelled by the
- * author's role.
+ * Read-only thread. The backend @JsonIgnore's the comment id and the author
+ * name (`TicketCommentResponse.java`), so neither reaches the app; each row is
+ * labelled by the author's role and keyed client-side.
  */
 export function CommentsSection({
   comments,

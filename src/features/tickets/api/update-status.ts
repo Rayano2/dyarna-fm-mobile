@@ -37,6 +37,13 @@ export interface ResolveTicketInput {
   files: ResolveFile[];
 }
 
+/** `TicketAttachmentController` `/company` binds `@RequestParam("files") List<MultipartFile>`: one `files` part per file. */
+export const ATTACHMENTS_PART_NAME = 'files';
+
+export function buildAttachmentsForm(files: readonly ResolveFile[]): FormData {
+  return buildFormData({}, { [ATTACHMENTS_PART_NAME]: [...files] });
+}
+
 export type ResolveStep = 'comment' | 'attachments' | 'status';
 
 /**
@@ -95,7 +102,7 @@ export async function resolveTicket(
   if (input.files.length > 0) {
     await run('attachments', () =>
       tmsClient.post(ticketPaths.companyAttachments(input.ticketId), {
-        body: buildFormData({}, { files: input.files }),
+        body: buildAttachmentsForm(input.files),
         timeout: ATTACHMENT_UPLOAD_TIMEOUT_MS,
       }),
     );
