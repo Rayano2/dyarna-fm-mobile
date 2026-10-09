@@ -208,6 +208,8 @@ describe('401 session-expiry handling', () => {
       navigate,
       pushToast,
       isAuthenticated: () => authenticated,
+      // The forced logout only fires for a 401 sent with the active session.
+      getActiveToken: () => (authenticated ? 'session-token' : null),
     });
     server.use(
       http.get(`${BASE}/secure`, () => HttpResponse.json({}, { status: 401 })),
@@ -231,6 +233,25 @@ describe('401 session-expiry handling', () => {
     expect(logout).toHaveBeenCalledTimes(1);
     expect(navigate).toHaveBeenCalledWith('/(auth)/login');
     expect(pushToast).toHaveBeenCalledTimes(1);
+  });
+
+  it('ignores a stale 401 sent with a previous session token', async () => {
+    let token = 'old-token';
+    registerApiDependencies({ getActiveToken: () => token });
+    server.use(
+      http.get(`${BASE}/slow-secure`, async () => {
+        // The user signs in again while this request is in flight.
+        token = 'new-token';
+        return HttpResponse.json({}, { status: 401 });
+      }),
+    );
+    await client
+      .get('slow-secure')
+      .json()
+      .catch(() => {});
+    expect(logout).not.toHaveBeenCalled();
+    expect(navigate).not.toHaveBeenCalled();
+    expect(pushToast).not.toHaveBeenCalled();
   });
 
   it('fires a single logout for concurrent 401s', async () => {

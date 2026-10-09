@@ -65,6 +65,24 @@ describe('boot', () => {
     expect(guardRedirect(status, 'auth')).toBe('/(fm)');
   });
 
+  it.each([
+    ['an expired token', fakeJwt(umsWebClaims({ exp: Math.floor(Date.now() / 1000) - 60 }))],
+    ['a non-JWT token', 'opaque-session-value'],
+    ['a token without an FM role', fakeJwt(umsWebClaims({ roles: ['RESIDENT'] }))],
+  ])('%s boots to login and is wiped from the keychain', async (_label, stored) => {
+    keychain.set(FM_TOKEN_KEY, stored);
+    await useAuthStore.getState().hydrate();
+    expect(useAuthStore.getState()).toMatchObject({ status: 'unauthenticated', token: null });
+    expect(keychain.has(FM_TOKEN_KEY)).toBe(false);
+  });
+
+  it('a token that is not yet expired still boots into (fm)', async () => {
+    const fresh = fakeJwt(umsWebClaims({ exp: Math.floor(Date.now() / 1000) + 3600 }));
+    keychain.set(FM_TOKEN_KEY, fresh);
+    await useAuthStore.getState().hydrate();
+    expect(useAuthStore.getState().status).toBe('authenticated');
+  });
+
   it('no stored token boots to login; (fm) redirects there', async () => {
     await useAuthStore.getState().hydrate();
     const { status } = useAuthStore.getState();

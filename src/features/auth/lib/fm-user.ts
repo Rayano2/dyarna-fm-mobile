@@ -58,3 +58,15 @@ export function userFromToken(token: string, fallbackEmail = ''): FmUser | null 
 export function isFmRoleAllowed(roles: readonly string[]): boolean {
   return roles.some((role) => FM_ALLOWED_ROLES.includes(role));
 }
+
+/**
+ * Whether a token read back from the keychain may still open the app: it must
+ * decode, carry an allowed FM role, and not be past its `exp` (UMS web tokens
+ * live one day). A token without `exp` is left for the server to judge.
+ */
+export function isStoredSessionUsable(token: string, nowMs: number = Date.now()): boolean {
+  const user = userFromToken(token);
+  if (!user || !isFmRoleAllowed(user.roles)) return false;
+  const exp = jwtClaims(token)?.exp;
+  return typeof exp !== 'number' || exp * 1000 > nowMs;
+}

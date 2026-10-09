@@ -40,7 +40,11 @@ export default function LoginScreen(): React.JSX.Element {
 
   const passwordRef = useRef<TextInput>(null);
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [serverError, setServerError] = useState<LoginFailureKind | null>(null);
+  // 'storage': the keychain refused the token after a successful sign-in.
+  const [serverError, setServerError] = useState<LoginFailureKind | 'storage' | null>(null);
+  // True from submit until router.replace (or a failure), so the form never
+  // re-enables between the API answering and the keychain write finishing.
+  const [signingIn, setSigningIn] = useState(false);
   const [refocusPassword, setRefocusPassword] = useState(false);
 
   // Validate on submit, then live on change once an error has shown (same as the web form).
@@ -52,7 +56,7 @@ export default function LoginScreen(): React.JSX.Element {
   });
 
   const login = useMutation({ mutationFn: loginFm });
-  const submitting = login.isPending;
+  const submitting = login.isPending || signingIn;
 
   // The password input is not editable while submitting; focus it only once it is again.
   useEffect(() => {
@@ -62,21 +66,34 @@ export default function LoginScreen(): React.JSX.Element {
     }
   }, [refocusPassword, submitting]);
 
+  const showFailure = (kind: LoginFailureKind | 'storage'): void => {
+    setSigningIn(false);
+    setServerError(kind);
+    AccessibilityInfo.announceForAccessibility(t(`fm.login.errors.${kind}`));
+  };
+
   const onValid = async (values: LoginFormValues): Promise<void> => {
     Keyboard.dismiss();
     setServerError(null);
-    const outcome = await login.mutateAsync(values);
+    setSigningIn(true);
+    // loginFm maps every failure itself; the catch only guards the unexpected.
+    const outcome = await login.mutateAsync(values).catch(() => ({ kind: 'network' as const }));
     if (outcome.kind === 'success') {
-      await signIn(outcome.token, outcome.user);
+      try {
+        await signIn(outcome.token, outcome.user);
+      } catch {
+        showFailure('storage');
+        return;
+      }
       pushToast({
         variant: 'success',
         title: t('fm.login.welcomeBack', { name: outcome.user.name }),
       });
+      // `signingIn` stays true: this screen is leaving.
       router.replace(FM_HOME_HREF as never);
       return;
     }
-    setServerError(outcome.kind);
-    AccessibilityInfo.announceForAccessibility(t(`fm.login.errors.${outcome.kind}`));
+    showFailure(outcome.kind);
     if (outcome.kind === 'invalidCredentials') {
       // Keep the email, clear the password and put the cursor back in it.
       setValue('password', '');
@@ -125,7 +142,11 @@ export default function LoginScreen(): React.JSX.Element {
               onSubmitEditing={() => passwordRef.current?.focus()}
               editable={!submitting}
               value={field.value}
-              onChangeText={field.onChange}
+              onChangeText={(value) => {
+                field.onChange(value);
+                // The banner described the last attempt; editing starts a new one.
+                if (serverError) setServerError(null);
+              }}
               onBlur={field.onBlur}
               error={fieldError(fieldState.error)}
               testID="login-email"
@@ -170,7 +191,11 @@ export default function LoginScreen(): React.JSX.Element {
               onSubmitEditing={submit}
               editable={!submitting}
               value={field.value}
-              onChangeText={field.onChange}
+              onChangeText={(value) => {
+                field.onChange(value);
+                // The banner described the last attempt; editing starts a new one.
+                if (serverError) setServerError(null);
+              }}
               onBlur={field.onBlur}
               error={fieldError(fieldState.error)}
               testID="login-password"

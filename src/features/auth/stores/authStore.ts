@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { logger } from '@/shared/lib/logger';
 import { queryClient } from '@/shared/query';
-import { userFromToken, type FmUser } from '../lib/fm-user';
+import { isStoredSessionUsable, userFromToken, type FmUser } from '../lib/fm-user';
 import { tokenStore } from '../lib/token-store';
 
 /** 'booting' until the token has been read from secure storage (splash stays up). */
@@ -11,7 +11,7 @@ export interface AuthState {
   status: SessionStatus;
   token: string | null;
   user: FmUser | null;
-  /** Reads the stored token once at boot. Token present -> authenticated. */
+  /** Reads the stored token once at boot. A usable token -> authenticated; anything else is cleared. */
   hydrate(): Promise<void>;
   signIn(token: string, user: FmUser): Promise<void>;
   /** Clears the in-memory session, the query cache and the stored token. */
@@ -31,11 +31,20 @@ export const useAuthStore = create<AuthState>((set) => ({
       // An unreadable keychain must not strand the user on the splash.
       logger.warn('Could not read the stored FM session', error);
     }
-    set(
-      token
-        ? { status: 'authenticated', token, user: userFromToken(token) }
-        : { status: 'unauthenticated', token: null, user: null },
-    );
+    if (token && isStoredSessionUsable(token)) {
+      set({ status: 'authenticated', token, user: userFromToken(token) });
+      return;
+    }
+    if (token) {
+      // Expired, undecodable or no longer an FM role: drop it rather than
+      // booting into the shell only to be thrown out by the first 401.
+      try {
+        await tokenStore.clear();
+      } catch (error) {
+        logger.warn('Could not clear an unusable FM session', error);
+      }
+    }
+    set({ status: 'unauthenticated', token: null, user: null });
   },
 
   async signIn(token, user) {
