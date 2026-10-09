@@ -1269,15 +1269,57 @@
   },
   "fm": {
     "appName": "Dyarna FM",
-    "home": {
-      "title": "FM home",
-      "subtitle": "Facility manager workspace. Features arrive in upcoming releases.",
-      "signIn": "Go to sign in"
-    },
     "login": {
       "title": "Sign in",
-      "subtitle": "Facility manager sign-in is coming soon.",
-      "continue": "Continue to FM home"
+      "subtitle": "Sign in to manage your company's operations",
+      "email": "Email",
+      "emailPlaceholder": "rep@company.com",
+      "password": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
+      "submit": "Sign in",
+      "submitting": "Signing in...",
+      "errors": {
+        "invalidEmail": "Enter a valid email address",
+        "passwordMin": "Password must be at least 6 characters",
+        "invalidCredentials": "Incorrect email or password. Please try again.",
+        "accessDenied": "Only company representatives can use this app.",
+        "network": "Can't reach the server. Check your connection and try again."
+      },
+      "welcomeBack": "Welcome back, {{name}}",
+      "noAccount": "Don't have an account?",
+      "createAccount": "Create a company account"
+    },
+    "session": {
+      "expired": "Your session expired. Please sign in again.",
+      "logout": "Log out",
+      "logoutTitle": "Log out?",
+      "logoutBody": "You'll need to sign in again to continue.",
+      "cancel": "Cancel"
+    },
+    "nav": {
+      "dashboard": "Dashboard",
+      "tickets": "Tickets",
+      "requests": "Resident requests",
+      "requestsTab": "Requests",
+      "bookings": "Facility bookings",
+      "bookingsTab": "Bookings",
+      "more": "More",
+      "properties": "Properties",
+      "residents": "Residents",
+      "announcements": "Announcements",
+      "paymentReminders": "Payment reminders",
+      "facilities": "Facilities",
+      "buildingInfo": "Building info",
+      "todos": "Todos",
+      "settings": "Settings",
+      "support": "Support",
+      "notifications": "Notifications"
+    },
+    "placeholder": {
+      "title": "Coming soon",
+      "body": "This section is being built and will arrive in an upcoming release."
     }
   }
 }

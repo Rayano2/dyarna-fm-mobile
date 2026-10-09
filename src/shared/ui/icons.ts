@@ -77,6 +77,7 @@ export {
   // Poll glyphs (resident polls + ballot). Non-directional —
   // these must never be mirrored in RTL.
   ChartBar,
+  Eye,
   EyeSlash,
   // Building info glyph (resident document library). Non-directional — must
   // never be mirrored in RTL.

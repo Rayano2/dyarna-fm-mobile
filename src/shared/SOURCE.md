@@ -14,7 +14,14 @@
 
 - `config/env.test.ts`: deep-link scheme fixture renamed `dyarnap-dev` -> `dyarnafm-dev`.
 
-Nothing else was modified; the snapshot compiled as-is.
+- T5 (FM login + shell):
+  - `i18n/translations/{en,ar}.json`: `fm.*` block replaced (login, session, nav, placeholder).
+  - `api/client.ts`: `credentials: 'omit'` on every client (Bearer only, no cookies).
+  - `api/interceptors/error.ts`: the 401 toast uses `fm.session.expired` (one line, no body).
+  - `lib/jwt.ts`: added `jwtClaims()` (reads the role/name claims at login).
+  - `ui/icons.ts`: added `Eye` (password toggle).
+
+Nothing else was modified.
 
 ## Known caveats carried over
 

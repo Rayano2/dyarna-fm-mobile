@@ -62,8 +62,7 @@ export function errorInterceptor(service: ServiceName): BeforeErrorHook {
           await apiRegistry.logout();
           apiRegistry.pushToast({
             variant: 'error',
-            title: i18n.t('session.expired.title'),
-            body: i18n.t('session.expired.body'),
+            title: i18n.t('fm.session.expired'),
           });
           apiRegistry.navigate('/(auth)/login');
         } finally {

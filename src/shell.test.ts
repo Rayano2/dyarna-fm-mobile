@@ -35,9 +35,9 @@ describe('FM app shell', () => {
 
   it('ships the shell strings in both English and Arabic', () => {
     for (const dict of [en, ar]) {
-      expect(dict.fm.home.title).toBeTruthy();
+      expect(dict.fm.nav.dashboard).toBeTruthy();
       expect(dict.fm.login.title).toBeTruthy();
     }
-    expect(ar.fm.home.title).not.toBe(en.fm.home.title);
+    expect(ar.fm.nav.dashboard).not.toBe(en.fm.nav.dashboard);
   });
 });
