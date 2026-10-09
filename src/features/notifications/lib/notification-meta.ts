@@ -1,10 +1,5 @@
 import type { Icons } from '@/shared/ui';
-import {
-  FM_REQUESTS,
-  FM_TICKETS,
-  fmTicketDestination,
-  type FmDestination,
-} from '@/shared/lib/fm-routes';
+import { FM_REQUESTS, fmTicketDestination, type FmDestination } from '@/shared/lib/fm-routes';
 import type {
   AppNotification,
   KnownNotificationType,
@@ -90,9 +85,7 @@ export function hasRequiredMetadata(type: string, metadata: NotificationMetadata
 /** Where tapping the row goes, or null when there is nowhere to send the user. */
 export function notificationDestination(notification: AppNotification): FmDestination | null {
   if (isTicketNotification(notification.type)) {
-    return notification.ticketId === undefined
-      ? FM_TICKETS
-      : fmTicketDestination(notification.ticketId);
+    return fmTicketDestination(notification.metadata.ticketNumber);
   }
   if (notification.type === 'RESIDENT_LINK_REQUEST_CREATED') return FM_REQUESTS;
   return null;

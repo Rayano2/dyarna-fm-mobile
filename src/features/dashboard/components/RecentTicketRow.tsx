@@ -6,7 +6,7 @@ import { formatRelativeTime } from '@/shared/lib/format-relative-time';
 import { fmTicketDestination } from '@/shared/lib/fm-routes';
 import { goTo } from '@/shared/lib/go-to';
 import type { DashboardTicket } from '../api/dashboard-api';
-import { priorityBadge, priorityLabel, statusBadge, statusLabel } from '../lib/badge-tone';
+import { langOf, PriorityBadge, StatusBadge, statusLabel } from '@/features/tickets';
 
 export interface RecentTicketRowProps {
   ticket: DashboardTicket;
@@ -16,20 +16,18 @@ export interface RecentTicketRowProps {
 const LTR_TEXT: TextStyle = { writingDirection: 'ltr' };
 
 export function RecentTicketRow({ ticket }: RecentTicketRowProps): React.JSX.Element {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const isRtl = useIsRtl();
   const rtlInline = isRtl ? RTL_INLINE : null;
 
-  const status = statusBadge(ticket.statusCode);
-  const priority = priorityBadge(ticket.priorityCode);
-  const statusText = statusLabel(ticket.statusCode, ticket, t, isRtl);
-  const priorityText = priorityLabel(ticket.priorityCode, t);
+  // Server name (statusNameAr/En) first, then our label, then the raw code.
+  const statusText = statusLabel(t, ticket, langOf(i18n.language));
   const number = ticket.tktNumber ? `#${ticket.tktNumber}` : `#${ticket.ticketId}`;
   const when = formatRelativeTime(ticket.createdAt, t);
 
   return (
     <HapticPressable
-      onPress={() => goTo(fmTicketDestination(ticket.ticketId))}
+      onPress={() => goTo(fmTicketDestination(ticket.tktNumber))}
       accessibilityRole="button"
       accessibilityLabel={t('fm.dashboard.recent.rowA11y', {
         number,
@@ -48,8 +46,8 @@ export function RecentTicketRow({ ticket }: RecentTicketRowProps): React.JSX.Ele
         ) : (
           <View style={styles.spacer} />
         )}
-        {statusText ? <Badge label={statusText} tone={status.tone} size="xs" /> : null}
-        {priorityText ? <Badge label={priorityText} tone={priority.tone} size="xs" /> : null}
+        {ticket.statusCode ? <StatusBadge ticket={ticket} /> : null}
+        <PriorityBadge code={ticket.priorityCode} />
       </View>
       {ticket.title ? (
         <Text style={[styles.title, rtlInline]} numberOfLines={1}>

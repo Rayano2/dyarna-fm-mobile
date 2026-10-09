@@ -9,7 +9,7 @@ import {
 } from './dashboard-api';
 
 const DASHBOARD_URL = 'https://bms.test.local/api/bms/company-reps/dashboardInfo';
-const TODOS_URL = 'https://bms.test.local/todos';
+const TODOS_URL = 'https://bms.test.local/api/bms/todos';
 
 const server = setupServer();
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
@@ -126,7 +126,7 @@ describe('active todo count (My tasks KPI)', () => {
     expect(countActiveTodos(null)).toBe(0);
   });
 
-  it('GETs /todos (root, no api prefix) with the web dashboard query', async () => {
+  it('GETs api/bms/todos with the web dashboard query', async () => {
     let seen: URLSearchParams | null = null;
     server.use(
       http.get(TODOS_URL, ({ request }) => {

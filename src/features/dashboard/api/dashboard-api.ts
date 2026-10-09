@@ -16,12 +16,10 @@ import { toUtcIso } from '@/shared/lib/to-utc-iso';
 export const DASHBOARD_INFO_PATH = 'api/bms/company-reps/dashboardInfo';
 
 /**
- * BMS-TMS `TodoItemController` is mapped at the ROOT (`/todos`), with no `api/`
- * prefix. FM web reaches it through its own proxy (`/api/todos` -> `/todos`).
- * The prod gateway does not route `/todos`; when the backend `api/bms/todos`
- * alias ships, switch this one constant.
+ * BMS-TMS `TodoItemController`, served under `api/bms/todos` (BMS 3b415db)
+ * so the prod gateway routes it like every other BMS call.
  */
-export const TODOS_PATH = 'todos';
+export const TODOS_PATH = 'api/bms/todos';
 
 /** Same query the web dashboard runs: first 100 todos, by priority. */
 const TODOS_QUERY = { page: 0, size: 100, sort: 'priority,asc' } as const;

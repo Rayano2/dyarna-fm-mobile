@@ -16,9 +16,11 @@ export const FM_PROPERTIES: FmDestination = { href: '/properties', method: 'push
 export const FM_TODOS: FmDestination = { href: '/todos', method: 'push' };
 
 /**
- * One ticket. The Tickets tab reads `?id=` (BMS `ticketId`). If the tickets
- * feature moves to a `tickets/[number]` route, this is the only place to change.
+ * One ticket, by its NUMBER (`tktNumber` / notification `metadata.ticketNumber`):
+ * pushes the `tickets/[number]` detail. Without a number, the Tickets tab.
  */
-export function fmTicketDestination(ticketId: number): FmDestination {
-  return { href: `/tickets?id=${encodeURIComponent(String(ticketId))}`, method: 'navigate' };
+export function fmTicketDestination(ticketNumber?: string): FmDestination {
+  const number = ticketNumber?.trim();
+  if (!number) return FM_TICKETS;
+  return { href: `/tickets/${encodeURIComponent(number)}`, method: 'push' };
 }

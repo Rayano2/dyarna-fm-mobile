@@ -14,6 +14,9 @@ const STATUS_STYLE: Record<string, { tone: BadgeTone; icon: IconName }> = {
   RESOLVED: { tone: 'primary', icon: 'CheckCircle' },
   CLOSED: { tone: 'neutral', icon: 'Lock' },
   NOT_ACTIONABLE: { tone: 'neutral', icon: 'Prohibit' },
+  // bms-tms V6 lookup codes.
+  ON_HOLD: { tone: 'goldMuted', icon: 'Clock' },
+  CANCELLED: { tone: 'neutral', icon: 'XCircle' },
 };
 
 const FALLBACK = { tone: 'neutral' as BadgeTone, icon: 'Info' as IconName };

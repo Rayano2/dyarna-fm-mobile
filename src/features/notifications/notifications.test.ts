@@ -51,15 +51,15 @@ function newClient(): QueryClient {
 }
 
 describe('notification tap -> mark read + route', () => {
-  it('unread ticket with ticketId: marks read and opens that ticket', () => {
+  it('unread ticket with metadata.ticketNumber: marks read and pushes that ticket', () => {
     expect(notificationPressAction(makeNotification())).toEqual({
       markRead: true,
-      destination: { href: '/tickets?id=42', method: 'navigate' },
+      destination: { href: '/tickets/725', method: 'push' },
     });
   });
 
-  it('ticket without ticketId opens the Tickets tab', () => {
-    expect(notificationPressAction(makeNotification({ ticketId: undefined })).destination).toEqual({
+  it('ticket without a ticket number opens the Tickets tab', () => {
+    expect(notificationPressAction(makeNotification({ metadata: {} })).destination).toEqual({
       href: '/tickets',
       method: 'navigate',
     });
@@ -82,7 +82,7 @@ describe('notification tap -> mark read + route', () => {
   it('an already-read row does not mark read again but still navigates', () => {
     const action = notificationPressAction(makeNotification({ isRead: true }));
     expect(action.markRead).toBe(false);
-    expect(action.destination?.href).toBe('/tickets?id=42');
+    expect(action.destination?.href).toBe('/tickets/725');
   });
 
   it('picks the spec glyphs', () => {

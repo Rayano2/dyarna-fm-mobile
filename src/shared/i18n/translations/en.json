@@ -1450,13 +1450,16 @@
         "RESOLVED": "Resolved",
         "CLOSED": "Closed",
         "NOT_ACTIONABLE": "Not actionable",
-        "ESCALATED": "Escalated"
+        "ESCALATED": "Escalated",
+        "ON_HOLD": "On hold",
+        "CANCELLED": "Cancelled"
       },
       "priority": {
         "LOW": "Low",
         "MEDIUM": "Medium",
         "HIGH": "High",
-        "URGENT": "Urgent"
+        "URGENT": "Urgent",
+        "CRITICAL": "Critical"
       },
       "domain": {
         "MAINTENANCE": "Maintenance",
@@ -1607,26 +1610,6 @@
         "title": "Couldn't load dashboard",
         "body": "Check your connection and try again.",
         "retry": "Try again"
-      },
-      "status": {
-        "OPEN": "Open",
-        "ASSIGNED": "Assigned",
-        "IN_PROGRESS": "In progress",
-        "RESOLVED": "Resolved",
-        "CLOSED": "Closed",
-        "BREACHED": "Breached",
-        "ESCALATED": "Escalated",
-        "NOT_ACTIONABLE": "Not actionable",
-        "ON_HOLD": "On hold",
-        "CANCELLED": "Cancelled"
-      },
-      "priority": {
-        "LOW": "Low",
-        "MEDIUM": "Medium",
-        "HIGH": "High",
-        "URGENT": "Urgent",
-        "EMERGENCY": "Emergency",
-        "CRITICAL": "Critical"
       }
     },
     "notifications": {

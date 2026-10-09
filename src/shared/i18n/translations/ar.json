@@ -1450,13 +1450,16 @@
         "RESOLVED": "تم الحل",
         "CLOSED": "مغلقة",
         "NOT_ACTIONABLE": "غير قابلة للتنفيذ",
-        "ESCALATED": "مُصعَّدة"
+        "ESCALATED": "مُصعَّدة",
+        "ON_HOLD": "معلّقة",
+        "CANCELLED": "ملغاة"
       },
       "priority": {
         "LOW": "منخفضة",
         "MEDIUM": "متوسطة",
         "HIGH": "عالية",
-        "URGENT": "عاجلة"
+        "URGENT": "عاجلة",
+        "CRITICAL": "حرجة"
       },
       "domain": {
         "MAINTENANCE": "صيانة",
@@ -1607,26 +1610,6 @@
         "title": "تعذّر تحميل لوحة التحكم",
         "body": "تحقق من اتصالك وحاول مجددًا.",
         "retry": "حاول مجددًا"
-      },
-      "status": {
-        "OPEN": "مفتوحة",
-        "ASSIGNED": "مُسندة",
-        "IN_PROGRESS": "قيد التنفيذ",
-        "RESOLVED": "تم الحل",
-        "CLOSED": "مغلقة",
-        "BREACHED": "متجاوزة للمهلة",
-        "ESCALATED": "مُصعّدة",
-        "NOT_ACTIONABLE": "غير قابلة للتنفيذ",
-        "ON_HOLD": "معلّقة",
-        "CANCELLED": "ملغاة"
-      },
-      "priority": {
-        "LOW": "منخفضة",
-        "MEDIUM": "متوسطة",
-        "HIGH": "عالية",
-        "URGENT": "عاجلة",
-        "EMERGENCY": "طارئة",
-        "CRITICAL": "حرجة"
       }
     },
     "notifications": {

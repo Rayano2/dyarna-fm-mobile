@@ -2,9 +2,7 @@ import { describe, expect, it } from 'vitest';
 import en from '@/shared/i18n/translations/en.json';
 import type { DashboardInfo } from '../api/dashboard-api';
 import { greetingKey, KPI_ORDER, kpiDestination, kpiTile, kpiValue } from './kpis';
-import { priorityBadge, priorityLabel, statusBadge, statusLabel } from './badge-tone';
-
-const fakeT = (key: string): string => `t:${key}`;
+import { fmTicketDestination } from '@/shared/lib/fm-routes';
 
 const INFO: DashboardInfo = {
   openMaintenanceTicketsCount: 7,
@@ -64,63 +62,22 @@ describe('greetingKey', () => {
   });
 });
 
-describe('badge-tone', () => {
-  it('maps known codes to a tone and an existing key; unknown codes stay neutral', () => {
-    expect(statusBadge('OPEN')).toEqual({ tone: 'info', labelKey: 'fm.dashboard.status.OPEN' });
-    expect(priorityBadge('urgent')).toEqual({
-      tone: 'danger',
-      labelKey: 'fm.dashboard.priority.URGENT',
+describe('fmTicketDestination (recent rows + notifications)', () => {
+  it('pushes the ticket detail by number, encoded', () => {
+    expect(fmTicketDestination('725')).toEqual({ href: '/tickets/725', method: 'push' });
+    expect(fmTicketDestination('TKT 1/2')).toEqual({
+      href: '/tickets/TKT%201%2F2',
+      method: 'push',
     });
-    expect(statusBadge('WHATEVER')).toEqual({ tone: 'neutral', labelKey: null });
-    for (const code of ['OPEN', 'ASSIGNED', 'IN_PROGRESS', 'RESOLVED', 'CLOSED', 'ESCALATED']) {
-      expect(hasKey(statusBadge(code).labelKey ?? ''), code).toBe(true);
-    }
-    for (const code of ['LOW', 'MEDIUM', 'HIGH', 'URGENT', 'EMERGENCY']) {
-      expect(hasKey(priorityBadge(code).labelKey ?? ''), code).toBe(true);
-    }
-  });
-});
-
-describe('status/priority labels (bms-tms V6 lookup codes)', () => {
-  const names = { statusNameAr: 'قيد المراجعة', statusNameEn: 'Under review' };
-
-  it('knows ON_HOLD, CANCELLED and CRITICAL, with en keys', () => {
-    expect(statusBadge('ON_HOLD')).toEqual({
-      tone: 'goldMuted',
-      labelKey: 'fm.dashboard.status.ON_HOLD',
-    });
-    expect(statusBadge('CANCELLED').labelKey).toBe('fm.dashboard.status.CANCELLED');
-    expect(priorityBadge('CRITICAL')).toEqual({
-      tone: 'danger',
-      labelKey: 'fm.dashboard.priority.CRITICAL',
-    });
-    for (const key of [
-      'fm.dashboard.status.ON_HOLD',
-      'fm.dashboard.status.CANCELLED',
-      'fm.dashboard.priority.CRITICAL',
-      'fm.dashboard.kpi.unavailable',
-    ]) {
-      expect(hasKey(key), key).toBe(true);
-    }
   });
 
-  it('a known status uses our key, not the server name', () => {
-    expect(statusLabel('ON_HOLD', names, fakeT, false)).toBe('t:fm.dashboard.status.ON_HOLD');
+  it('falls back to the Tickets tab without a number', () => {
+    expect(fmTicketDestination('')).toEqual({ href: '/tickets', method: 'navigate' });
+    expect(fmTicketDestination('  ')).toEqual({ href: '/tickets', method: 'navigate' });
+    expect(fmTicketDestination()).toEqual({ href: '/tickets', method: 'navigate' });
   });
 
-  it('an unknown status falls back to the DTO name for the locale, then the other, then the code', () => {
-    expect(statusLabel('UNDER_REVIEW', names, fakeT, false)).toBe('Under review');
-    expect(statusLabel('UNDER_REVIEW', names, fakeT, true)).toBe('قيد المراجعة');
-    expect(
-      statusLabel('UNDER_REVIEW', { statusNameAr: '', statusNameEn: 'Under review' }, fakeT, true),
-    ).toBe('Under review');
-    expect(statusLabel('UNDER_REVIEW', { statusNameAr: '', statusNameEn: '' }, fakeT, false)).toBe(
-      'UNDER_REVIEW',
-    );
-  });
-
-  it('an unknown priority falls back to the raw code', () => {
-    expect(priorityLabel('CRITICAL', fakeT)).toBe('t:fm.dashboard.priority.CRITICAL');
-    expect(priorityLabel('P0', fakeT)).toBe('P0');
+  it('the unavailable KPI label exists', () => {
+    expect(hasKey('fm.dashboard.kpi.unavailable')).toBe(true);
   });
 });
