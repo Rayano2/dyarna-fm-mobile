@@ -1,11 +1,5 @@
-import { useTranslation } from 'react-i18next';
+import { FacilitiesScreen } from '@/features/facilities';
 
-import { PlaceholderScreen } from '@/features/shell';
-
-// Placeholder until the facilities feature ticket lands.
-export default function FacilitiesScreen(): React.JSX.Element {
-  const { t } = useTranslation();
-  return (
-    <PlaceholderScreen title={t('fm.nav.facilities')} showBack testID="fm-facilities-screen" />
-  );
+export default function FacilitiesRoute(): React.JSX.Element {
+  return <FacilitiesScreen />;
 }

@@ -123,6 +123,19 @@ export const queryKeys = {
       ['community', 'facilities', 'detail', facilityId] as const,
     facilityBookings: (facilityId: string | undefined) =>
       ['community', 'facilities', 'bookings', facilityId] as const,
+    /** FM announcements (posts with `categoryCode=ANNOUNCEMENT`) for one project. */
+    fmAnnouncements: (projectId: string | undefined) =>
+      ['community', 'posts', 'announcements', projectId] as const,
+    /** FM facility management list (`includeInactive=true`). */
+    fmFacilities: (projectId: string | undefined, buildingId: string | undefined) =>
+      ['community', 'facilities', 'manage', projectId, buildingId ?? null] as const,
+    /** Prefix covering every FM booking list + week cache; booking decisions invalidate it. */
+    fmFacilityBookings: ['facility-bookings'] as const,
+    /** FM building-info management list (`/manage`, `includeInactive=true`). */
+    fmBuildingInfo: (projectId: string | undefined, buildingId: string | undefined) =>
+      ['community', 'building-info', 'manage', projectId, buildingId ?? null] as const,
+    fmBuildingInfoAttachments: (itemId: string | undefined) =>
+      ['community', 'building-info', 'manage', 'attachments', itemId] as const,
   },
   bms: {
     myProjects: ['bms', 'projects', 'my-projects'] as const,
@@ -151,6 +164,8 @@ export const queryKeys = {
     dashboardInfo: ['bms', 'company-reps', 'dashboard-info'] as const,
     /** Count of the rep's not-yet-completed todos, for the "My tasks" KPI. */
     todosActive: ['bms', 'todos', 'active-count'] as const,
+    residentCount: (projectId: string | undefined) =>
+      ['bms', 'company-reps', 'resident-count', projectId] as const,
   },
 } as const;
 
