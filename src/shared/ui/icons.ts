@@ -65,6 +65,8 @@ export {
   SwimmingPool,
   ForkKnife,
   Users,
+  UserMinus,
+  FunnelSimple,
   Confetti,
   TennisBall,
   Basketball,

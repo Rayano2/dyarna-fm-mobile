@@ -25,6 +25,32 @@ export const queryKeys = {
     legalTermsAcceptance: (userId: string | null) =>
       ['ums', 'legal', 'terms', 'acceptance', userId] as const,
   },
+  /**
+   * FM resident requests + residents (T8). All BMS `company-reps` / `residents`
+   * endpoints, scoped server-side to the caller's company from the Bearer
+   * principal, so no key carries a company id.
+   */
+  fmResidents: {
+    /** `GET api/bms/company-reps/projects-buildings-filter` (the filter sheet options). */
+    projectsBuildingsFilter: ['fm', 'projects-buildings-filter'] as const,
+    /** Prefix covering every resident-request list. */
+    requests: ['fm', 'resident-requests'] as const,
+    requestList: (status: string | null, projectId: number | null, buildingCode: string | null) =>
+      ['fm', 'resident-requests', status, projectId, buildingCode] as const,
+    /** Prefix covering every building's unit list. */
+    buildingUnitsAll: ['fm', 'building-units'] as const,
+    buildingUnits: (buildingCode: string | undefined) =>
+      ['fm', 'building-units', buildingCode] as const,
+    /** Prefix covering every residents list. */
+    residents: ['fm', 'residents-list'] as const,
+    residentList: (projectId: number | null, buildingCode: string | null) =>
+      ['fm', 'residents-list', projectId, buildingCode] as const,
+    /** Prefix covering every resident detail. */
+    residentDetails: ['fm', 'resident-details'] as const,
+    residentDetail: (userId: string | undefined) => ['fm', 'resident-details', userId] as const,
+    /** `GET api/bms/company-reps/dashboardInfo` (pending-requests count). */
+    dashboardInfo: ['fm', 'dashboard-info'] as const,
+  },
   tms: {
     /** Prefix covering every ticket list + detail cache. */
     tickets: ['tms', 'tickets'] as const,

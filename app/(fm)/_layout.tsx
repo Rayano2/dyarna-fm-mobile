@@ -35,6 +35,7 @@ const MoreIcon = makeTabIcon(Icons.SquaresFour);
 const HIDDEN_ROUTES = [
   'properties',
   'residents',
+  'residents/[id]',
   'announcements',
   'payment-reminders',
   'facilities',
