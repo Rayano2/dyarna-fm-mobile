@@ -1,18 +1,9 @@
-import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 
-import { EmptyState, Screen } from '@/shared/ui';
+import { PlaceholderScreen } from '@/features/shell';
 
-// "FM home" placeholder. Feature screens arrive in later tickets.
-export default function FmHomeScreen(): React.JSX.Element {
+// Placeholder until the dashboard feature ticket lands.
+export default function DashboardScreen(): React.JSX.Element {
   const { t } = useTranslation();
-  return (
-    <Screen testID="fm-home-screen">
-      <EmptyState
-        title={t('fm.home.title')}
-        body={t('fm.home.subtitle')}
-        cta={{ label: t('fm.home.signIn'), onPress: () => router.push('/login') }}
-      />
-    </Screen>
-  );
+  return <PlaceholderScreen title={t('fm.nav.dashboard')} testID="fm-index-screen" />;
 }

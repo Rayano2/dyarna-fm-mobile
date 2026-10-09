@@ -51,19 +51,33 @@ export function isForcedLogoutExempt(url: string): boolean {
   );
 }
 
+/**
+ * True only when the failed request was sent with the session that is active
+ * NOW. A 401 from a request that left before a re-login (or with no token at
+ * all) says nothing about the current session and must not end it.
+ */
+function wasSentWithActiveSession(request: Request): boolean {
+  const token = apiRegistry.getActiveToken();
+  return token !== null && request.headers.get('Authorization') === `Bearer ${token}`;
+}
+
 export function errorInterceptor(service: ServiceName): BeforeErrorHook {
   return async ({ error, request }) => {
     const response = (error as { response?: Response }).response;
     if (response && response.status === 401) {
       const url = request.url;
-      if (!isForcedLogoutExempt(url) && !logoutInFlight && apiRegistry.isAuthenticated()) {
+      if (
+        !isForcedLogoutExempt(url) &&
+        !logoutInFlight &&
+        apiRegistry.isAuthenticated() &&
+        wasSentWithActiveSession(request)
+      ) {
         logoutInFlight = true;
         try {
           await apiRegistry.logout();
           apiRegistry.pushToast({
             variant: 'error',
-            title: i18n.t('session.expired.title'),
-            body: i18n.t('session.expired.body'),
+            title: i18n.t('fm.session.expired'),
           });
           apiRegistry.navigate('/(auth)/login');
         } finally {

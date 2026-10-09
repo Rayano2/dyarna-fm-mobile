@@ -39,3 +39,22 @@ export function jwtUserId(token: string | null): string | null {
     return null;
   }
 }
+
+/**
+ * Decodes a JWT's claims segment WITHOUT verifying the signature — the client
+ * only reads its own token. Returns null for anything that is not a JWT with a
+ * JSON-object payload.
+ */
+export function jwtClaims(token: string | null): Record<string, unknown> | null {
+  if (!token) return null;
+  const payload = token.split('.')[1];
+  if (!payload) return null;
+  try {
+    const claims: unknown = JSON.parse(base64UrlDecode(payload));
+    return claims && typeof claims === 'object' && !Array.isArray(claims)
+      ? (claims as Record<string, unknown>)
+      : null;
+  } catch {
+    return null;
+  }
+}

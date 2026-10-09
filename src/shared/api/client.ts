@@ -59,6 +59,10 @@ export function createApiClient({ baseUrl, service }: ClientConfig): KyInstance 
   return ky.create({
     prefix: baseUrl,
     timeout: ENV.API_TIMEOUT,
+    // FM auth is Bearer-only (see interceptors/auth.ts). BMS's login also sets
+    // access/refresh cookies; never send or store them, so the header is the
+    // single source of the session and a logout can't leave a cookie behind.
+    credentials: 'omit',
     retry: {
       limit: RETRY_CONFIG.limit,
       methods: [...RETRY_CONFIG.methods],

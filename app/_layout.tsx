@@ -18,6 +18,7 @@ import { useLocaleStore } from '@/shared/stores/localeStore';
 import { useThemeStore } from '@/shared/stores/themeStore';
 import { useToastStore } from '@/shared/stores/toastStore';
 import { registerApiDependencies } from '@/shared/api/registry';
+import { useAuthStore, wireSessionToApi } from '@/features/auth';
 // Builds the UMS/BMS/TMS/Community ky clients from the validated EXPO_PUBLIC_*
 // env at boot, so a missing/invalid base URL fails fast at startup rather than
 // on the first request (and the variant's hosts are in every bundle).
@@ -25,8 +26,9 @@ import '@/shared/api/clients';
 
 void SplashScreen.preventAutoHideAsync();
 
-// Auth wiring (getActiveToken / logout / isAuthenticated) lands with the FM
-// login in T5; until then the registry defaults (no token, signed out) apply.
+// Every API client reads the Bearer token from the session store, and a 401
+// logs out through it (the interceptor toasts once and redirects to login).
+wireSessionToApi();
 registerApiDependencies({
   pushToast: (msg) => useToastStore.getState().push(msg),
   navigate: (href) => router.replace(href as never),
@@ -38,13 +40,18 @@ export default function RootLayout(): React.JSX.Element | null {
   const hydrateTheme = useThemeStore((s) => s.hydrate);
   const localeHydrated = useLocaleStore((s) => s.hydrated);
   const themeHydrated = useThemeStore((s) => s.hydrated);
+  const hydrateSession = useAuthStore((s) => s.hydrate);
+  const sessionReady = useAuthStore((s) => s.status !== 'booting');
 
   useEffect(() => {
     void hydrateLocale();
     void hydrateTheme();
-  }, [hydrateLocale, hydrateTheme]);
+    void hydrateSession();
+  }, [hydrateLocale, hydrateTheme, hydrateSession]);
 
-  const ready = fontsLoaded && localeHydrated && themeHydrated;
+  // The splash stays up until the stored token has been read, so the group
+  // guards never flash the wrong stack.
+  const ready = fontsLoaded && localeHydrated && themeHydrated && sessionReady;
 
   useEffect(() => {
     if (ready) void SplashScreen.hideAsync();
