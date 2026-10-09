@@ -11,7 +11,7 @@ async function loadConfig(variant: string) {
 
 describe('FM app shell', () => {
   afterEach(() => {
-    vi.stubEnv('EXPO_PUBLIC_APP_VARIANT', 'development');
+    vi.unstubAllEnvs();
   });
 
   it('uses the dev application id for the development variant', async () => {
@@ -27,6 +27,10 @@ describe('FM app shell', () => {
     expect(config.ios?.bundleIdentifier).toBe('com.dyarna.fm');
     expect(config.name).toBe('Dyarna FM');
     expect(config.slug).toBe('dyarna-fm');
+    expect(config.plugins).toContainEqual([
+      './plugins/with-localized-app-name',
+      { en: 'Dyarna FM', ar: ar.fm.appName },
+    ]);
   });
 
   it('ships the shell strings in both English and Arabic', () => {

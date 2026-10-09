@@ -90,6 +90,7 @@ export default [
       'commitlint.config.js',
       '*.config.js',
       'plugins/**',
+      'scripts/**',
     ],
   },
 ];

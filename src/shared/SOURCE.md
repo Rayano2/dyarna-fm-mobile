@@ -12,7 +12,17 @@
 
 - `i18n/translations/{en,ar}.json`: added the `fm.*` block (shell strings).
 
+- `config/env.test.ts`: deep-link scheme fixture renamed `dyarnap-dev` -> `dyarnafm-dev`.
+
 Nothing else was modified; the snapshot compiled as-is.
+
+## Known caveats carried over
+
+- `ui/ImagePickerRow.tsx` can launch the **camera**. Before any FM screen uses
+  it, add `ios.infoPlist.NSCameraUsageDescription` and the `expo-image-picker`
+  plugin in `app.config.ts`. `plugins/with-android-large-heap` (ported from
+  dyarna-rn, camera OOM mitigation) is already registered.
+- `lib/jwt.ts` fails `unicorn/number-literal-case` lint, same as upstream.
 
 ## Re-syncing
 

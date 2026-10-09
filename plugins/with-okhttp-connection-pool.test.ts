@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { injectFactoryRegistration } from './with-okhttp-connection-pool';
 
 // A verbatim copy of the MainApplication.kt that `expo prebuild` generates for
-// this app (Expo 54 / RN 0.8x template, package com.dyarna.app), *before* this
+// this app (Expo 54 / RN 0.8x template, package com.dyarna.fm), *before* this
 // plugin edits it. Copied rather than read from android/: that directory is
 // gitignored and is absent on a fresh clone and in CI.
 //
@@ -10,7 +10,7 @@ import { injectFactoryRegistration } from './with-okhttp-connection-pool';
 // to match — that is the point of these tests. They turn "the injection no
 // longer applies" from a prebuild crash during someone's release into a red
 // test on the upgrade PR.
-const TEMPLATE_MAIN_APPLICATION = `package com.dyarna.app
+const TEMPLATE_MAIN_APPLICATION = `package com.dyarna.fm
 
 import android.app.Application
 import android.content.res.Configuration
@@ -111,7 +111,7 @@ describe('injectFactoryRegistration', () => {
   });
 
   it('throws when the file has no imports to anchor to', () => {
-    const noImports = `package com.dyarna.app
+    const noImports = `package com.dyarna.fm
 
 class MainApplication : Application() {
   override fun onCreate() {

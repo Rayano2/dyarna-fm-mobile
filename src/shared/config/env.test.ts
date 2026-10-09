@@ -13,7 +13,7 @@ describe('env validation', () => {
     vi.stubEnv('EXPO_PUBLIC_COMMUNITY_BASE_URL', 'https://community.example.com');
     vi.stubEnv('EXPO_PUBLIC_ENV', 'development');
     vi.stubEnv('EXPO_PUBLIC_API_TIMEOUT', '30000');
-    vi.stubEnv('EXPO_PUBLIC_DEEP_LINK_SCHEME', 'dyarnap-dev');
+    vi.stubEnv('EXPO_PUBLIC_DEEP_LINK_SCHEME', 'dyarnafm-dev');
     vi.stubEnv('EXPO_PUBLIC_APP_VARIANT', 'development');
 
     const { ENV } = await import('./env');
@@ -21,7 +21,7 @@ describe('env validation', () => {
     expect(ENV.API_TIMEOUT).toBe(30_000);
     expect(ENV.ENV).toBe('development');
     expect(ENV.APP_VARIANT).toBe('development');
-    expect(ENV.DEEP_LINK_SCHEME).toBe('dyarnap-dev');
+    expect(ENV.DEEP_LINK_SCHEME).toBe('dyarnafm-dev');
   });
 
   it('throws on missing required vars', async () => {
