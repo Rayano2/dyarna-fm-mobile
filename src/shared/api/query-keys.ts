@@ -36,6 +36,11 @@ export const queryKeys = {
     ticketRating: (ticketNumber: string | undefined) =>
       ['tms', 'tickets', 'rating', ticketNumber] as const,
     ticketCategories: ['tms', 'ticket-categories'] as const,
+    /** FM company ticket list, keyed by its filters (search, status, project, building, sort). */
+    fmTicketList: (filters: object) => ['tms', 'tickets', 'fm-list', filters] as const,
+    /** Comments by NUMERIC ticket id (the comments route takes the id, not the number). */
+    ticketComments: (ticketId: number | undefined) =>
+      ['tms', 'tickets', 'comments', ticketId] as const,
   },
   community: {
     /** Prefix covering every posts cache (feeds, details, comments, lookups). */
@@ -113,6 +118,8 @@ export const queryKeys = {
     notifications: ['bms', 'notifications'] as const,
     notificationsList: ['bms', 'notifications', 'list'] as const,
     notificationsUnreadCount: ['bms', 'notifications', 'unread-count'] as const,
+    /** FM ticket filter data: the rep's projects with their buildings. */
+    projectsBuildingsFilter: ['bms', 'company-reps', 'projects-buildings-filter'] as const,
   },
 } as const;
 

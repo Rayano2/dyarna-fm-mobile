@@ -1321,6 +1321,146 @@
     "placeholder": {
       "title": "قريبًا",
       "body": "هذا القسم قيد الإنشاء وسيتوفر في إصدار قادم."
+    },
+    "tickets": {
+      "title": "التذاكر",
+      "searchPlaceholder": "ابحث برقم التذكرة",
+      "filter": "تصفية",
+      "clearAll": "مسح الكل",
+      "clearFilters": "مسح عوامل التصفية",
+      "statusLabel": "الحالة",
+      "status": {
+        "ALL": "الكل",
+        "OPEN": "واردة",
+        "ASSIGNED": "مُسندة",
+        "IN_PROGRESS": "قيد التنفيذ",
+        "RESOLVED": "تم الحل",
+        "CLOSED": "مغلقة",
+        "NOT_ACTIONABLE": "غير قابلة للتنفيذ",
+        "ESCALATED": "مُصعَّدة"
+      },
+      "priority": {
+        "LOW": "منخفضة",
+        "MEDIUM": "متوسطة",
+        "HIGH": "عالية",
+        "URGENT": "عاجلة"
+      },
+      "domain": {
+        "MAINTENANCE": "صيانة",
+        "COMPLAINT": "شكوى"
+      },
+      "project": "المشروع",
+      "allProjects": "كل المشاريع",
+      "building": "المبنى",
+      "allBuildings": "كل المباني",
+      "sort": {
+        "title": "ترتيب",
+        "createdAt": "تاريخ الإنشاء",
+        "category": "الفئة",
+        "priority": "الأولوية",
+        "status": "الحالة",
+        "sla": "مهلة الخدمة",
+        "asc": "تصاعدي",
+        "desc": "تنازلي"
+      },
+      "apply": "تطبيق",
+      "reset": "إعادة ضبط",
+      "empty": {
+        "title": "لا توجد تذاكر",
+        "filtered": "لا توجد تذاكر مطابقة"
+      },
+      "error": {
+        "load": "تعذّر تحميل التذاكر",
+        "more": "تعذّر تحميل المزيد. أعد المحاولة",
+        "detail": "تعذّر تحميل هذه التذكرة"
+      },
+      "endOfList": "وصلت إلى النهاية",
+      "notFound": "التذكرة غير موجودة",
+      "sla": {
+        "breached": "متأخرة",
+        "label": "مهلة الخدمة",
+        "a11y": "مهلة الخدمة، متبقٍ {{time}}"
+      },
+      "residentInfo": "الساكن",
+      "unknownResident": "ساكن",
+      "call": "اتصال",
+      "whatsapp": "واتساب",
+      "details": "تفاصيل التذكرة",
+      "category": "الفئة",
+      "serviceDomain": "الخدمة",
+      "unit": "الوحدة",
+      "assignedTo": "المُسند إليه",
+      "unassigned": "غير مُسندة",
+      "createdAt": "تاريخ الإنشاء",
+      "resolvedAt": "تاريخ الحل",
+      "repairCost": "تكلفة الإصلاح",
+      "description": "الوصف",
+      "noDescription": "لا يوجد وصف",
+      "attachments": "المرفقات",
+      "noAttachments": "لا توجد مرفقات",
+      "comments": "التعليقات",
+      "noComments": "لا توجد تعليقات",
+      "internal": "داخلي",
+      "timeline": "النشاط",
+      "timelineStage": {
+        "created": "تم الإنشاء",
+        "assigned": "تم الإسناد",
+        "inProgress": "قيد التنفيذ",
+        "resolved": "تم الحل",
+        "closed": "مغلقة",
+        "notActionable": "غير قابلة للتنفيذ"
+      },
+      "role": {
+        "RESIDENT": "الساكن",
+        "PRESIDENT": "رئيس المبنى",
+        "FACILITY_MANAGER": "مدير المرافق",
+        "COMPANY_REP": "مدير المرافق",
+        "COMPANY_USER": "مدير المرافق",
+        "UNKNOWN": "عضو الفريق"
+      },
+      "assignmentNeeded": {
+        "title": "التعيين مطلوب",
+        "body": "أسند هذه التذكرة لبدء العمل"
+      },
+      "assignToMe": "إسناد إليّ",
+      "startProgress": "بدء التنفيذ",
+      "takeAction": "اتخاذ إجراء",
+      "markResolved": "تم الحل",
+      "markNotActionable": "غير قابلة للتنفيذ",
+      "terminalMessage": "هذه التذكرة مغلقة ولا يمكن تعديلها",
+      "resolve": {
+        "description": "أضف ملاحظة عمّا تم إنجازه",
+        "commentLabel": "ملاحظة الحل (مطلوبة)",
+        "costLabel": "تكلفة الإصلاح (اختياري)",
+        "costHint": "المبلغ المدفوع لإصلاح هذه التذكرة",
+        "confirmTitle": "تأكيد؟",
+        "confirmBody": "لا يمكن التراجع عن هذا الإجراء",
+        "partialError": "تم الحفظ جزئيًا. أعد المحاولة للإكمال",
+        "errors": {
+          "commentRequired": "أضف ملاحظة الحل",
+          "costInvalid": "أدخل مبلغًا من 0 إلى 100,000 بحد أقصى منزلتين عشريتين",
+          "tooManyFiles": "يمكنك إرفاق 5 صور كحد أقصى",
+          "generic": "تحقق من هذا الحقل"
+        }
+      },
+      "toast": {
+        "assigned": "تم إسناد التذكرة إليك",
+        "assignFailed": "تعذّر إسناد التذكرة",
+        "statusUpdated": "تم تحديث التذكرة",
+        "statusFailed": "تعذّر تحديث التذكرة"
+      },
+      "a11y": {
+        "sortDirection": "تبديل اتجاه الترتيب",
+        "card": "التذكرة {{number}}، {{status}}، {{priority}}، {{sla}}",
+        "removeFilter": "إزالة عامل التصفية {{label}}",
+        "detailRow": "{{label}}: {{value}}",
+        "filterButton_zero": "تصفية، لا يوجد عامل نشط",
+        "filterButton_one": "تصفية، عامل واحد نشط",
+        "filterButton_two": "تصفية، عاملان نشطان",
+        "filterButton_few": "تصفية، {{count}} عوامل نشطة",
+        "filterButton_many": "تصفية، {{count}} عاملًا نشطًا",
+        "filterButton_other": "تصفية، {{count}} عامل نشط"
+      }
     }
   }
 }
