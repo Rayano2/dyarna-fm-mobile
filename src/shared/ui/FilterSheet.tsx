@@ -1,5 +1,6 @@
 import { forwardRef, useCallback, useState } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import type { FilterProject } from '@/shared/api/project-buildings-filter';
 import {
@@ -33,7 +34,29 @@ export interface FilterSheetProps {
   onApply: (next: ProjectBuildingFilter) => void;
   projects: readonly FilterProject[];
   loading?: boolean;
-  labels: FilterSheetLabels;
+  /** The options failed to load: shows an inline message with `onRetry`. */
+  error?: boolean;
+  onRetry?: () => void;
+  /** Overrides for the shared `fm.filters.*` copy. */
+  labels?: Partial<FilterSheetLabels>;
+  /** Extra sections rendered above the project/building pickers (e.g. a status filter). */
+  children?: React.ReactNode;
+}
+
+/** The shared `fm.filters.*` copy, with any caller overrides applied. */
+function useFilterLabels(overrides: Partial<FilterSheetLabels> | undefined): FilterSheetLabels {
+  const { t } = useTranslation();
+  return {
+    title: t('fm.filters.filterTitle'),
+    project: t('fm.filters.project'),
+    building: t('fm.filters.building'),
+    allProjects: t('fm.filters.allProjects'),
+    allBuildings: t('fm.filters.allBuildings'),
+    chooseProjectFirst: t('fm.filters.chooseProjectFirst'),
+    apply: t('fm.filters.apply'),
+    reset: t('fm.filters.reset'),
+    ...overrides,
+  };
 }
 
 interface OptionRowProps {
@@ -52,7 +75,7 @@ function OptionRow({ label, selected, disabled = false, onPress }: OptionRowProp
       disabled={disabled}
       scaleOnPress={1}
       accessibilityRole="radio"
-      accessibilityState={{ selected, disabled }}
+      accessibilityState={{ checked: selected, disabled }}
       accessibilityLabel={label}
       style={[styles.option, selected && styles.optionSelected, disabled && styles.optionDisabled]}
     >
@@ -74,18 +97,21 @@ function OptionRow({ label, selected, disabled = false, onPress }: OptionRowProp
 export interface FilterButtonProps {
   /** Active filter count; shown as a badge when above zero. */
   count: number;
-  label: string;
+  /** Defaults to `fm.filters.filterTitle`. */
+  label?: string;
   onPress: () => void;
 }
 
 /** The square filter trigger that sits next to a list's search bar. */
 export function FilterButton({ count, label, onPress }: FilterButtonProps): React.JSX.Element {
   const { theme } = useUnistyles();
+  const { t } = useTranslation();
+  const title = label ?? t('fm.filters.filterTitle');
   return (
     <HapticPressable
       onPress={onPress}
       accessibilityRole="button"
-      accessibilityLabel={count > 0 ? `${label} (${count})` : label}
+      accessibilityLabel={count > 0 ? `${title} (${count})` : title}
       hitSlop={4}
       style={styles.filterButton}
     >
@@ -109,10 +135,21 @@ export function FilterButton({ count, label, onPress }: FilterButtonProps): Reac
  * (`selectProject`). Edits stay in a draft until Apply.
  */
 export const FilterSheet = forwardRef<BottomSheetRef, FilterSheetProps>(function FilterSheet(
-  { value, onApply, projects, loading = false, labels },
+  {
+    value,
+    onApply,
+    projects,
+    loading = false,
+    error = false,
+    onRetry,
+    labels: overrides,
+    children,
+  },
   ref,
 ) {
+  const { t } = useTranslation();
   const rtlText = useRtlTextStyle();
+  const labels = useFilterLabels(overrides);
   const [draft, setDraft] = useState<ProjectBuildingFilter>(value);
 
   // Re-seed the draft from the applied value every time the sheet opens, so a
@@ -157,8 +194,22 @@ export const FilterSheet = forwardRef<BottomSheetRef, FilterSheetProps>(function
       <Text style={[styles.title, rtlText]} accessibilityRole="header">
         {labels.title}
       </Text>
+      {children}
       {loading ? (
         <ActivityIndicator style={styles.loader} />
+      ) : error ? (
+        <View style={styles.error} accessibilityLiveRegion="polite">
+          <Text style={[styles.hint, rtlText]}>{t('fm.filters.loadFailed')}</Text>
+          {onRetry ? (
+            <Button
+              label={t('fm.filters.retry')}
+              variant="secondary"
+              size="sm"
+              hitSlop={4}
+              onPress={onRetry}
+            />
+          ) : null}
+        </View>
       ) : (
         <>
           <Text style={[styles.section, rtlText]}>{labels.project}</Text>
@@ -213,6 +264,7 @@ const styles = StyleSheet.create((theme) => ({
     marginBottom: theme.spacing[16],
   },
   loader: { marginVertical: theme.spacing[24] },
+  error: { gap: theme.spacing[8], alignItems: 'flex-start', marginVertical: theme.spacing[12] },
   section: {
     fontSize: theme.type.label.lg.size,
     fontWeight: '600',

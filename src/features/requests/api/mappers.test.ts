@@ -114,7 +114,7 @@ describe('mapFilterProject (BMS ProjectBuildingsFilterResponse)', () => {
     ).toEqual({
       projectId: 3,
       projectName: 'Palm',
-      buildings: [{ buildingCode: 'B-1', buildingName: 'Tower A' }],
+      buildings: [{ buildingId: 1, buildingCode: 'B-1', buildingName: 'Tower A' }],
     });
   });
 });

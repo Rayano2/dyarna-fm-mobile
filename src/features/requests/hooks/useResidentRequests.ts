@@ -18,7 +18,13 @@ import {
   fetchResidentRequests,
   type ResidentRequestsQuery,
 } from '../api/requests';
-import { DECIDED_INVALIDATIONS, submitReject, type RejectResult } from '../lib/request-actions';
+import {
+  approveErrorEffect,
+  approveSuccessEffect,
+  DECIDED_INVALIDATIONS,
+  submitReject,
+  type RejectResult,
+} from '../lib/request-actions';
 
 export type RequestsFilter = Omit<ResidentRequestsQuery, 'page'>;
 
@@ -57,10 +63,19 @@ export interface ApproveVariables {
   unitNumber: string;
 }
 
-/** Effects (toast, invalidation, sheet state) are applied by the sheet via `approve*Effect`. */
+/**
+ * Cache invalidation lives here, like reject and offboard, so it runs even if
+ * the sheet unmounts mid-request. The sheet only applies the UI effects
+ * (toast, selection, open/closed) from `approve*Effect`.
+ */
 export function useApproveRequest(): UseMutationResult<void, unknown, ApproveVariables> {
+  const queryClient = useQueryClient();
+  const invalidate = (keys: readonly (readonly unknown[])[]): Promise<unknown> =>
+    Promise.all(keys.map((queryKey) => queryClient.invalidateQueries({ queryKey })));
   return useMutation({
     mutationFn: ({ requestId, unitNumber }) => approveResidentRequest(requestId, unitNumber),
+    onSuccess: () => invalidate(approveSuccessEffect().invalidate),
+    onError: (error) => invalidate(approveErrorEffect(error).invalidate),
   });
 }
 

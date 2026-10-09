@@ -8,8 +8,12 @@ export interface UnitOccupancy {
   extraOccupants: number;
 }
 
+/**
+ * A unit with a named resident is occupied even when `occupantCount` is
+ * missing (older BMS builds report the name but not the count).
+ */
 export function unitOccupancy(unit: BuildingUnit): UnitOccupancy {
-  const occupied = unit.occupantCount > 0;
+  const occupied = unit.occupantCount > 0 || !!unit.residentFullName;
   return {
     occupied,
     selectable: !occupied,

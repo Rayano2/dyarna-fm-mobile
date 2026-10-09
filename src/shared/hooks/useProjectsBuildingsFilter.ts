@@ -9,7 +9,7 @@ import { STALE } from '@/shared/query';
 /** Options for the FM project/building filter sheet. */
 export function useProjectsBuildingsFilter(): UseQueryResult<FilterProject[]> {
   return useQuery({
-    queryKey: queryKeys.fmResidents.projectsBuildingsFilter,
+    queryKey: queryKeys.bms.projectsBuildingsFilter,
     queryFn: fetchProjectsBuildingsFilter,
     staleTime: STALE.LOOKUP,
   });

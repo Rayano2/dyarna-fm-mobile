@@ -3,6 +3,7 @@ import { asNumber, asString } from './coerce';
 import { safeMapList } from './safe-map';
 
 export interface FilterBuilding {
+  buildingId: number;
   buildingCode: string;
   buildingName: string;
 }
@@ -25,7 +26,11 @@ function mapBuilding(raw: unknown): FilterBuilding {
   const obj = (raw ?? {}) as Record<string, unknown>;
   const buildingCode = asString(obj.buildingCode);
   if (!buildingCode) throw new Error('building without a code');
-  return { buildingCode, buildingName: asString(obj.buildingName, buildingCode) };
+  return {
+    buildingId: asNumber(obj.buildingId),
+    buildingCode,
+    buildingName: asString(obj.buildingName) || buildingCode,
+  };
 }
 
 export function mapFilterProject(raw: unknown): FilterProject {

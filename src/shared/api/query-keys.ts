@@ -31,8 +31,6 @@ export const queryKeys = {
    * principal, so no key carries a company id.
    */
   fmResidents: {
-    /** `GET api/bms/company-reps/projects-buildings-filter` (the filter sheet options). */
-    projectsBuildingsFilter: ['fm', 'projects-buildings-filter'] as const,
     /** Prefix covering every resident-request list. */
     requests: ['fm', 'resident-requests'] as const,
     requestList: (status: string | null, projectId: number | null, buildingCode: string | null) =>
@@ -144,7 +142,10 @@ export const queryKeys = {
     notifications: ['bms', 'notifications'] as const,
     notificationsList: ['bms', 'notifications', 'list'] as const,
     notificationsUnreadCount: ['bms', 'notifications', 'unread-count'] as const,
-    /** FM ticket filter data: the rep's projects with their buildings. */
+    /**
+     * FM filter data (tickets, requests, residents): the rep's projects with
+     * their buildings. One cache entry, fetched by `useProjectsBuildingsFilter`.
+     */
     projectsBuildingsFilter: ['bms', 'company-reps', 'projects-buildings-filter'] as const,
   },
 } as const;

@@ -1,7 +1,6 @@
 import { asNumberLoose, asString, asStringOrUndef, extractArray } from '@/shared/api/coerce';
 import { safeMapList } from '@/shared/api/safe-map';
 import type {
-  FilterProject,
   FmTicket,
   FmTicketDetail,
   SlaPhase,
@@ -158,36 +157,4 @@ export function mapTicketsPage(raw: unknown, page: number): TicketsPage {
     totalPages: asNumberLoose(o.totalPages, 1),
     page,
   };
-}
-
-export function mapProjectsFilter(raw: unknown): FilterProject[] {
-  const list = Array.isArray(raw) ? raw : [];
-  return safeMapList(
-    list,
-    (item) => {
-      const o = asObj(item);
-      const projectId = numberOrNull(o.projectId);
-      if (projectId === null) throw new Error('project without projectId');
-      const buildings = Array.isArray(o.buildings) ? o.buildings : [];
-      return {
-        projectId,
-        projectName: asString(o.projectName),
-        buildings: safeMapList(
-          buildings,
-          (b) => {
-            const bo = asObj(b);
-            const buildingCode = asString(bo.buildingCode);
-            if (!buildingCode) throw new Error('building without buildingCode');
-            return {
-              buildingId: asNumberLoose(bo.buildingId),
-              buildingCode,
-              buildingName: asString(bo.buildingName) || buildingCode,
-            };
-          },
-          { feature: 'tickets', entity: 'filter-building' },
-        ),
-      };
-    },
-    { feature: 'tickets', entity: 'filter-project' },
-  );
 }

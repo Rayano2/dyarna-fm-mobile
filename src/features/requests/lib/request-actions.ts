@@ -27,8 +27,14 @@ export type ApproveEffect =
       clearSelection: true;
       refetchUnits: true;
       toast: 'unitTaken';
+      invalidate: readonly (readonly unknown[])[];
     }
-  | { kind: 'failed'; closeSheet: false; toast: 'approveFailed' };
+  | {
+      kind: 'failed';
+      closeSheet: false;
+      toast: 'approveFailed';
+      invalidate: readonly (readonly unknown[])[];
+    };
 
 /** Lists that change once a request is decided (including the dashboard count). */
 export const DECIDED_INVALIDATIONS: readonly (readonly unknown[])[] = [
@@ -46,6 +52,12 @@ export function approveSuccessEffect(): ApproveEffect {
   };
 }
 
+/**
+ * Any failed approve may mean the list is stale (the request was decided
+ * elsewhere, or the unit was taken), so the requests list is refreshed too.
+ */
+const FAILED_INVALIDATIONS: readonly (readonly unknown[])[] = [queryKeys.fmResidents.requests];
+
 export function approveErrorEffect(error: unknown): ApproveEffect {
   if (isUnitTakenError(error)) {
     return {
@@ -54,9 +66,15 @@ export function approveErrorEffect(error: unknown): ApproveEffect {
       clearSelection: true,
       refetchUnits: true,
       toast: 'unitTaken',
+      invalidate: FAILED_INVALIDATIONS,
     };
   }
-  return { kind: 'failed', closeSheet: false, toast: 'approveFailed' };
+  return {
+    kind: 'failed',
+    closeSheet: false,
+    toast: 'approveFailed',
+    invalidate: FAILED_INVALIDATIONS,
+  };
 }
 
 export type RejectReasonError = 'reasonRequired';

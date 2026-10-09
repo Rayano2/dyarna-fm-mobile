@@ -2,7 +2,6 @@ import { forwardRef, useState } from 'react';
 import { Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { router } from 'expo-router';
-import { useQueryClient } from '@tanstack/react-query';
 import { StyleSheet } from 'react-native-unistyles';
 import { ltr } from '@/shared/lib/bidi';
 import { useToastStore } from '@/shared/stores/toastStore';
@@ -32,7 +31,6 @@ export const ApproveSheet = forwardRef<BottomSheetRef, ApproveSheetProps>(functi
 ) {
   const { t } = useTranslation();
   const rtlText = useRtlTextStyle();
-  const queryClient = useQueryClient();
   const push = useToastStore((s) => s.push);
   const [selected, setSelected] = useState<string | null>(null);
   const units = useBuildingUnits(request?.buildingCode);
@@ -61,8 +59,6 @@ export const ApproveSheet = forwardRef<BottomSheetRef, ApproveSheetProps>(functi
           const effect = approveSuccessEffect();
           if (effect.kind !== 'approved') return;
           push({ variant: 'success', title: t(`fm.requests.${effect.toast}`) });
-          for (const queryKey of effect.invalidate)
-            void queryClient.invalidateQueries({ queryKey });
           dismiss();
         },
         onError: (error) => {
@@ -87,7 +83,13 @@ export const ApproveSheet = forwardRef<BottomSheetRef, ApproveSheetProps>(functi
   const footer = (
     <View style={styles.footer}>
       <View style={styles.footerButton}>
-        <Button label={t('common.cancel')} variant="ghost" fullWidth onPress={dismiss} />
+        <Button
+          label={t('common.cancel')}
+          variant="ghost"
+          fullWidth
+          disabled={approve.isPending}
+          onPress={dismiss}
+        />
       </View>
       <View style={styles.footerButton}>
         <Button
@@ -117,7 +119,7 @@ export const ApproveSheet = forwardRef<BottomSheetRef, ApproveSheetProps>(functi
           <Text style={[styles.noticeTitle, rtlText]}>{t('fm.requests.unitsLoadFailed')}</Text>
           <Text style={[styles.noticeBody, rtlText]}>{t('fm.requests.unitsLoadFailedHint')}</Text>
           <Button
-            label={t('fm.requests.retry')}
+            label={t('common.retry')}
             variant="secondary"
             size="sm"
             hitSlop={4}

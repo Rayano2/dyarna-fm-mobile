@@ -4,9 +4,9 @@ import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
 import { ShellHeader, useOptionalTabBarHide } from '@/features/shell';
+import { useProjectsBuildingsFilter } from '@/shared/hooks/useProjectsBuildingsFilter';
 import { useQueryErrorToast } from '@/shared/hooks/useQueryErrorToast';
 import { Button, EmptyState, PagedList, Screen, type BottomSheetRef } from '@/shared/ui';
-import { useTicketFilters } from '../hooks/useTicketFilters';
 import { useTickets } from '../hooks/useTickets';
 import {
   activeFilterCount,
@@ -42,7 +42,7 @@ export function TicketsListScreen(): React.JSX.Element {
   const sortSheet = useRef<BottomSheetRef>(null);
 
   const list = useTickets(filters);
-  const projectsQuery = useTicketFilters();
+  const projectsQuery = useProjectsBuildingsFilter();
   const projects = useMemo(() => projectsQuery.data ?? [], [projectsQuery.data]);
   useQueryErrorToast(list.error, list.errorUpdatedAt);
 

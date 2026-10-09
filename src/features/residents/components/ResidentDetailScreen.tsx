@@ -72,6 +72,7 @@ export function ResidentDetailScreen(): React.JSX.Element {
   // several links, and offboarding must target the unit the FM tapped.
   const linkParam = params.unitResidentId ? Number(params.unitResidentId) : Number.NaN;
   const unitResidentId = Number.isFinite(linkParam) ? linkParam : d?.unitResidentId;
+  const sameLink = d !== undefined && d.unitResidentId === unitResidentId;
   const unit = params.unit ?? d?.unitNumber ?? '-';
   const building = params.building ?? d?.buildingName ?? '-';
 
@@ -94,7 +95,7 @@ export function ResidentDetailScreen(): React.JSX.Element {
       return (
         <EmptyState
           title={t('fm.residents.loadFailed')}
-          cta={{ label: t('fm.residents.retry'), onPress: () => void details.refetch() }}
+          cta={{ label: t('common.retry'), onPress: () => void details.refetch() }}
         />
       );
     }
@@ -145,16 +146,23 @@ export function ResidentDetailScreen(): React.JSX.Element {
           <Text style={[styles.sectionTitle, rtlText]}>{t('fm.residents.unitInfo')}</Text>
           <Field label={t('fm.residents.unit')} value={unit} ltr />
           <Field label={t('fm.residents.building')} value={building} />
-          <Field
-            label={t('fm.residents.floor')}
-            value={d.floorNumber === undefined ? '-' : String(d.floorNumber)}
-            ltr
-          />
-          <Field label={t('fm.residents.project')} value={d.projectName ?? '-'} />
+          {/* Floor and project come from the link the details payload describes;
+              only show them when that is the link the FM tapped. */}
+          {sameLink ? (
+            <>
+              <Field
+                label={t('fm.residents.floor')}
+                value={d.floorNumber === undefined ? '-' : String(d.floorNumber)}
+                ltr
+              />
+              <Field label={t('fm.residents.project')} value={d.projectName ?? '-'} />
+            </>
+          ) : null}
         </Card>
 
         <Card style={styles.section}>
           <Text style={[styles.sectionTitle, rtlText]}>{t('fm.residents.ticketStats')}</Text>
+          <Text style={[styles.muted, rtlText]}>{t('fm.residents.ticketStatsScope')}</Text>
           <View style={styles.stats}>
             <ResidentStat
               icon={<Icons.Wrench size={20} color={theme.colors.gold} weight="bold" />}

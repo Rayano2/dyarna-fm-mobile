@@ -3,7 +3,6 @@ import { setMapperReporter } from '@/shared/api/safe-map';
 import {
   isImageAttachment,
   mapComments,
-  mapProjectsFilter,
   mapTicket,
   mapTicketDetail,
   mapTicketsPage,
@@ -136,25 +135,5 @@ describe('isImageAttachment', () => {
       true,
     );
     expect(isImageAttachment({ mediaType: 'application/pdf', fileName: 'r.pdf' })).toBe(false);
-  });
-});
-
-describe('mapProjectsFilter', () => {
-  it('maps projects with their buildings', () => {
-    expect(
-      mapProjectsFilter([
-        {
-          projectId: 3,
-          projectName: 'Rawda',
-          buildings: [{ buildingId: 9, buildingCode: 'B9', buildingName: 'Block 9' }],
-        },
-      ]),
-    ).toEqual([
-      {
-        projectId: 3,
-        projectName: 'Rawda',
-        buildings: [{ buildingId: 9, buildingCode: 'B9', buildingName: 'Block 9' }],
-      },
-    ]);
   });
 });

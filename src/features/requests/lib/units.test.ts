@@ -23,6 +23,13 @@ describe('unitOccupancy', () => {
     });
   });
 
+  it('a named resident means occupied even when occupantCount is missing (older BMS)', () => {
+    expect(unitOccupancy(unit('1', 0, 'Omar'))).toMatchObject({
+      occupied: true,
+      selectable: false,
+    });
+  });
+
   it('counts the occupants beyond the named one as "+n"', () => {
     expect(unitOccupancy(unit('1', 3, 'Omar')).extraOccupants).toBe(2);
   });

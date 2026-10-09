@@ -41,7 +41,7 @@ export const UnitOption = memo(function UnitOption({
       disabled={!selectable}
       scaleOnPress={1}
       accessibilityRole="radio"
-      accessibilityState={{ selected, disabled: !selectable }}
+      accessibilityState={{ checked: selected, disabled: !selectable }}
       accessibilityLabel={`${t('fm.requests.unit')} ${unit.unitNumber}, ${occupancyText}`}
       style={[styles.row, selected && styles.rowSelected, !selectable && styles.rowDisabled]}
     >

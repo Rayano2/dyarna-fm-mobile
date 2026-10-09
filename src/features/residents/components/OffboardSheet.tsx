@@ -83,7 +83,13 @@ export const OffboardSheet = forwardRef<BottomSheetRef, OffboardSheetProps>(func
   const footer = (
     <View style={styles.footer}>
       <View style={styles.footerButton}>
-        <Button label={t('common.cancel')} variant="ghost" fullWidth onPress={dismiss} />
+        <Button
+          label={t('common.cancel')}
+          variant="ghost"
+          fullWidth
+          disabled={offboard.isPending}
+          onPress={dismiss}
+        />
       </View>
       <View style={styles.footerButton}>
         <Button

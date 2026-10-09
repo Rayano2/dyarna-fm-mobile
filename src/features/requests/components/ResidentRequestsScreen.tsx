@@ -82,7 +82,7 @@ export function ResidentRequestsScreen(): React.JSX.Element {
   const empty = query.isError ? (
     <EmptyState
       title={t('fm.requests.loadFailed')}
-      cta={{ label: t('fm.requests.retry'), onPress: () => void query.refetch() }}
+      cta={{ label: t('common.retry'), onPress: () => void query.refetch() }}
     />
   ) : isFiltered ? (
     <EmptyState
@@ -106,11 +106,7 @@ export function ResidentRequestsScreen(): React.JSX.Element {
               clearLabel={t('common.clear')}
             />
           </View>
-          <FilterButton
-            count={filterCount}
-            label={t('fm.requests.filterTitle')}
-            onPress={() => filterSheet.current?.present()}
-          />
+          <FilterButton count={filterCount} onPress={() => filterSheet.current?.present()} />
         </View>
         <SegmentedPill<StatusSegment>
           fullWidth
@@ -148,16 +144,8 @@ export function ResidentRequestsScreen(): React.JSX.Element {
         onApply={setFilter}
         projects={filterOptions.data ?? []}
         loading={filterOptions.isLoading}
-        labels={{
-          title: t('fm.requests.filterTitle'),
-          project: t('fm.requests.project'),
-          building: t('fm.requests.building'),
-          allProjects: t('fm.requests.allProjects'),
-          allBuildings: t('fm.requests.allBuildings'),
-          chooseProjectFirst: t('fm.requests.chooseProjectFirst'),
-          apply: t('fm.requests.apply'),
-          reset: t('fm.requests.reset'),
-        }}
+        error={filterOptions.isError}
+        onRetry={() => void filterOptions.refetch()}
       />
       <ApproveSheet ref={approveSheet} request={approving} onDismiss={() => setApproving(null)} />
       <RejectSheet ref={rejectSheet} request={rejecting} onDismiss={() => setRejecting(null)} />

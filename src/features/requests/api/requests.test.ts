@@ -125,6 +125,8 @@ describe('approve', () => {
       clearSelection: true,
       refetchUnits: true,
       toast: 'unitTaken',
+      // W3: any failed approve refreshes the requests list too.
+      invalidate: [queryKeys.fmResidents.requests],
     });
 
     // What the sheet does with that effect: refetch, then the stale pick can't survive.
@@ -141,7 +143,12 @@ describe('approve', () => {
       ),
     );
     const effect = approveErrorEffect(await failure(approveResidentRequest(7, '101')));
-    expect(effect).toEqual({ kind: 'failed', closeSheet: false, toast: 'approveFailed' });
+    expect(effect).toEqual({
+      kind: 'failed',
+      closeSheet: false,
+      toast: 'approveFailed',
+      invalidate: [queryKeys.fmResidents.requests],
+    });
   });
 });
 

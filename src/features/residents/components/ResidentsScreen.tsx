@@ -75,7 +75,7 @@ export function ResidentsScreen(): React.JSX.Element {
   const empty = query.isError ? (
     <EmptyState
       title={t('fm.residents.loadFailed')}
-      cta={{ label: t('fm.residents.retry'), onPress: () => void query.refetch() }}
+      cta={{ label: t('common.retry'), onPress: () => void query.refetch() }}
     />
   ) : isFiltered ? (
     <EmptyState
@@ -99,11 +99,7 @@ export function ResidentsScreen(): React.JSX.Element {
               clearLabel={t('common.clear')}
             />
           </View>
-          <FilterButton
-            count={filterCount}
-            label={t('fm.residents.filterTitle')}
-            onPress={() => filterSheet.current?.present()}
-          />
+          <FilterButton count={filterCount} onPress={() => filterSheet.current?.present()} />
         </View>
         {total === undefined ? null : (
           <Text style={[styles.count, rtlText]}>{t('fm.residents.count', { count: total })}</Text>
@@ -130,16 +126,8 @@ export function ResidentsScreen(): React.JSX.Element {
         onApply={setFilter}
         projects={filterOptions.data ?? []}
         loading={filterOptions.isLoading}
-        labels={{
-          title: t('fm.residents.filterTitle'),
-          project: t('fm.residents.project'),
-          building: t('fm.residents.building'),
-          allProjects: t('fm.residents.allProjects'),
-          allBuildings: t('fm.residents.allBuildings'),
-          chooseProjectFirst: t('fm.residents.chooseProjectFirst'),
-          apply: t('fm.residents.apply'),
-          reset: t('fm.residents.reset'),
-        }}
+        error={filterOptions.isError}
+        onRetry={() => void filterOptions.refetch()}
       />
     </Screen>
   );

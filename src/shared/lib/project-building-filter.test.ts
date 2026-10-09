@@ -8,8 +8,16 @@ import {
 } from './project-building-filter';
 
 const PROJECTS = [
-  { projectId: 1, projectName: 'Palm', buildings: [{ buildingCode: 'P-1', buildingName: 'A' }] },
-  { projectId: 2, projectName: 'Oasis', buildings: [{ buildingCode: 'O-1', buildingName: 'B' }] },
+  {
+    projectId: 1,
+    projectName: 'Palm',
+    buildings: [{ buildingId: 1, buildingCode: 'P-1', buildingName: 'A' }],
+  },
+  {
+    projectId: 2,
+    projectName: 'Oasis',
+    buildings: [{ buildingId: 2, buildingCode: 'O-1', buildingName: 'B' }],
+  },
 ];
 
 describe('project/building filter', () => {

@@ -97,17 +97,8 @@ export interface TicketsPage {
   page: number;
 }
 
-export interface FilterBuilding {
-  buildingId: number;
-  buildingCode: string;
-  buildingName: string;
-}
-
-export interface FilterProject {
-  projectId: number;
-  projectName: string;
-  buildings: FilterBuilding[];
-}
+// The projects/buildings filter data is shared with the residents screens.
+export type { FilterBuilding, FilterProject } from '@/shared/api/project-buildings-filter';
 
 export type TicketSortField =
   | 'createdAt'

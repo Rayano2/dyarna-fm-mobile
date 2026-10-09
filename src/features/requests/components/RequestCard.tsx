@@ -2,6 +2,7 @@ import { memo } from 'react';
 import { Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
+import { ltr } from '@/shared/lib/bidi';
 import { formatRelativeTime } from '@/shared/lib/format-relative-time';
 import { safeToLocaleDateString } from '@/shared/lib/safe-intl';
 import { Avatar, Badge, Button, Card, Icons, RTL_INLINE, useIsRtl } from '@/shared/ui';
@@ -87,7 +88,7 @@ export const RequestCard = memo(function RequestCard({
       )}`
     : '-';
   const building = request.buildingName
-    ? `${request.buildingName}${request.buildingCode ? ` (${request.buildingCode})` : ''}`
+    ? `${request.buildingName}${request.buildingCode ? ` (${ltr(request.buildingCode)})` : ''}`
     : (request.buildingCode ?? '-');
 
   return (
