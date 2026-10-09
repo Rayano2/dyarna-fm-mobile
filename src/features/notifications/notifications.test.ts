@@ -108,6 +108,9 @@ describe('notification tap -> mark read + route', () => {
     expect(patched).toBe('n1');
     expect(pages(client)?.pages[0]?.notifications.map((n) => n.isRead)).toEqual([true, false]);
     expect(client.getQueryData(queryKeys.bms.notificationsUnreadCount)).toBe(1);
+    // Settle re-syncs BOTH the list and the count with the server.
+    expect(client.getQueryState(queryKeys.bms.notificationsList)?.isInvalidated).toBe(true);
+    expect(client.getQueryState(queryKeys.bms.notificationsUnreadCount)?.isInvalidated).toBe(true);
   });
 
   it('mark read failure rolls back the row and the count', async () => {

@@ -6,7 +6,7 @@ import { formatRelativeTime } from '@/shared/lib/format-relative-time';
 import { fmTicketDestination } from '@/shared/lib/fm-routes';
 import { goTo } from '@/shared/lib/go-to';
 import type { DashboardTicket } from '../api/dashboard-api';
-import { priorityBadge, statusBadge } from '../lib/badge-tone';
+import { priorityBadge, priorityLabel, statusBadge, statusLabel } from '../lib/badge-tone';
 
 export interface RecentTicketRowProps {
   ticket: DashboardTicket;
@@ -22,8 +22,8 @@ export function RecentTicketRow({ ticket }: RecentTicketRowProps): React.JSX.Ele
 
   const status = statusBadge(ticket.statusCode);
   const priority = priorityBadge(ticket.priorityCode);
-  const statusLabel = status.labelKey ? t(status.labelKey) : ticket.statusCode;
-  const priorityLabel = priority.labelKey ? t(priority.labelKey) : ticket.priorityCode;
+  const statusText = statusLabel(ticket.statusCode, ticket, t, isRtl);
+  const priorityText = priorityLabel(ticket.priorityCode, t);
   const number = ticket.tktNumber ? `#${ticket.tktNumber}` : `#${ticket.ticketId}`;
   const when = formatRelativeTime(ticket.createdAt, t);
 
@@ -34,7 +34,7 @@ export function RecentTicketRow({ ticket }: RecentTicketRowProps): React.JSX.Ele
       accessibilityLabel={t('fm.dashboard.recent.rowA11y', {
         number,
         title: ticket.title,
-        status: statusLabel,
+        status: statusText,
       })}
       scaleOnPress={1}
       style={styles.row}
@@ -48,8 +48,8 @@ export function RecentTicketRow({ ticket }: RecentTicketRowProps): React.JSX.Ele
         ) : (
           <View style={styles.spacer} />
         )}
-        {statusLabel ? <Badge label={statusLabel} tone={status.tone} size="xs" /> : null}
-        {priorityLabel ? <Badge label={priorityLabel} tone={priority.tone} size="xs" /> : null}
+        {statusText ? <Badge label={statusText} tone={status.tone} size="xs" /> : null}
+        {priorityText ? <Badge label={priorityText} tone={priority.tone} size="xs" /> : null}
       </View>
       {ticket.title ? (
         <Text style={[styles.title, rtlInline]} numberOfLines={1}>

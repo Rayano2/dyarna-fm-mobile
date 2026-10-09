@@ -1592,7 +1592,8 @@
         "activePropertiesDesc": "Units currently active",
         "myTasks": "My tasks",
         "myTasksDesc": "Tasks not yet completed",
-        "a11y": "{{label}}: {{count}}. Tap to view."
+        "a11y": "{{label}}: {{count}}. Tap to view.",
+        "unavailable": "unavailable"
       },
       "recent": {
         "title": "Recent tickets",
@@ -1615,14 +1616,17 @@
         "CLOSED": "Closed",
         "BREACHED": "Breached",
         "ESCALATED": "Escalated",
-        "NOT_ACTIONABLE": "Not actionable"
+        "NOT_ACTIONABLE": "Not actionable",
+        "ON_HOLD": "On hold",
+        "CANCELLED": "Cancelled"
       },
       "priority": {
         "LOW": "Low",
         "MEDIUM": "Medium",
         "HIGH": "High",
         "URGENT": "Urgent",
-        "EMERGENCY": "Emergency"
+        "EMERGENCY": "Emergency",
+        "CRITICAL": "Critical"
       }
     },
     "notifications": {

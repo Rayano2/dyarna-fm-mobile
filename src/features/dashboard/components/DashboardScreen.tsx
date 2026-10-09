@@ -76,7 +76,8 @@ export function DashboardScreen(): React.JSX.Element {
           <>
             <View style={styles.grid}>
               {KPI_ORDER.map((kind) =>
-                info.isLoading ? (
+                // My tasks loads independently: skeleton while loading, dash only on error.
+                info.isLoading || (kind === 'myTasks' && todos.isLoading) ? (
                   <View key={kind} style={styles.kpiSkeleton}>
                     <Skeleton height={110} radius={theme.radius.lg} />
                   </View>

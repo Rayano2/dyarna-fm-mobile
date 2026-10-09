@@ -18,6 +18,8 @@ export const DASHBOARD_INFO_PATH = 'api/bms/company-reps/dashboardInfo';
 /**
  * BMS-TMS `TodoItemController` is mapped at the ROOT (`/todos`), with no `api/`
  * prefix. FM web reaches it through its own proxy (`/api/todos` -> `/todos`).
+ * The prod gateway does not route `/todos`; when the backend `api/bms/todos`
+ * alias ships, switch this one constant.
  */
 export const TODOS_PATH = 'todos';
 
@@ -29,6 +31,9 @@ export interface DashboardTicket {
   ticketId: number;
   tktNumber: string;
   statusCode: string;
+  /** Server-localized status names, the label fallback for unknown codes. */
+  statusNameAr: string;
+  statusNameEn: string;
   priorityCode: string;
   title: string;
   description: string;
@@ -62,6 +67,8 @@ export function mapDashboardTicket(raw: unknown): DashboardTicket {
     ticketId,
     tktNumber: asString(obj.tktNumber),
     statusCode: asString(obj.statusCode),
+    statusNameAr: asString(obj.statusNameAr),
+    statusNameEn: asString(obj.statusNameEn),
     priorityCode: asString(obj.priorityCode),
     title: asString(obj.title),
     description: asString(obj.description),

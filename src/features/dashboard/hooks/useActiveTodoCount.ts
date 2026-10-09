@@ -12,5 +12,7 @@ export function useActiveTodoCount(): UseQueryResult<number, unknown> {
     queryFn: getActiveTodoCount,
     enabled: isAuthenticated,
     staleTime: STALE.LIST,
+    // Fails fast to the dash: on the prod gateway `/todos` is not routed yet.
+    retry: false,
   });
 }

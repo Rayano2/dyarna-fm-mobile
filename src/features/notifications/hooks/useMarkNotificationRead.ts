@@ -32,7 +32,10 @@ export function markReadMutationOptions(
   return {
     mutationFn: (id) => markNotificationRead(id),
     onMutate: async (id) => {
-      await queryClient.cancelQueries({ queryKey: listKey });
+      await Promise.all([
+        queryClient.cancelQueries({ queryKey: listKey }),
+        queryClient.cancelQueries({ queryKey: countKey }),
+      ]);
       const previousPages = queryClient.getQueryData<NotificationPagesData>(listKey);
       const nextPages = markReadInPages(previousPages, id);
       // Same reference: already read (or not loaded). Nothing to flip or decrement.
@@ -53,7 +56,8 @@ export function markReadMutationOptions(
       }
     },
     onSettled: () => {
-      void queryClient.invalidateQueries({ queryKey: countKey });
+      // Count and list: the server is the tiebreaker for both.
+      void queryClient.invalidateQueries({ queryKey: queryKeys.bms.notifications });
     },
   };
 }

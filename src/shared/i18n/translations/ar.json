@@ -1592,7 +1592,8 @@
         "activePropertiesDesc": "الوحدات النشطة حاليًا",
         "myTasks": "مهامي",
         "myTasksDesc": "مهام غير مكتملة",
-        "a11y": "{{label}}: {{count}}. اضغط للعرض."
+        "a11y": "{{label}}: {{count}}. اضغط للعرض.",
+        "unavailable": "غير متاح"
       },
       "recent": {
         "title": "أحدث التذاكر",
@@ -1615,14 +1616,17 @@
         "CLOSED": "مغلقة",
         "BREACHED": "متجاوزة للمهلة",
         "ESCALATED": "مُصعّدة",
-        "NOT_ACTIONABLE": "غير قابلة للتنفيذ"
+        "NOT_ACTIONABLE": "غير قابلة للتنفيذ",
+        "ON_HOLD": "معلّقة",
+        "CANCELLED": "ملغاة"
       },
       "priority": {
         "LOW": "منخفضة",
         "MEDIUM": "متوسطة",
         "HIGH": "عالية",
         "URGENT": "عاجلة",
-        "EMERGENCY": "طارئة"
+        "EMERGENCY": "طارئة",
+        "CRITICAL": "حرجة"
       }
     },
     "notifications": {

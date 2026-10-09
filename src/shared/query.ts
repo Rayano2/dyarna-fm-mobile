@@ -1,4 +1,4 @@
-import { MutationCache, QueryClient } from '@tanstack/react-query';
+import { focusManager, MutationCache, QueryClient } from '@tanstack/react-query';
 import { isUnconfirmedError } from '@/shared/api/errors';
 
 /**
@@ -56,3 +56,27 @@ export const queryClient = new QueryClient({
     },
   },
 });
+
+/** The slice of React Native's `AppState` the focus wiring needs. Injected so
+ *  this module (imported by most tests) never pulls in `react-native`. */
+export interface AppStateLike {
+  addEventListener(type: 'change', listener: (status: string) => void): { remove(): void };
+}
+
+let appFocusWired = false;
+
+/**
+ * React Native has no window focus, so `refetchOnWindowFocus` is a no-op until
+ * TanStack's focusManager is fed AppState: foregrounding the app (`active`)
+ * counts as focus. Idempotent; the root layout calls it once with `AppState`.
+ */
+export function wireAppFocus(appState: AppStateLike): void {
+  if (appFocusWired) return;
+  appFocusWired = true;
+  focusManager.setEventListener((handleFocus) => {
+    const subscription = appState.addEventListener('change', (status) => {
+      handleFocus(status === 'active');
+    });
+    return () => subscription.remove();
+  });
+}

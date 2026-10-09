@@ -14,6 +14,8 @@ const STATUS_TONES: Record<string, BadgeTone> = {
   BREACHED: 'danger',
   ESCALATED: 'danger',
   NOT_ACTIONABLE: 'neutral',
+  ON_HOLD: 'goldMuted',
+  CANCELLED: 'neutral',
 };
 
 const PRIORITY_TONES: Record<string, BadgeTone> = {
@@ -21,6 +23,7 @@ const PRIORITY_TONES: Record<string, BadgeTone> = {
   MEDIUM: 'primaryMuted',
   HIGH: 'gold',
   URGENT: 'danger',
+  CRITICAL: 'danger',
   EMERGENCY: 'danger',
 };
 
@@ -47,4 +50,36 @@ export function statusBadge(code: string): BadgeSpec {
 
 export function priorityBadge(code: string): BadgeSpec {
   return spec(code, PRIORITY_TONES, 'priority');
+}
+
+type Translate = (key: string) => string;
+
+/** The localized status names the DTO already carries (`statusNameAr/En`). */
+export interface StatusNames {
+  statusNameAr: string;
+  statusNameEn: string;
+}
+
+/**
+ * Status label: our key for a known code; for an unknown one the server's own
+ * localized name (current locale first, then the other), and only then the raw code.
+ */
+export function statusLabel(
+  code: string,
+  names: StatusNames,
+  t: Translate,
+  isArabic: boolean,
+): string {
+  const { labelKey } = statusBadge(code);
+  if (labelKey) return t(labelKey);
+  const [first, second] = isArabic
+    ? [names.statusNameAr, names.statusNameEn]
+    : [names.statusNameEn, names.statusNameAr];
+  return first || second || code;
+}
+
+/** Priority label: our key for a known code, else the raw code (the DTO has no name). */
+export function priorityLabel(code: string, t: Translate): string {
+  const { labelKey } = priorityBadge(code);
+  return labelKey ? t(labelKey) : code;
 }

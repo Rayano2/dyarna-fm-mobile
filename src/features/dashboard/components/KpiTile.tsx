@@ -27,7 +27,10 @@ export function KpiTile({ tile, value }: KpiTileProps): React.JSX.Element {
       style={styles.pressable}
       onPress={() => goTo(tile.destination)}
       accessibilityRole="button"
-      accessibilityLabel={t('fm.dashboard.kpi.a11y', { label, count: display })}
+      accessibilityLabel={t('fm.dashboard.kpi.a11y', {
+        label,
+        count: value === null ? t('fm.dashboard.kpi.unavailable') : display,
+      })}
       accessibilityHint={t(tile.descKey)}
       testID={`kpi-${tile.kind}`}
     >
