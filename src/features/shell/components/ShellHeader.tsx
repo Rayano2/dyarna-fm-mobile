@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { HapticPressable, Icons, useIsRtl } from '@/shared/ui';
+import { useUnreadNotificationCount } from '@/features/notifications';
+import { formatBellBadge } from '../lib/bell-badge';
 
 export interface ShellHeaderProps {
   title: string;
@@ -13,8 +15,8 @@ export interface ShellHeaderProps {
   /** Render a back button in the start slot. Takes precedence over leftContent. */
   showBack?: boolean;
   /**
-   * Unread count for the bell badge. FM has no notifications API yet, so the
-   * count is supplied by the caller (0 = no badge) until that ticket lands.
+   * Override for the bell badge count. When omitted the header fetches the
+   * unread count itself (hidden while loading or on error).
    */
   bellBadge?: number;
   /** Optional content rendered in the header's start slot (e.g. a language chip). */
@@ -24,15 +26,15 @@ export interface ShellHeaderProps {
 /**
  * Copied from dyarna-rn `src/features/shell/components/ShellHeader.tsx`.
  * FM changes: no search slot (unused in FM), title on the start side, 44px icon buttons, localized a11y
- * labels, back caret flipped in RTL, and the bell count comes from
- * `bellBadge` (dyarna-rn fetched it from its notifications feature).
+ * labels, back caret flipped in RTL, and `bellBadge` overrides the
+ * self-fetched unread count.
  */
 export function ShellHeader({
   title,
   subtitle,
   showBell = true,
   showBack = false,
-  bellBadge = 0,
+  bellBadge,
   leftContent,
 }: ShellHeaderProps) {
   const { theme } = useUnistyles();
@@ -40,7 +42,11 @@ export function ShellHeader({
   const insets = useSafeAreaInsets();
   const isRtl = useIsRtl();
   const BackCaret = isRtl ? Icons.CaretRight : Icons.CaretLeft;
-  const bellCount = bellBadge;
+  const unreadQuery = useUnreadNotificationCount(showBell && bellBadge === undefined);
+  // Loading and error both hide the badge: a stale or guessed count is worse than none.
+  const fetchedCount = unreadQuery.isError ? undefined : unreadQuery.data;
+  const bellCount = bellBadge ?? fetchedCount ?? 0;
+  const bellText = formatBellBadge(bellCount);
   const startContent = showBack ? (
     <HapticPressable
       onPress={() => router.back()}
@@ -74,19 +80,19 @@ export function ShellHeader({
               onPress={() => router.push('/notifications' as never)}
               accessibilityRole="button"
               accessibilityLabel={
-                bellCount > 0
-                  ? t('notifications.bellA11yUnread', { count: bellCount })
-                  : t('notifications.bellA11y')
+                bellText === null
+                  ? t('notifications.bellA11y')
+                  : t('notifications.bellA11yUnread', { count: bellCount })
               }
               style={styles.iconButton}
               testID="shell-bell"
             >
               <Icons.Bell size={22} color={theme.colors.textPrimary} weight="regular" />
-              {bellCount > 0 ? (
+              {bellText === null ? null : (
                 <View style={styles.badge}>
-                  <Text style={styles.badgeText}>{bellCount > 99 ? '99+' : bellCount}</Text>
+                  <Text style={styles.badgeText}>{bellText}</Text>
                 </View>
-              ) : null}
+              )}
             </HapticPressable>
           ) : null}
         </View>
