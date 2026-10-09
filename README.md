@@ -104,6 +104,8 @@ EXPO_PUBLIC_APP_VARIANT=production npx expo config --type public
    - port `plugins/with-firebase-modular-headers.js` from dyarna-rn and register it.
 4. **Store listings**: Play Console app for `com.dyarna.fm`, App Store Connect app
    for `com.dyarna.fm`, release keystore / signing.
+   The Arabic launcher label is the short "مدير ديارنا" (`fm.appName` in ar.json);
+   use the full name "ديارنا لإدارة المرافق" as the Arabic store-listing title.
 5. **Branding**: FM-specific icon, adaptive icon and splash (currently the resident app's).
 6. **Camera (before any screen uses `ImagePickerRow`)**: it can launch the camera.
    Add `ios.infoPlist.NSCameraUsageDescription` and the `expo-image-picker` plugin

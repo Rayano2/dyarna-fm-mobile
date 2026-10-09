@@ -19,6 +19,10 @@ describe('FM app shell', () => {
     expect(config.android?.package).toBe('com.dyarna.fm.dev');
     expect(config.ios?.bundleIdentifier).toBe('com.dyarna.fm.dev');
     expect(config.name).toBe('Dyarna FM Dev');
+    expect(config.plugins).toContainEqual([
+      './plugins/with-localized-app-name',
+      { en: 'Dyarna FM Dev', ar: 'مدير ديارنا Dev' },
+    ]);
   });
 
   it('uses the release application id for the production variant', async () => {
@@ -29,7 +33,7 @@ describe('FM app shell', () => {
     expect(config.slug).toBe('dyarna-fm');
     expect(config.plugins).toContainEqual([
       './plugins/with-localized-app-name',
-      { en: 'Dyarna FM', ar: ar.fm.appName },
+      { en: 'Dyarna FM', ar: 'مدير ديارنا' },
     ]);
   });
 
