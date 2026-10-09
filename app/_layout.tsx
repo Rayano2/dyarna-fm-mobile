@@ -18,6 +18,10 @@ import { useLocaleStore } from '@/shared/stores/localeStore';
 import { useThemeStore } from '@/shared/stores/themeStore';
 import { useToastStore } from '@/shared/stores/toastStore';
 import { registerApiDependencies } from '@/shared/api/registry';
+// Builds the UMS/BMS/TMS/Community ky clients from the validated EXPO_PUBLIC_*
+// env at boot, so a missing/invalid base URL fails fast at startup rather than
+// on the first request (and the variant's hosts are in every bundle).
+import '@/shared/api/clients';
 
 void SplashScreen.preventAutoHideAsync();
 

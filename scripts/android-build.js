@@ -51,10 +51,14 @@ const sdk =
 if (sdk && fs.existsSync(sdk)) {
   fs.writeFileSync(
     path.join(ROOT, 'android', 'local.properties'),
-    `sdk.dir=${sdk.replaceAll('\', '/')}\n`,
+    `sdk.dir=${sdk.replace(/\\/g, '/')}\n`,
   );
 }
 
 run('node', [path.join('scripts', 'check-android-variant.js'), variant]);
-run(process.platform === 'win32' ? 'gradlew.bat' : './gradlew', [gradleTask], path.join(ROOT, 'android'));
+// Absolute path: cmd.exe does not reliably resolve a bare `gradlew.bat` from
+// the spawn cwd (NoDefaultCurrentDirectoryInExePath), so don't rely on it.
+const androidDir = path.join(ROOT, 'android');
+const gradlew = path.join(androidDir, process.platform === 'win32' ? 'gradlew.bat' : 'gradlew');
+run(process.platform === 'win32' ? `"${gradlew}"` : gradlew, [gradleTask], androidDir);
 run('node', [path.join('scripts', 'check-android-variant.js'), variant, '--require-bundle']);
