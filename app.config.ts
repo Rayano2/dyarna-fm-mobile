@@ -32,10 +32,14 @@ const easProjectId = process.env.EAS_PROJECT_ID;
 //    android.extraProguardRules keeping com.google.firebase.**,
 //    com.google.android.gms.**, io.invertase.firebase.**, okhttp3.**, okio.**;
 //  - port plugins/with-firebase-modular-headers from dyarna-rn.
-//
-// TODO(before any screen uses ImagePickerRow): it can launch the camera. Add
-// infoPlist.NSCameraUsageDescription and the 'expo-image-picker' plugin. The
-// android large-heap plugin (camera-capture OOM mitigation) is already below.
+
+// Camera + photo-library permission prompts (ImagePickerRow, first used by the
+// T7 ticket resolve sheet). iOS shows one string per key; the localized-name
+// plugin owns InfoPlist.strings, so the prompt carries both languages.
+const cameraPermission =
+  'Dyarna FM uses the camera to attach photos to tickets. / يستخدم تطبيق ديارنا الكاميرا لإرفاق الصور بالتذاكر.';
+const photosPermission =
+  'Dyarna FM uses your photos to attach images to tickets. / يستخدم تطبيق ديارنا صورك لإرفاقها بالتذاكر.';
 
 const config: ExpoConfig = {
   name: appName,
@@ -55,7 +59,8 @@ const config: ExpoConfig = {
     bundleIdentifier: appId,
     supportsTablet: false,
     infoPlist: {
-      NSPhotoLibraryUsageDescription: 'Dyarna FM uses your photos for ticket images.',
+      NSPhotoLibraryUsageDescription: photosPermission,
+      NSCameraUsageDescription: cameraPermission,
     },
   },
   android: {
@@ -83,6 +88,7 @@ const config: ExpoConfig = {
     // Android only: android:largeHeap="true" so a full-size camera capture via
     // ImagePickerRow cannot kill the process (dyarna-rn #35). Mitigation only.
     './plugins/with-android-large-heap',
+    ['expo-image-picker', { cameraPermission, photosPermission }],
   ],
   runtimeVersion: { policy: 'appVersion' },
   ...(easProjectId ? { extra: { eas: { projectId: easProjectId } } } : {}),

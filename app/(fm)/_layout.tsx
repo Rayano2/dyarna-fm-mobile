@@ -43,6 +43,8 @@ const HIDDEN_ROUTES = [
   'settings',
   'support',
   'notifications',
+  // Ticket detail: pushed from the Tickets tab, hides the tab bar itself.
+  'tickets/[number]',
 ] as const;
 
 export default function FmLayout(): React.JSX.Element {

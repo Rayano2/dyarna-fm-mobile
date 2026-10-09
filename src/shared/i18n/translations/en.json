@@ -1321,6 +1321,148 @@
     "placeholder": {
       "title": "Coming soon",
       "body": "This section is being built and will arrive in an upcoming release."
+    },
+    "tickets": {
+      "title": "Tickets",
+      "searchPlaceholder": "Search by ticket number",
+      "filter": "Filter",
+      "clearAll": "Clear all",
+      "clearFilters": "Clear filters",
+      "statusLabel": "Status",
+      "status": {
+        "ALL": "All",
+        "OPEN": "Incoming",
+        "ASSIGNED": "Assigned",
+        "IN_PROGRESS": "In progress",
+        "RESOLVED": "Resolved",
+        "CLOSED": "Closed",
+        "NOT_ACTIONABLE": "Not actionable",
+        "ESCALATED": "Escalated"
+      },
+      "priority": {
+        "LOW": "Low",
+        "MEDIUM": "Medium",
+        "HIGH": "High",
+        "URGENT": "Urgent"
+      },
+      "domain": {
+        "MAINTENANCE": "Maintenance",
+        "COMPLAINT": "Complaint"
+      },
+      "project": "Project",
+      "allProjects": "All projects",
+      "building": "Building",
+      "allBuildings": "All buildings",
+      "sort": {
+        "title": "Sort",
+        "createdAt": "Created",
+        "category": "Category",
+        "priority": "Priority",
+        "status": "Status",
+        "sla": "SLA due",
+        "asc": "Ascending",
+        "desc": "Descending"
+      },
+      "apply": "Apply",
+      "reset": "Reset",
+      "empty": {
+        "title": "No tickets found",
+        "filtered": "No tickets match your filters"
+      },
+      "error": {
+        "load": "Couldn't load tickets",
+        "more": "Couldn't load more. Retry",
+        "detail": "Couldn't load this ticket"
+      },
+      "endOfList": "You've reached the end",
+      "notFound": "Ticket not found",
+      "sla": {
+        "breached": "Breached",
+        "label": "SLA",
+        "a11y": "SLA, {{time}} left"
+      },
+      "residentInfo": "Resident",
+      "unknownResident": "Resident",
+      "call": "Call",
+      "whatsapp": "WhatsApp",
+      "details": "Ticket details",
+      "category": "Category",
+      "serviceDomain": "Service",
+      "unit": "Unit",
+      "assignedTo": "Assigned to",
+      "unassigned": "Unassigned",
+      "createdAt": "Created",
+      "resolvedAt": "Resolved",
+      "repairCost": "Repair cost",
+      "description": "Description",
+      "noDescription": "No description",
+      "attachments": "Attachments",
+      "noAttachments": "No attachments",
+      "comments": "Comments",
+      "noComments": "No comments yet",
+      "internal": "Internal",
+      "timeline": "Activity",
+      "timelineStage": {
+        "created": "Created",
+        "assigned": "Assigned",
+        "inProgress": "In progress",
+        "resolved": "Resolved",
+        "closed": "Closed",
+        "notActionable": "Not actionable"
+      },
+      "role": {
+        "RESIDENT": "Resident",
+        "PRESIDENT": "Building president",
+        "FACILITY_MANAGER": "Facility manager",
+        "COMPANY_REP": "Facility manager",
+        "COMPANY_USER": "Facility manager",
+        "UNKNOWN": "Team member"
+      },
+      "assignmentNeeded": {
+        "title": "Assignment needed",
+        "body": "Assign this ticket to start work"
+      },
+      "assignToMe": "Assign to me",
+      "startProgress": "Start progress",
+      "takeAction": "Take action",
+      "markResolved": "Mark as resolved",
+      "markNotActionable": "Not actionable",
+      "terminalMessage": "This ticket is closed and cannot be changed",
+      "resolve": {
+        "description": "Add a note on what was done",
+        "commentLabel": "Resolution note (required)",
+        "costLabel": "Repair cost (optional)",
+        "costHint": "Amount paid to fix this ticket",
+        "confirmTitle": "Confirm?",
+        "confirmBody": "This can't be undone",
+        "partialError": "Saved partly. Retry to finish. Photos that were uploading may appear twice.",
+        "noteSaved": "Note already saved",
+        "filesSaved": "Photos already uploaded",
+        "errors": {
+          "commentRequired": "Add a resolution note",
+          "costInvalid": "Enter an amount from 0 to 100,000 with up to 2 decimals",
+          "tooManyFiles": "You can attach up to 5 images",
+          "generic": "Check this field"
+        }
+      },
+      "toast": {
+        "assigned": "Ticket assigned to you",
+        "assignFailed": "Couldn't assign the ticket",
+        "statusUpdated": "Ticket updated",
+        "statusFailed": "Couldn't update the ticket"
+      },
+      "a11y": {
+        "sortDirection": "Toggle sort direction",
+        "card": "Ticket {{number}}, {{status}}, {{priority}}, {{sla}}",
+        "removeFilter": "Remove filter {{label}}",
+        "detailRow": "{{label}}: {{value}}",
+        "filterButton_zero": "Filter, none active",
+        "filterButton_one": "Filter, {{count}} active",
+        "filterButton_two": "Filter, {{count}} active",
+        "filterButton_few": "Filter, {{count}} active",
+        "filterButton_many": "Filter, {{count}} active",
+        "filterButton_other": "Filter, {{count}} active"
+      }
     }
   }
 }
