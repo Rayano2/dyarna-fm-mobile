@@ -1452,14 +1452,16 @@
         "NOT_ACTIONABLE": "Not actionable",
         "ESCALATED": "Escalated",
         "ON_HOLD": "On hold",
-        "CANCELLED": "Cancelled"
+        "CANCELLED": "Cancelled",
+        "BREACHED": "Breached"
       },
       "priority": {
         "LOW": "Low",
         "MEDIUM": "Medium",
         "HIGH": "High",
         "URGENT": "Urgent",
-        "CRITICAL": "Critical"
+        "CRITICAL": "Critical",
+        "EMERGENCY": "Emergency"
       },
       "domain": {
         "MAINTENANCE": "Maintenance",

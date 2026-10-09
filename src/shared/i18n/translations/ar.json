@@ -1452,14 +1452,16 @@
         "NOT_ACTIONABLE": "غير قابلة للتنفيذ",
         "ESCALATED": "مُصعَّدة",
         "ON_HOLD": "معلّقة",
-        "CANCELLED": "ملغاة"
+        "CANCELLED": "ملغاة",
+        "BREACHED": "متجاوزة"
       },
       "priority": {
         "LOW": "منخفضة",
         "MEDIUM": "متوسطة",
         "HIGH": "عالية",
         "URGENT": "عاجلة",
-        "CRITICAL": "حرجة"
+        "CRITICAL": "حرجة",
+        "EMERGENCY": "طارئة"
       },
       "domain": {
         "MAINTENANCE": "صيانة",

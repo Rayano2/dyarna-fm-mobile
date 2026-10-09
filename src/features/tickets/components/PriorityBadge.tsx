@@ -13,6 +13,7 @@ const PRIORITY_STYLE: Record<string, { tone: BadgeTone; icon: IconName }> = {
   URGENT: { tone: 'danger', icon: 'Lightning' },
   // bms-tms V6 lookup code.
   CRITICAL: { tone: 'danger', icon: 'Lightning' },
+  EMERGENCY: { tone: 'danger', icon: 'Lightning' },
 };
 
 /** Accent-bar colour per priority (the card's start stripe). */
@@ -21,7 +22,8 @@ export function usePriorityColor(): (code: string) => string {
   return (code) => {
     switch (code) {
       case 'URGENT':
-      case 'CRITICAL': {
+      case 'CRITICAL':
+      case 'EMERGENCY': {
         return theme.colors.error;
       }
       case 'HIGH': {

@@ -17,6 +17,7 @@ const STATUS_STYLE: Record<string, { tone: BadgeTone; icon: IconName }> = {
   // bms-tms V6 lookup codes.
   ON_HOLD: { tone: 'goldMuted', icon: 'Clock' },
   CANCELLED: { tone: 'neutral', icon: 'XCircle' },
+  BREACHED: { tone: 'danger', icon: 'Warning' },
 };
 
 const FALLBACK = { tone: 'neutral' as BadgeTone, icon: 'Info' as IconName };

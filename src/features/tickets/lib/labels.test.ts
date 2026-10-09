@@ -25,6 +25,10 @@ describe('ticket labels for the bms-tms V6 lookup codes', () => {
     expect(priorityLabel(tEn, 'CRITICAL')).toBe('Critical');
     expect(statusLabel(tAr, { statusCode: 'ON_HOLD', ...NO_NAMES }, 'ar')).toBe('معلّقة');
     expect(priorityLabel(tAr, 'CRITICAL')).toBe('حرجة');
+    expect(priorityLabel(tEn, 'EMERGENCY')).toBe('Emergency');
+    expect(priorityLabel(tAr, 'EMERGENCY')).toBe('طارئة');
+    expect(statusLabel(tEn, { statusCode: 'BREACHED', ...NO_NAMES }, 'en')).toBe('Breached');
+    expect(statusLabel(tAr, { statusCode: 'BREACHED', ...NO_NAMES }, 'ar')).toBe('متجاوزة');
   });
 
   it('prefers the server status name, and falls back to the raw code when unknown', async () => {
