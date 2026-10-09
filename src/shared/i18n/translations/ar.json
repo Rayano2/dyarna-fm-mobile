@@ -1,0 +1,1283 @@
+{
+  "common": {
+    "continue": "متابعة",
+    "submit": "إرسال",
+    "cancel": "إلغاء",
+    "back": "رجوع",
+    "done": "تم",
+    "save": "حفظ",
+    "next": "التالي",
+    "signOut": "تسجيل الخروج",
+    "or": "أو",
+    "loading": "جارٍ التحميل",
+    "error": "حدث خطأ ما",
+    "retry": "حاول مرة أخرى",
+    "more": "المزيد",
+    "clear": "مسح"
+  },
+  "imageViewer": {
+    "close": "إغلاق",
+    "closeHint": "يغلق عارض الصور",
+    "counter": "{{current}} / {{total}}",
+    "imageA11y": "الصورة {{current}} من {{total}}",
+    "openA11y": "فتح الصورة {{index}} من {{total}} بملء الشاشة",
+    "zoomHint": "انقر مرتين للتكبير",
+    "error": {
+      "title": "تعذّر تحميل هذه الصورة",
+      "body": "ربما انتهت صلاحية الرابط. حاول مرة أخرى لتحديثه."
+    }
+  },
+  "session": {
+    "expired": {
+      "title": "انتهت الجلسة",
+      "body": "الرجاء تسجيل الدخول مرة أخرى للمتابعة."
+    }
+  },
+  "errors": {
+    "network": "لا يوجد اتصال — حاول مرة أخرى",
+    "timeout": "استغرق الخادم وقتًا طويلًا للرد. الرجاء المحاولة مرة أخرى.",
+    "requestFailed": "تعذّر تأكيد إتمام العملية. يرجى التحقق قبل إعادة المحاولة.",
+    "server": "حدث خطأ لدينا. الرجاء المحاولة لاحقًا.",
+    "generic": "حدث خطأ ما. الرجاء المحاولة مرة أخرى.",
+    "emailInvalid": "أدخل بريدًا إلكترونيًا صحيحًا",
+    "emailRequired": "البريد الإلكتروني مطلوب",
+    "buildingCodeRequired": "رمز المبنى مطلوب",
+    "buildingNotFound": "لم نعثر على هذا المبنى. تأكد من الرمز وحاول مجددًا.",
+    "otpRequired": "أدخل رمز التحقق المكوّن من 4 أرقام",
+    "otpInvalid": "الرمز غير صحيح",
+    "otpTooManyAttempts": "محاولات كثيرة. يرجى البدء من جديد.",
+    "tooManyRequests": "تمهّل قليلاً وحاول مجددًا.",
+    "tooManyRequestsSeconds": "تمهّل — حاول مرة أخرى بعد {{seconds}} ثانية.",
+    "tooManyRequestsMinutes": "تمهّل — حاول مرة أخرى بعد {{minutes}} دقيقة.",
+    "actionFailed": "فشل تنفيذ الإجراء",
+    "nameRequired": "الاسم مطلوب",
+    "nameTooShort": "يجب أن يكون الاسم من حرفين على الأقل",
+    "mobileInvalid": "أدخل رقم جوال صحيح",
+    "mobileRequired": "رقم الجوال مطلوب",
+    "genderRequired": "يرجى الاختيار",
+    "emailAlreadyRegistered": "لديك حساب بالفعل — سجّل الدخول",
+    "photoAccessDenied": "فعّل إذن الصور من الإعدادات",
+    "cameraAccessDenied": "فعّل إذن الكاميرا من الإعدادات"
+  },
+  "auth": {
+    "login": {
+      "heading": "مرحبا بعودتك",
+      "subheading": "سجّل الدخول ببريدك الإلكتروني للمتابعة",
+      "emailPlaceholder": "البريد الإلكتروني",
+      "submit": "متابعة",
+      "biometric": "بصمة الوجه",
+      "biometricFingerprint": "البصمة",
+      "biometricTouchId": "بصمة الإصبع",
+      "noAccount": "أنت جديد؟",
+      "createAccount": "إنشاء حساب"
+    },
+    "otp": {
+      "heading": "التحقق",
+      "emailSubheading": "أدخل رمز التحقق المرسل إلى {{email}}",
+      "mobileSubheading": "أدخل رمز التحقق المرسل إلى {{mobile}}",
+      "resendIn": "إعادة الإرسال خلال {{time}}",
+      "resend": "إعادة إرسال الرمز",
+      "submit": "إرسال"
+    },
+    "signup": {
+      "step1": {
+        "heading": "إنشاء حسابك",
+        "subheading": "سنتحقق من مبناك قبل إرسال الرمز",
+        "emailPlaceholder": "البريد الإلكتروني",
+        "buildingCodePlaceholder": "رمز المبنى",
+        "helper": "اسأل مدير المبنى إذا لم يكن لديك رمز",
+        "submit": "متابعة",
+        "haveAccount": "لديك حساب بالفعل؟",
+        "signIn": "تسجيل الدخول",
+        "scanQrLabel": "مسح رمز QR للمبنى",
+        "scanner": {
+          "title": "مسح رمز QR للمبنى",
+          "subtitle": "وجّه الكاميرا نحو رمز QR الخاص بالمبنى",
+          "requesting": "جارٍ طلب الوصول إلى الكاميرا…",
+          "permissionDenied": "تم رفض الوصول إلى الكاميرا",
+          "permissionHint": "فعّل الوصول إلى الكاميرا للمسح، أو أدخل الرمز يدويًا.",
+          "grantAccess": "السماح بالوصول إلى الكاميرا",
+          "enterManually": "إدخال يدوي",
+          "invalid": "تعذّرت قراءة رمز QR. حاول مرة أخرى.",
+          "retry": "حاول مرة أخرى",
+          "filled": "تم تعبئة رمز المبنى من رمز QR"
+        }
+      },
+      "buildingCode": {
+        "heading": "أضف رمز المبنى",
+        "subheading": "تم التحقق من بريدك الإلكتروني. نحتاج رمز المبنى لإرسال طلبك إلى مدير المبنى للموافقة عليه.",
+        "emailLabel": "التسجيل باسم"
+      },
+      "step2": {
+        "heading": "عرّفنا عليك",
+        "subheading": "ستظهر هذه المعلومات في دليل مبناك",
+        "firstNamePlaceholder": "الاسم الأول",
+        "lastNamePlaceholder": "اسم العائلة",
+        "genderMale": "ذكر",
+        "genderFemale": "أنثى",
+        "mobilePlaceholder": "رقم الجوال",
+        "submit": "متابعة"
+      }
+    },
+    "pendingApproval": {
+      "heading": "أنت على القائمة",
+      "body": "يحتاج مدير المبنى إلى الموافقة على حسابك. سنبلغك فور قبولك.",
+      "labelEmail": "البريد",
+      "checking": "جارٍ التحقق…",
+      "approved": {
+        "title": "أهلاً بك!",
+        "body": "تمت الموافقة على حسابك.",
+        "cta": "الدخول إلى ديارنا"
+      },
+      "rejected": {
+        "heading": "لم تتم الموافقة على طلبك",
+        "body": "لم يوافق مدير المبنى على هذا الحساب. إذا كنت تعتقد أن هناك خطأ، تواصل مع إدارة المبنى — أو سجّل الخروج وحاول مجددًا برمز مبنى آخر."
+      }
+    },
+    "biometric": {
+      "unavailable": "البصمة غير متاحة — سجّل الدخول بالبريد الإلكتروني"
+    },
+    "setupProfile": {
+      "heading": "أكمل ملفك",
+      "subheading": "أضف صورة حتى يتعرف عليك جيرانك",
+      "submit": "حفظ ومتابعة"
+    },
+    "terms": {
+      "title": "الشروط والأحكام",
+      "agree": "أوافق",
+      "agreePrefix": "قرأت وأوافق على",
+      "checkboxLabel": "الموافقة على الشروط والأحكام",
+      "loginNotice": "بتسجيل الدخول، فإنك توافق على",
+      "gate": {
+        "intro": "يرجى مراجعة الشروط والأحكام والموافقة عليها لمتابعة استخدام ديارنا.",
+        "accept": "أوافق",
+        "accepting": "جارٍ تسجيل موافقتك…",
+        "loading": "جارٍ تحميل الشروط…",
+        "error": "تعذّر تسجيل موافقتك. تحقّق من اتصالك وحاول مرة أخرى.",
+        "failOpen": {
+          "notice": "ما زال تسجيل موافقتك متعذّرًا، ولن نبقيك في الانتظار. يمكنك متابعة استخدام ديارنا الآن، وسنطلب منك الموافقة مرة أخرى عند فتح التطبيق في المرة القادمة.",
+          "continue": "المتابعة الآن"
+        }
+      }
+    }
+  },
+  "language": {
+    "restarting": "تم تغيير اللغة — إعادة التشغيل…",
+    "restartTitle": "تم تحديث اللغة",
+    "restartBody": "يرجى إغلاق التطبيق وإعادة فتحه لإكمال تطبيق اتجاه العرض الجديد.",
+    "toggle": "تبديل اللغة",
+    "en": "EN",
+    "ar": "AR"
+  },
+  "theme": {
+    "light": "الوضع الفاتح",
+    "dark": "الوضع الداكن"
+  },
+  "navigation": {
+    "community": "المجتمع",
+    "requests": "الطلبات",
+    "services": "الخدمات",
+    "marketplace": "المتجر",
+    "profile": "الملف الشخصي",
+    "feed": "المجتمع",
+    "dashboard": "لوحة التحكم",
+    "complaints": "الشكاوى",
+    "maintenance": "الصيانة",
+    "residents": "السكان",
+    "notifications": "الإشعارات"
+  },
+  "profile": {
+    "settings": "إعدادات الملف",
+    "viewContacts": "عرض جهات الاتصال",
+    "buildingContacts": "دليل المبنى",
+    "section": {
+      "account": "الحساب",
+      "preferences": "التفضيلات",
+      "about": "حول"
+    },
+    "fields": {
+      "project": "المشروع",
+      "building": "المبنى",
+      "unit": "الوحدة"
+    },
+    "unlinkedBuilding": {
+      "title": "غير مرتبط بمبنى",
+      "body": "اطلب من مدير المبنى ربط وحدتك."
+    },
+    "language": "اللغة",
+    "languageOption": {
+      "en": "English",
+      "ar": "العربية"
+    },
+    "themeRow": "المظهر",
+    "themeOption": {
+      "light": "فاتح",
+      "dark": "داكن",
+      "system": "النظام"
+    },
+    "blockedUsers": "المستخدمون المحظورون",
+    "directoryVisibility": "إظهار في الدليل",
+    "version": "الإصدار",
+    "changePhoto": "تغيير الصورة",
+    "takePhoto": "التقاط صورة",
+    "chooseFromLibrary": "اختيار من المعرض",
+    "photoTooLarge": "هذه الصورة كبيرة جدًا (الحد 5 ميغابايت)",
+    "photoUpdated": "تم تحديث صورة الملف الشخصي",
+    "deleteAccount": {
+      "row": "حذف الحساب",
+      "deleting": "جارٍ حذف الحساب…",
+      "confirmTitle": "هل تريد حذف حسابك؟",
+      "confirmBody": "سيؤدي هذا إلى حذف حسابك نهائيًا وإزالة ملفك الشخصي من دليل المبنى. لا يمكن التراجع عن هذا الإجراء.",
+      "confirmAction": "حذف الحساب",
+      "deletedTitle": "تم حذف حسابك"
+    }
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "new": "جديد",
+    "markAllRead": "تعليم الكل كمقروء",
+    "markAllDone": "تم تعليم جميع الإشعارات كمقروءة",
+    "markAllError": "تعذّر تعليم الإشعارات كمقروءة",
+    "bellA11y": "الإشعارات",
+    "bellA11yUnread": "الإشعارات، {{count}} غير مقروء",
+    "unreadCount_zero": "لا إشعارات غير مقروءة",
+    "unreadCount_one": "إشعار واحد غير مقروء",
+    "unreadCount_two": "إشعاران غير مقروءين",
+    "unreadCount_few": "{{count}} إشعارات غير مقروءة",
+    "unreadCount_many": "{{count}} إشعارًا غير مقروء",
+    "unreadCount_other": "{{count}} غير مقروء",
+    "empty": {
+      "title": "لا جديد لديك",
+      "body": "ستظهر هنا تحديثات تذاكرك: التعليقات الجديدة وتغيّرات الحالة وعمليات الحل."
+    },
+    "error": {
+      "title": "تعذّر تحميل الإشعارات",
+      "body": "لم نتمكن من الوصول إلى إشعاراتك الآن. تحقّق من اتصالك ثم أعد المحاولة."
+    },
+    "a11y": {
+      "unread": "غير مقروء",
+      "read": "مقروء",
+      "opensTicket": "يفتح التذكرة",
+      "opensRequests": "يفتح طلبات السكان"
+    },
+    "status": {
+      "OPEN": "مفتوحة",
+      "IN_PROGRESS": "قيد المعالجة",
+      "RESOLVED": "تم الحل",
+      "CLOSED": "مغلقة",
+      "ESCALATED": "مصعّدة",
+      "NOT_ACTIONABLE": "غير قابلة للتنفيذ"
+    },
+    "types": {
+      "TICKET_CREATED": {
+        "title": "تم إنشاء تذكرة",
+        "body": "تم إنشاء التذكرة {{ticketNumber}}."
+      },
+      "TICKET_ASSIGNED": {
+        "title": "تم إسناد تذكرة إليك",
+        "body": "تم إسناد التذكرة {{ticketNumber}} إليك."
+      },
+      "TICKET_STATUS_CHANGED": {
+        "title": "تحديث حالة التذكرة",
+        "body": "انتقلت التذكرة {{ticketNumber}} من {{oldStatus}} إلى {{newStatus}}."
+      },
+      "TICKET_COMMENT_ADDED": {
+        "title": "تعليق جديد",
+        "body": "تمت إضافة تعليق جديد على التذكرة {{ticketNumber}}."
+      },
+      "TICKET_RESOLVED": {
+        "title": "تم حل التذكرة",
+        "body": "تم حل التذكرة {{ticketNumber}}."
+      },
+      "TICKET_CLOSED": {
+        "title": "تم إغلاق التذكرة",
+        "body": "تم إغلاق التذكرة {{ticketNumber}}."
+      },
+      "TICKET_REOPENED": {
+        "title": "تمت إعادة فتح التذكرة",
+        "body": "تمت إعادة فتح التذكرة {{ticketNumber}}."
+      },
+      "TICKET_ESCALATED": {
+        "title": "تم تصعيد التذكرة",
+        "body": "تم تصعيد التذكرة {{ticketNumber}}."
+      },
+      "TICKET_DUE_SOON": {
+        "title": "اقتراب الموعد النهائي للتذكرة",
+        "body": "تقترب التذكرة {{ticketNumber}} من الموعد النهائي لاتفاقية مستوى الخدمة."
+      },
+      "RESIDENT_LINK_REQUEST_CREATED": {
+        "title": "طلب ربط ساكن جديد",
+        "body": "طلب {{residentName}} الارتباط بالوحدة {{unitNumber}} في {{buildingName}} ويحتاج إلى موافقتك."
+      }
+    }
+  },
+  "placeholder": {
+    "community": {
+      "title": "موجز المجتمع قريبًا",
+      "body": "ستظهر هنا المنشورات والإعلانات والفعاليات من جيرانك."
+    },
+    "requests": {
+      "title": "لا توجد طلبات بعد",
+      "body": "أنشئ طلب صيانة أو خدمة لرؤيته هنا."
+    },
+    "marketplace": {
+      "title": "لا توجد قوائم بعد",
+      "body": "ستظهر هنا قوائم البيع والإيجار من مجمعك."
+    },
+    "feed": {
+      "title": "موجز المجتمع قريبًا",
+      "body": "سترى هنا كل ما ينشره السكان."
+    },
+    "complaints": {
+      "title": "لا توجد شكاوى للمراجعة",
+      "body": "ستظهر هنا الشكاوى المخصصة لك."
+    },
+    "maintenance": {
+      "title": "لا توجد تذاكر صيانة",
+      "body": "ستظهر هنا تذاكر الصيانة من مبناك."
+    },
+    "residents": {
+      "title": "دليل السكان",
+      "body": "ستظهر هنا قائمة بالسكان المرتبطين بمشروعك."
+    },
+    "contacts": {
+      "title": "جهات اتصال المشروع قريبًا",
+      "body": "سترى هنا فريق إدارة المبنى."
+    }
+  },
+  "buildingContacts": {
+    "title": "دليل المبنى",
+    "loadError": "تعذر تحميل جهات الاتصال. اسحب للأسفل للمحاولة مجددًا.",
+    "empty": "لا توجد جهات اتصال بعد.",
+    "noProject": "لست مرتبطًا بمبنى بعد.",
+    "section": {
+      "facilityManager": "مدير المرافق",
+      "president": "رئيس المبنى",
+      "residents": "السكان"
+    },
+    "residentsEmpty": "لم يختر أي ساكن أن يظهر في القائمة.",
+    "residentsNoMatch": "لا يوجد ساكن مطابق",
+    "searchPlaceholder": "ابحث عن الساكنين",
+    "unitLabel": "وحدة {{n}}"
+  },
+  "blockedUsers": {
+    "title": "المستخدمون المحظورون",
+    "emptyTitle": "لا يوجد مستخدمون محظورون",
+    "emptyBody": "سيظهر هنا من تحظرهم من مجتمع السكان.",
+    "unblock": "إلغاء الحظر",
+    "unknownUser": "أحد أفراد المجتمع"
+  },
+  "tickets": {
+    "emergency": "عاجل",
+    "filters": {
+      "all": "الكل",
+      "open": "مفتوحة",
+      "inProgress": "قيد التنفيذ",
+      "resolved": "تم الحل"
+    },
+    "domainFilters": {
+      "all": "الكل",
+      "maintenance": "صيانة",
+      "complaint": "شكاوى"
+    },
+    "time": {
+      "justNow": "الآن",
+      "minutesAgo": "منذ {{n}}د",
+      "hoursAgo": "منذ {{n}}س",
+      "daysAgo": "منذ {{n}}ي",
+      "weeksAgo": "منذ {{n}}أ",
+      "monthsAgo": "منذ {{n}} شهر",
+      "yearsAgo": "منذ {{n}} سنة"
+    },
+    "emptyRequests": {
+      "title": "لا توجد طلبات بعد",
+      "body": "عند إرسال شكوى أو طلب صيانة، سيظهر هنا."
+    },
+    "emptyRequestsFiltered": {
+      "title": "لا شيء هنا بعد",
+      "body": "لا توجد تذاكر تطابق الفلتر الحالي."
+    },
+    "timeline": {
+      "title": "الجدول الزمني",
+      "created": "تم الإنشاء",
+      "underReview": "قيد المراجعة",
+      "inProgress": "قيد التنفيذ",
+      "escalated": "تم التصعيد إلى مدير المنشأة",
+      "awaitingResolution": "لدى مدير المنشأة",
+      "resolved": "تم الحل",
+      "closed": "مغلقة"
+    },
+    "emptyComplaints": {
+      "title": "لا توجد شكاوى مسندة",
+      "body": "الشكاوى الموجهة إليك ستظهر هنا."
+    },
+    "emptyMaintenance": {
+      "title": "لا توجد تذاكر صيانة",
+      "body": "أعمال الصيانة من مبناك ستظهر هنا."
+    },
+    "detail": {
+      "createdAt": "فُتحت في",
+      "reportedBy": "المُبلِّغ",
+      "byUser": "بواسطة {{n}}",
+      "category": "الفئة",
+      "priority": "الأولوية",
+      "location": "الموقع",
+      "dueDate": "الاستحقاق",
+      "building": "المبنى",
+      "unit": "الوحدة",
+      "assignedTo": "مُسندة إلى",
+      "roleManager": "إدارة",
+      "roleMaintenance": "صيانة",
+      "internalNote": "ملاحظة داخلية",
+      "resolution": "ملاحظة الحل",
+      "resolvedOn": "تم الحل · {{date}}",
+      "repairCost": "تكلفة الإصلاح",
+      "noComments": "لا توجد تعليقات بعد",
+      "commentsTitle": "النشاط",
+      "attachmentsTitle": "المرفقات",
+      "loadError": "تعذّر تحميل التذكرة. اسحب للأسفل للمحاولة مجددًا.",
+      "notFound": "التذكرة غير موجودة",
+      "delete": "حذف",
+      "deleteTitle": "حذف التذكرة؟",
+      "deleteBody": "لا يمكن التراجع عن هذا الإجراء.",
+      "deleteConfirm": "حذف",
+      "deletedTitle": "تم حذف التذكرة"
+    },
+    "rating": {
+      "prompt": "كيف تقيّم حل المشكلة؟",
+      "alreadyRated": "لقد قيّمت هذه التذكرة",
+      "starLabel_zero": "{{count}} نجمة",
+      "starLabel_one": "نجمة واحدة",
+      "starLabel_two": "نجمتان",
+      "starLabel_few": "{{count}} نجوم",
+      "starLabel_many": "{{count}} نجمة",
+      "starLabel_other": "{{count}} نجمة",
+      "commentPlaceholder": "أضف تعليقًا (اختياري)",
+      "submit": "إرسال التقييم",
+      "thankYou": "شكرًا على ملاحظاتك!",
+      "error": "تعذّر إرسال تقييمك. يرجى المحاولة مرة أخرى."
+    },
+    "priority": {
+      "LOW": "منخفضة",
+      "MEDIUM": "متوسطة",
+      "HIGH": "عالية",
+      "CRITICAL": "حرجة"
+    },
+    "compose": {
+      "titleCreate": "طلب جديد",
+      "domainLabel": "النوع",
+      "domainMaintenance": "صيانة",
+      "domainComplaint": "شكوى",
+      "categoryLabel": "الفئة",
+      "noCategories": "لا توجد فئات متاحة",
+      "buildingLabel": "المبنى",
+      "fieldUnit": "رقم الوحدة",
+      "unitPlaceholder": "مثال: A-12",
+      "fieldDescription": "ما المشكلة؟",
+      "descriptionPlaceholder": "اشرح المشكلة ليتمكن الفريق من المساعدة",
+      "fieldLocation": "أين؟ (اختياري)",
+      "locationPlaceholder": "مثال: مغسلة المطبخ، اللوبي",
+      "attachmentsLabel": "الصور (اختياري، حتى 5)",
+      "submitCreate": "إرسال",
+      "createdTitle": "تم إرسال الطلب",
+      "errorTitle": "تعذّر إرسال الطلب",
+      "partialUploadTitle": "تم إرسال الطلب",
+      "partialUploadBody": "تعذّر رفع {{count}} مرفقًا",
+      "discardTitle": "تجاهل الطلب؟",
+      "discardBody": "ستُفقد التغييرات.",
+      "discard": "تجاهل",
+      "fabLabel": "طلب جديد",
+      "errors": {
+        "categoryRequired": "اختر فئة",
+        "descriptionRequired": "اشرح المشكلة",
+        "descriptionTooLong": "يجب ألا يتجاوز الوصف 2000 حرف",
+        "buildingRequired": "اختر المبنى",
+        "unitRequired": "أضف رقم الوحدة",
+        "generic": "يرجى مراجعة هذا الحقل"
+      }
+    },
+    "president": {
+      "actions": {
+        "resolve": "حل الشكوى",
+        "escalate": "تصعيد"
+      },
+      "resolve": {
+        "title": "حل الشكوى",
+        "commentLabel": "ملاحظات الحل",
+        "commentPlaceholder": "اشرح كيف تم حل المشكلة",
+        "attachmentsLabel": "صور (اختيارية، حتى 10)",
+        "submit": "حل",
+        "success": "تم حل الشكوى",
+        "error": "تعذّر الحل. حاول مرة أخرى."
+      },
+      "escalate": {
+        "title": "تصعيد إلى مدير المنشأة",
+        "subtitle": "سيتولى مدير المنشأة هذه التذكرة من هنا.",
+        "reasonLabel": "سبب التصعيد",
+        "reasonPlaceholder": "ما سبب الحاجة للتصعيد؟",
+        "submit": "تصعيد",
+        "success": "تم تصعيد التذكرة",
+        "error": "تعذّر التصعيد. حاول مرة أخرى."
+      },
+      "filters": {
+        "title": "تصفية الشكاوى",
+        "advanced": "التصفية",
+        "advancedWithCount": "التصفية · {{n}}",
+        "clearAll": "مسح الكل",
+        "clearDates": "مسح التواريخ",
+        "apply": "تطبيق",
+        "dateRange": "نطاق التاريخ",
+        "from": "من",
+        "to": "إلى",
+        "anyDate": "أي تاريخ",
+        "categories": "الفئات",
+        "searchPlaceholder": "ابحث بالعنوان أو الوصف أو رقم التذكرة",
+        "status": {
+          "ALL": "الكل",
+          "OPEN": "مفتوحة",
+          "IN_PROGRESS": "قيد التنفيذ",
+          "RESOLVED": "محلولة",
+          "CLOSED": "مغلقة",
+          "ESCALATED": "مصعّدة",
+          "NOT_ACTIONABLE": "غير قابلة للتنفيذ"
+        }
+      }
+    }
+  },
+  "community": {
+    "pinned": "مثبّت",
+    "authorRole": {
+      "PRESIDENT": "الرئيس",
+      "FACILITY_MANAGER": "مدير التشغيل",
+      "RESIDENT": "ساكن"
+    },
+    "filter": {
+      "all": "الكل",
+      "mine": "منشوراتي",
+      "facilityManager": "مدير التشغيل",
+      "president": "الرئيس",
+      "general": "عام",
+      "announcement": "إعلان",
+      "event": "فعالية",
+      "emergency": "طارئ"
+    },
+    "category": {
+      "GENERAL": "عام",
+      "ANNOUNCEMENT": "إعلان",
+      "EVENT": "فعالية",
+      "EMERGENCY": "طارئ",
+      "POLL": "استطلاع"
+    },
+    "empty": {
+      "title": "لا توجد منشورات بعد",
+      "body": "كن أول من يشارك شيئًا مع جيرانك."
+    },
+    "emptySearch": {
+      "title": "لا توجد منشورات مطابقة",
+      "body": "جرّب كلمة بحث أخرى."
+    },
+    "searchPlaceholder": "ابحث في المنشورات",
+    "detail": {
+      "comments": "التعليقات",
+      "noComments": "لا توجد تعليقات بعد",
+      "eventLocation": "الموقع",
+      "eventWhen": "التاريخ",
+      "loadError": "تعذّر تحميل المنشور. اسحب للأسفل للمحاولة مجددًا.",
+      "notFound": "المنشور غير موجود"
+    }
+  },
+  "posts": {
+    "compose": {
+      "titleCreate": "منشور جديد",
+      "titleEdit": "تعديل المنشور",
+      "category": "التصنيف",
+      "fieldTitle": "العنوان",
+      "titlePlaceholder": "عنوان مختصر",
+      "fieldBody": "المحتوى",
+      "bodyPlaceholder": "شارك شيئًا مع جيرانك",
+      "images": "الصور",
+      "currentImages": "صور هذا المنشور",
+      "imagesLocked": "لتغيير الصور يلزم إعادة إنشاء المنشور.",
+      "addImage": "إضافة صورة",
+      "removeImage": "إزالة الصورة",
+      "takePhoto": "التقاط صورة",
+      "chooseFromLibrary": "اختيار من المعرض",
+      "attachFile": "إرفاق ملف",
+      "fileTooLarge": "هذه الصورة كبيرة جدًا (الحد 5 ميجابايت)",
+      "submitCreate": "نشر",
+      "submitEdit": "حفظ",
+      "partialUploadTitle": "تم النشر",
+      "partialUploadBody": "تعذّر رفع {{count}} صورة",
+      "createdTitle": "تم النشر",
+      "errorTitle": "تعذّر النشر",
+      "errorEditTitle": "تعذّر حفظ التغييرات",
+      "savedTitle": "تم الحفظ",
+      "deletedTitle": "تم حذف المنشور",
+      "discardTitle": "تجاهل المنشور؟",
+      "discardBody": "ستُفقد التغييرات.",
+      "discard": "تجاهل",
+      "deleteTitle": "حذف المنشور؟",
+      "deleteBody": "لا يمكن التراجع عن هذا الإجراء.",
+      "deleteConfirm": "حذف",
+      "edit": "تعديل",
+      "delete": "حذف",
+      "fabLabel": "إنشاء منشور",
+      "eventStart": "يبدأ",
+      "eventEnd": "ينتهي",
+      "eventPickDate": "اختر التاريخ والوقت",
+      "eventLocation": "الموقع (اختياري)",
+      "eventLocationPlaceholder": "مثال: الحديقة، لوبي البرج أ",
+      "eventCategory": "نوع الفعالية",
+      "eventFamiliesOnly": "للعائلات فقط",
+      "eventGuestsAllowed": "مسموح بالضيوف",
+      "eventCostSharing": "قطّة (تقاسم التكلفة)",
+      "errors": {
+        "titleRequired": "أضف عنوانًا",
+        "titleTooLong": "يجب ألا يتجاوز العنوان 120 حرفًا",
+        "bodyRequired": "اكتب المحتوى",
+        "bodyTooLong": "يجب ألا يتجاوز المحتوى 2000 حرف",
+        "categoryRequired": "اختر تصنيفًا",
+        "eventStartRequired": "اختر وقت البدء",
+        "eventEndRequired": "اختر وقت الانتهاء",
+        "eventEndBeforeStart": "يجب أن يكون الانتهاء بعد البدء",
+        "generic": "يرجى مراجعة هذا الحقل"
+      }
+    },
+    "actions": {
+      "like": "إعجاب",
+      "unlike": "إلغاء الإعجاب",
+      "send": "إرسال",
+      "commentPlaceholder": "اكتب تعليقًا"
+    },
+    "comments": {
+      "errorTitle": "تعذّر نشر التعليق"
+    },
+    "share": {
+      "label": "مشاركة",
+      "intro": "اطلع على هذا المنشور على ديارنا:",
+      "fallbackTitle": "ديارنا"
+    },
+    "moderation": {
+      "report": "الإبلاغ عن المنشور",
+      "reportTitle": "هل تريد الإبلاغ عن هذا المنشور؟",
+      "reportBody": "أخبرنا بالمشكلة. سيتم إخفاء المنشور من صفحتك وسيراجعه فريقنا.",
+      "reasons": {
+        "SPAM": "محتوى مزعج",
+        "INAPPROPRIATE": "محتوى غير لائق",
+        "HARASSMENT": "تحرش أو إساءة",
+        "OTHER": "سبب آخر"
+      },
+      "reportedTitle": "شكرًا — تم إخفاء المنشور والإبلاغ عنه",
+      "block": "حظر المستخدم",
+      "blockTitle": "حظر {{name}}؟",
+      "blockBody": "لن ترى منشوراته أو تعليقاته أو إعلاناته بعد الآن. سيتم إشعار فريقنا أيضًا.",
+      "blockConfirm": "حظر",
+      "blockedTitle": "تم حظر المستخدم وإزالة محتواه"
+    }
+  },
+  "marketplace": {
+    "perMonth": "/ شهر",
+    "negotiable": "قابل للتفاوض",
+    "status": {
+      "PUBLISHED": "متاح",
+      "SOLD": "تم البيع",
+      "RENTED": "تم التأجير",
+      "EXPIRED": "منتهي"
+    },
+    "statusUpdate": {
+      "action": "تغيير الحالة",
+      "title": "تحديث الحالة",
+      "body": "اختر الحالة الجديدة للقائمة.",
+      "markSold": "وضع علامة \"تم البيع\"",
+      "markRented": "وضع علامة \"تم التأجير\"",
+      "markExpired": "وضع علامة \"منتهي\"",
+      "successTitle": "تم تحديث الحالة"
+    },
+    "type": {
+      "SALE": "للبيع",
+      "RENT": "للإيجار"
+    },
+    "condition": {
+      "NEW": "جديد",
+      "USED": "مستعمل",
+      "LIKE_NEW": "كالجديد",
+      "REFURBISHED": "مجدد"
+    },
+    "empty": {
+      "title": "لا توجد قوائم بعد",
+      "body": "ستظهر قوائم مجمعك هنا."
+    },
+    "emptySearch": {
+      "title": "لا توجد قوائم مطابقة",
+      "body": "جرّب كلمة بحث أخرى."
+    },
+    "searchPlaceholder": "ابحث في القوائم",
+    "compose": {
+      "titleCreate": "قائمة جديدة",
+      "titleEdit": "تعديل القائمة",
+      "typeLabel": "نوع القائمة",
+      "categoryLabel": "التصنيف",
+      "conditionLabel": "الحالة",
+      "imagesLabel": "الصور (حتى 5)",
+      "fieldTitle": "العنوان",
+      "titlePlaceholder": "ما الذي تعرضه؟",
+      "fieldDescription": "الوصف",
+      "descriptionPlaceholder": "أخبر المشترين بما يحتاجون معرفته",
+      "fieldPrice": "السعر",
+      "negotiable": "السعر قابل للتفاوض",
+      "fieldLocation": "الموقع (اختياري)",
+      "locationPlaceholder": "مثال: مبنى أ، وحدة ١٢",
+      "fieldContactPhone": "الهاتف (اختياري)",
+      "fieldContactWhatsapp": "واتساب (اختياري)",
+      "submitCreate": "انشر",
+      "submitEdit": "حفظ",
+      "createdTitle": "تم النشر",
+      "errorTitle": "تعذّر نشر القائمة",
+      "savedTitle": "تم الحفظ",
+      "deletedTitle": "تم حذف القائمة",
+      "partialUploadTitle": "تم نشر القائمة",
+      "partialUploadBody": "تعذّر رفع {{count}} صورة",
+      "discardTitle": "تجاهل القائمة؟",
+      "discardBody": "ستُفقد التغييرات.",
+      "discard": "تجاهل",
+      "deleteTitle": "حذف القائمة؟",
+      "deleteBody": "لا يمكن التراجع عن هذا الإجراء.",
+      "deleteConfirm": "حذف",
+      "delete": "حذف",
+      "edit": "تعديل",
+      "fabLabel": "إنشاء قائمة",
+      "errors": {
+        "titleRequired": "أضف عنوانًا",
+        "titleTooLong": "يجب ألا يتجاوز العنوان 120 حرفًا",
+        "descriptionRequired": "أضف وصفًا",
+        "descriptionTooLong": "يجب ألا يتجاوز الوصف 2000 حرف",
+        "categoryRequired": "اختر تصنيفًا",
+        "priceRequired": "أضف سعرًا",
+        "priceInvalid": "أدخل سعرًا صحيحًا",
+        "phoneInvalid": "أدخل رقمًا من 9 أرقام يبدأ بـ 5",
+        "generic": "يرجى مراجعة هذا الحقل"
+      }
+    },
+    "detail": {
+      "seller": "البائع",
+      "building": "المبنى",
+      "location": "الموقع",
+      "posted": "تاريخ النشر",
+      "call": "اتصال",
+      "whatsapp": "واتساب",
+      "loadError": "تعذّر تحميل القائمة. اسحب للأسفل للمحاولة مجددًا.",
+      "notFound": "القائمة غير موجودة"
+    },
+    "primary": {
+      "all": "الكل",
+      "sale": "للبيع",
+      "rent": "للإيجار",
+      "free": "مجاني"
+    },
+    "filters": {
+      "button": "تصفية",
+      "open": "فتح التصفية",
+      "sort": "ترتيب",
+      "openSort": "فتح خيارات الترتيب",
+      "title": "التصفية",
+      "category": "الفئة",
+      "condition": "الحالة",
+      "price": "نطاق السعر",
+      "min": "من",
+      "max": "إلى",
+      "anyMax": "بدون حد",
+      "negotiableOnly": "القابلة للتفاوض فقط",
+      "sortBy": "الترتيب",
+      "apply": "تطبيق",
+      "reset": "إعادة تعيين"
+    },
+    "sort": {
+      "newest": "الأحدث أولاً",
+      "oldest": "الأقدم أولاً",
+      "priceAsc": "السعر: من الأقل إلى الأعلى",
+      "priceDesc": "السعر: من الأعلى إلى الأقل"
+    },
+    "emptyFiltered": {
+      "title": "لا توجد قوائم مطابقة",
+      "body": "جرّب تخفيف التصفية.",
+      "clear": "مسح التصفية"
+    }
+  },
+  "facilities": {
+    "title": "المرافق",
+    "projectWide": "على مستوى المشروع",
+    "capacityValue_zero": "تتسع لـ {{count}} شخص",
+    "capacityValue_one": "تتسع لشخص واحد",
+    "capacityValue_two": "تتسع لشخصين",
+    "capacityValue_few": "تتسع لـ {{count}} أشخاص",
+    "capacityValue_many": "تتسع لـ {{count}} شخصًا",
+    "capacityValue_other": "تتسع لـ {{count}} شخص",
+    "type": {
+      "GYM": "صالة رياضية",
+      "POOL": "مسبح",
+      "BBQ": "منطقة شواء",
+      "MEETING_ROOM": "غرفة اجتماعات",
+      "PARTY_HALL": "قاعة مناسبات",
+      "TENNIS": "ملعب تنس",
+      "BASKETBALL": "ملعب كرة سلة",
+      "PLAYGROUND": "منطقة ألعاب",
+      "ROOFTOP": "السطح",
+      "LOBBY": "البهو",
+      "GUEST_PARKING": "مواقف الزوار"
+    },
+    "entry": {
+      "title": "المرافق",
+      "subtitle": "احجز الصالة الرياضية والمسبح والمساحات المشتركة"
+    },
+    "list": {
+      "loadError": "تعذّر تحميل المرافق. اسحب للأسفل للمحاولة مرة أخرى.",
+      "noProjectTitle": "لم نتمكن من تحديد مشروعك",
+      "noProjectBody": "تُعرض المرافق حسب المشروع. اطلب من مدير المرافق ربط وحدتك، ثم اسحب للأسفل للتحديث.",
+      "noProjectCta": "ابحث عن مدير المرافق",
+      "emptyTitle": "لا توجد مرافق بعد",
+      "emptyBody": "لم يُضِف مشروعك أي مساحات قابلة للحجز بعد."
+    },
+    "detail": {
+      "loadError": "تعذّر تحميل هذا المرفق. اسحب للأسفل للمحاولة مرة أخرى.",
+      "notFound": "لم يتم العثور على المرفق",
+      "location": "الموقع",
+      "capacity": "السعة",
+      "bookSlot": "احجز موعدًا",
+      "requestSlot": "اطلب موعدًا"
+    },
+    "rules": {
+      "title": "قبل الحجز",
+      "maxDuration_zero": "أطول حجز {{count}} ساعة",
+      "maxDuration_one": "أطول حجز ساعة واحدة",
+      "maxDuration_two": "أطول حجز ساعتان",
+      "maxDuration_few": "أطول حجز {{count}} ساعات",
+      "maxDuration_many": "أطول حجز {{count}} ساعة",
+      "maxDuration_other": "أطول حجز {{count}} ساعة",
+      "advanceBooking_zero": "يمكنك الحجز قبل {{count}} يوم",
+      "advanceBooking_one": "يمكنك الحجز قبل يوم واحد",
+      "advanceBooking_two": "يمكنك الحجز قبل يومين",
+      "advanceBooking_few": "يمكنك الحجز قبل {{count}} أيام",
+      "advanceBooking_many": "يمكنك الحجز قبل {{count}} يومًا",
+      "advanceBooking_other": "يمكنك الحجز قبل {{count}} يوم",
+      "needsApproval": "يراجع مدير المرافق طلبك",
+      "instantConfirm": "يتم التأكيد فور الحجز"
+    },
+    "book": {
+      "title": "حجز موعد",
+      "submitRequest": "إرسال الطلب",
+      "submitBooking": "تأكيد الحجز",
+      "startTime": "وقت البداية",
+      "endTime": "وقت النهاية",
+      "guests": "عدد الأشخاص",
+      "capacityHelper_zero": "حتى {{count}} شخص",
+      "capacityHelper_one": "حتى شخص واحد",
+      "capacityHelper_two": "حتى شخصين",
+      "capacityHelper_few": "حتى {{count}} أشخاص",
+      "capacityHelper_many": "حتى {{count}} شخصًا",
+      "capacityHelper_other": "حتى {{count}} شخص",
+      "titleField": "العنوان (اختياري)",
+      "titlePlaceholder": "مثال: تجمّع عائلي",
+      "notes": "ملاحظات (اختياري)",
+      "notesPlaceholder": "أي شيء يجب أن يعرفه مدير المرافق",
+      "localTimeZone": "الأوقات بتوقيتك المحلي ({{zone}})",
+      "localTimeNoZone": "الأوقات بالتوقيت المحلي لجهازك.",
+      "fromValue": "من {{value}}",
+      "toValue": "إلى {{value}}",
+      "durationLine": "المدة: {{value}}",
+      "durationHours_zero": "{{count}} ساعة",
+      "durationHours_one": "ساعة واحدة",
+      "durationHours_two": "ساعتان",
+      "durationHours_few": "{{count}} ساعات",
+      "durationHours_many": "{{count}} ساعة",
+      "durationHours_other": "{{count}} ساعة",
+      "durationMinutes_zero": "{{count}} دقيقة",
+      "durationMinutes_one": "دقيقة واحدة",
+      "durationMinutes_two": "دقيقتان",
+      "durationMinutes_few": "{{count}} دقائق",
+      "durationMinutes_many": "{{count}} دقيقة",
+      "durationMinutes_other": "{{count}} دقيقة",
+      "durationHoursMinutes": "{{hours}} ساعة و{{minutes}} دقيقة",
+      "loadError": "تعذّر تحميل هذا المرفق. حاول مرة أخرى.",
+      "errorTitle": "تعذّر إرسال حجزك",
+      "notice": {
+        "conflictTitle": "هذا الموعد محجوز بالفعل",
+        "conflictBody": "يتعارض حجز آخر مع الوقت الذي اخترته. اختر وقت بداية أو نهاية مختلفًا.",
+        "unavailableTitle": "هذا المرفق غير متاح",
+        "unavailableBody": "هذا المرفق غير متاح للحجز حاليًا. اختر وقتًا آخر أو تواصل مع مدير المرافق."
+      },
+      "success": {
+        "pendingTitle": "تم إرسال الطلب",
+        "pendingBody": "بانتظار موافقة مدير المرافق.",
+        "confirmedTitle": "تم تأكيد الحجز",
+        "confirmedBody": "تم حجز موعدك."
+      },
+      "errors": {
+        "endBeforeStart": "يجب أن يكون وقت النهاية بعد وقت البداية.",
+        "durationTooLong": "المدة أطول مما يسمح به هذا المرفق للحجز الواحد.",
+        "tooFarAhead": "التاريخ أبعد مما يسمح به هذا المرفق.",
+        "startInPast": "اختر وقت بداية في المستقبل.",
+        "overCapacity": "عدد الأشخاص أكبر من سعة هذا المرفق.",
+        "guestCountInvalid": "أدخل شخصًا واحدًا على الأقل.",
+        "titleTooLong": "العنوان طويل جدًا.",
+        "notesTooLong": "الملاحظات طويلة جدًا.",
+        "generic": "راجع هذا الحقل وحاول مرة أخرى."
+      }
+    },
+    "bookings": {
+      "title": "حجوزاتك",
+      "loadError": "تعذّر تحميل حجوزاتك.",
+      "empty": "لم تحجز هذا المرفق بعد.",
+      "cancelHint": "تحتاج إلى تعديل الحجز أو إلغائه؟ تواصل مع مدير المرافق.",
+      "timeUnknown": "الوقت غير محدد",
+      "guestsValue_zero": "{{count}} ضيف",
+      "guestsValue_one": "ضيف واحد",
+      "guestsValue_two": "ضيفان",
+      "guestsValue_few": "{{count}} ضيوف",
+      "guestsValue_many": "{{count}} ضيفًا",
+      "guestsValue_other": "{{count}} ضيف",
+      "status": {
+        "PENDING": "قيد المراجعة",
+        "APPROVED": "مقبول",
+        "REJECTED": "مرفوض",
+        "CANCELLED": "ملغى",
+        "COMPLETED": "مكتمل",
+        "NO_SHOW": "لم يحضر",
+        "UNKNOWN": "غير معروف"
+      }
+    }
+  },
+  "polls": {
+    "title": "الاستطلاعات",
+    "youVoted": "لقد صوّتت",
+    "anonymousBadge": "مجهول",
+    "rankedNotSupported": "التصويت بالترتيب غير مدعوم في هذه النسخة من التطبيق. يمكنك الاطلاع على الخيارات أدناه، لكن التصويت غير متاح لهذا الاستطلاع.",
+    "voterCount_zero": "لا توجد أصوات بعد",
+    "voterCount_one": "صوّت شخص واحد",
+    "voterCount_two": "صوّت شخصان",
+    "voterCount_few": "صوّت {{count}} أشخاص",
+    "voterCount_many": "صوّت {{count}} شخصًا",
+    "voterCount_other": "صوّت {{count}} شخص",
+    "entry": {
+      "title": "الاستطلاعات",
+      "subtitle": "صوّت على القرارات الخاصة بمبناك"
+    },
+    "status": {
+      "open": "مفتوح",
+      "ended": "انتهى",
+      "closed": "مغلق"
+    },
+    "type": {
+      "SINGLE_CHOICE": "اختيار واحد",
+      "MULTIPLE_CHOICE": "اختيارات متعددة",
+      "RANKED_CHOICE": "تصويت بالترتيب"
+    },
+    "time": {
+      "endsSoon": "ينتهي قريبًا",
+      "endsInMinutes": "ينتهي خلال {{n}} د",
+      "endsInHours": "ينتهي خلال {{n}} س",
+      "endsInDays": "ينتهي خلال {{n}} ي",
+      "endedAgo": "انتهى {{when}}"
+    },
+    "list": {
+      "loadError": "تعذّر تحميل الاستطلاعات. اسحب للأسفل للمحاولة مرة أخرى.",
+      "emptyTitle": "لا توجد استطلاعات بعد",
+      "emptyBody": "عندما يفتح رئيس المبنى استطلاعًا، سيظهر هنا."
+    },
+    "detail": {
+      "loadError": "تعذّر تحميل هذا الاستطلاع. اسحب للأسفل للمحاولة مرة أخرى.",
+      "notFound": "الاستطلاع غير موجود",
+      "deadline": "الموعد النهائي",
+      "participation": "المشاركة",
+      "votingClosed": "انتهى التصويت.",
+      "notAnonymousTitle": "سيظهر اسمك",
+      "notAnonymousBody": "هذا الاستطلاع ليس مجهولاً — يستطيع رئيس المبنى معرفة الخيار الذي اخترته.",
+      "anonymousNote": "تصويتك مجهول. يرى الرئيس النتائج الإجمالية فقط، وليس من صوّت لكل خيار."
+    },
+    "ballot": {
+      "chooseOne": "اختر خيارًا واحدًا",
+      "chooseUpTo": "اختر ما يصل إلى {{max}} خيارات",
+      "remaining": "المتبقي: {{count}}",
+      "limitReached": "بلغت الحد الأقصى — ألغِ اختيار خيار لتغيير اختيارك",
+      "submitVote": "إرسال التصويت",
+      "changeVote": "تغيير التصويت",
+      "a11ySelectHint": "انقر مرتين لاختيار هذا الخيار",
+      "a11yCapReachedHint": "تم بلوغ الحد الأقصى للاختيارات. ألغِ اختيار خيار آخر أولاً."
+    },
+    "vote": {
+      "successTitle": "تم تسجيل تصويتك",
+      "changedTitle": "تم تحديث تصويتك",
+      "errorTitle": "تعذّر إرسال تصويتك"
+    },
+    "results": {
+      "title": "النتائج",
+      "hiddenUntilVote": "تظهر النتائج بعد أن تصوّت.",
+      "noVotesYet": "لم يصوّت أحد بعد.",
+      "optionA11y": "{{option}}: {{count}} صوت، {{percent}} بالمئة",
+      "yourChoiceA11y": "اختيارك",
+      "a11yRevealed": "أصبحت النتائج ظاهرة الآن"
+    },
+    "president": {
+      "sectionTitle": "أدوات الرئيس",
+      "seeVoters": "عرض من صوّت",
+      "anonymousExplain": "لقد جعلت هذا الاستطلاع مجهولاً، لذا تبقى الأصوات الفردية خاصة — حتى عنك.",
+      "votersTitle": "من صوّت",
+      "votersLoadError": "تعذّر تحميل قائمة المصوّتين.",
+      "votersEmptyTitle": "لا توجد أصوات بعد",
+      "votersEmptyBody": "عندما يصوّت السكان، ستظهر أسماؤهم هنا.",
+      "votersUnavailableTitle": "أسماء المصوّتين غير مسجّلة لهذا الاستطلاع",
+      "votersUnavailableBody": "أُنشئ هذا الاستطلاع قبل أن يبدأ التطبيق بتسجيل من صوّت، لذا حُفظت النتائج الإجمالية فقط. الاستطلاعات التي تنشئها من الآن فصاعدًا ستُظهر أسماء المصوّتين.",
+      "votersAnonymousTitle": "هذا الاستطلاع مجهول",
+      "votersAnonymousBody": "لقد اخترت التصويت المجهول عند إنشاء هذا الاستطلاع، لذا لا تُربط الأصوات بأي اسم.",
+      "noVotersForOption": "لا أصوات",
+      "unknownVoter": "ساكن",
+      "optionVotersA11y": "{{option}}، {{count}} صوت",
+      "closePoll": "إغلاق الاستطلاع الآن",
+      "closeConfirmTitle": "إغلاق هذا الاستطلاع؟",
+      "closeConfirmBody": "لن يتمكن السكان من التصويت بعد الآن وستصبح النتائج نهائية. لا يمكن التراجع عن هذا الإجراء.",
+      "closeConfirmAction": "إغلاق الاستطلاع",
+      "closedTitle": "تم إغلاق الاستطلاع",
+      "closeErrorTitle": "تعذّر إغلاق الاستطلاع"
+    }
+  },
+  "buildingInfo": {
+    "title": "معلومات المبنى",
+    "searchPlaceholder": "ابحث في الأنظمة والأسئلة والأدلة",
+    "attachmentCount_zero": "لا توجد ملفات",
+    "attachmentCount_one": "ملف واحد",
+    "attachmentCount_two": "ملفان",
+    "attachmentCount_few": "{{count}} ملفات",
+    "attachmentCount_many": "{{count}} ملفًا",
+    "attachmentCount_other": "{{count}} ملف",
+    "noResultsTitle": "لا توجد نتائج",
+    "noResultsBody": "لا يوجد في المكتبة ما يطابق بحثك. جرّب كلمة أخرى.",
+    "clearSearch": "مسح البحث",
+    "openAttachmentHint": "يفتح الملف",
+    "categories": {
+      "RULES": "الأنظمة",
+      "FAQ": "الأسئلة الشائعة",
+      "CONTRACT": "العقود",
+      "WARRANTY": "الضمانات",
+      "GUIDE": "الأدلة",
+      "EMERGENCY": "الطوارئ",
+      "OTHER": "أخرى",
+      "unknown": "مستندات أخرى"
+    },
+    "list": {
+      "loadError": "تعذّر تحميل معلومات المبنى. اسحب للأسفل للمحاولة مرة أخرى.",
+      "emptyTitle": "لا يوجد محتوى منشور بعد",
+      "emptyBody": "لم يشارك مبناك أي أنظمة أو أدلة أو مستندات بعد.",
+      "notLinkedTitle": "لم يتم ربطك بمبنى بعد",
+      "notLinkedBody": "تُنشر معلومات المبنى لكل مبنى على حدة. اطلب من مدير المرافق ربط وحدتك، ثم اسحب للأسفل للتحديث."
+    },
+    "detail": {
+      "attachmentsTitle": "المرفقات",
+      "noAttachments": "لا توجد ملفات مرفقة",
+      "openFailed": "تعذّر فتح هذا الملف. حاول مرة أخرى.",
+      "linkExpired": "انتهت صلاحية رابط التنزيل. اضغط على الملف مرة أخرى.",
+      "loadError": "تعذّر تحميل هذا المستند.",
+      "notFoundTitle": "هذا المستند غير متاح",
+      "fileSizeKb": "{{size}} ك.ب",
+      "fileSizeMb": "{{size}} م.ب"
+    },
+    "assistant": {
+      "entryLabel": "اسأل عن مستندات مبناك",
+      "entryHint": "يفتح مساعد المستندات",
+      "sheetTitle": "مساعد المستندات",
+      "inputPlaceholder": "اكتب سؤالك بكلماتك",
+      "inputLabel": "سؤالك",
+      "send": "إرسال",
+      "close": "إغلاق",
+      "idleTitle": "ما الذي تودّ معرفته؟",
+      "idleBody": "اسأل عن الأنظمة والأدلة والمستندات التي نشرها مبناك. كل إجابة تقتبس من المستند الذي جاءت منه.",
+      "exampleQuestion1": "ما أوقات المسبح؟",
+      "exampleQuestion2": "هل يُسمح بتربية الحيوانات الأليفة؟",
+      "exampleQuestion3": "بمن أتصل في حالة الطوارئ؟",
+      "loadingTitle": "نقرأ مستندات مبناك…",
+      "loadingSlow": "ما زلنا نعمل — المستندات الطويلة تحتاج لحظة.",
+      "loadingA11y": "جارٍ تجهيز إجابتك",
+      "sourcesTitle": "المصادر",
+      "quotedFrom": "مقتبس من {{title}}",
+      "quoteA11y": "اقتباس من {{title}}: {{quote}}",
+      "openSource": "يفتح المستند",
+      "relatedTitle": "مستندات ذات صلة",
+      "notFoundTitle": "غير موجود في مستنداتك",
+      "notFoundBody": "لا تغطي المستندات المنشورة لمبناك هذا الموضوع.",
+      "notFoundRelated": "قد تكون هذه هي المستندات التي تبحث عنها:",
+      "notFoundNoRelated": "جرّب كلمات مختلفة، أو اسأل مدير المرافق.",
+      "noCorpusTitle": "لا توجد مستندات بعد",
+      "noCorpusBody": "لم ينشر مبناك أي مستندات حتى الآن، فلا يوجد ما نبحث فيه. يمكن لجهات الاتصال في مبناك مساعدتك.",
+      "refusedTitle": "لا يمكننا مشاركة رموز الدخول",
+      "refusedBody": "حفاظًا على أمن الجميع، لا تتم مشاركة رموز الأبواب والمفاتيح وبيانات الدخول عبر التطبيق. يمكن لجهات الاتصال في مبناك مساعدتك بشأن الدخول.",
+      "refusedCta": "جهات اتصال المبنى",
+      "blockedTitle": "لا يمكننا عرض هذه الإجابة",
+      "blockedBody": "تعذّرت مشاركة جزء من هذه الإجابة. يمكن لجهات الاتصال في مبناك مساعدتك.",
+      "outOfScopeTitle": "هذا خارج نطاق مستنداتك",
+      "outOfScopeBody": "أجيب فقط من المستندات التي نشرها مبناك — الأنظمة والأدلة والعقود وأوقات العمل. جرّب سؤالاً عن أحدها.",
+      "reportIssueTitle": "يبدو أن هذا بلاغ تحتاج إلى تقديمه",
+      "reportIssueBody": "المستندات لا تحل هذه المشكلة. أبلِغ إدارة مبناك وسيتولّى أحدهم الأمر.",
+      "degradedTitle": "المساعد غير متاح حاليًا",
+      "degradedBody": "ما زال بإمكاننا البحث في مستنداتك عن الكلمات التي استخدمتها.",
+      "degradedCta": "ابحث في المستندات",
+      "unclassifiedTitle": "لم نتمكن من قراءة سؤالك الآن",
+      "unclassifiedBody": "لم نتمكّن من تحديد ما تسأل عنه الآن. لا مشكلة في سؤالك — حاول مرة أخرى بعد قليل، أو ابحث في مستنداتك بالكلمات التي استخدمتها.",
+      "degradedBadge": "إجابة محدودة",
+      "degradedBadgeHint": "تعذّرت قراءة بعض المستندات هذه المرة.",
+      "disabledBody": "مساعد المستندات غير مفعّل لمبناك. لا يزال بإمكانك البحث في المكتبة.",
+      "reportPrompt": "بحاجة إلى إصلاح؟ يمكنك إبلاغ مبناك.",
+      "reportCta": "أبلغ عن المشكلة",
+      "errorTitle": "تعذّر الحصول على إجابة"
+    }
+  },
+  "services": {
+    "title": "الخدمات",
+    "tile": {
+      "requests": {
+        "title": "طلباتي",
+        "subtitle": "تابع طلباتك أو أنشئ طلبًا"
+      },
+      "polls": {
+        "title": "الاستطلاعات",
+        "subtitle": "صوّت على القرارات",
+        "badge_zero": "لا استطلاعات مفتوحة",
+        "badge_one": "استطلاع مفتوح",
+        "badge_two": "استطلاعان مفتوحان",
+        "badge_few": "{{count}} استطلاعات مفتوحة",
+        "badge_many": "{{count}} استطلاعًا مفتوحًا",
+        "badge_other": "{{count}} استطلاع مفتوح"
+      },
+      "buildingInfo": {
+        "title": "معلومات المبنى",
+        "subtitle": "الأنظمة والأدلة والمستندات"
+      },
+      "facilities": {
+        "title": "المرافق",
+        "subtitle": "احجز المساحات المشتركة"
+      }
+    }
+  },
+  "residents": {
+    "callAriaLabel": "اتصل بـ {{name}}",
+    "whatsappAriaLabel": "أرسل رسالة إلى {{name}} عبر واتساب"
+  },
+  "president": {
+    "autoEscalate": {
+      "title": "تصعيد تلقائي للشكاوى الجديدة",
+      "subtitleOff": "ستنتظر الشكاوى الجديدة مراجعتك",
+      "subtitleOn": "تُحوّل الشكاوى الجديدة مباشرة إلى مدير المنشأة",
+      "confirmTitle": "تشغيل التصعيد التلقائي؟",
+      "confirmBody": "من الآن فصاعدًا، ستُصعَّد كل شكوى جديدة تصل تلقائيًا إلى مدير المنشأة. يمكنك إيقاف ذلك في أي وقت.",
+      "confirmAction": "تشغيل",
+      "error": "تعذّر تحديث التصعيد التلقائي. حاول مرة أخرى.",
+      "noProject": "اربط مبنى قبل تشغيل هذا الخيار.",
+      "reason": "تصعيد تلقائي بناءً على إعداد الرئيس"
+    },
+    "announcement": {
+      "title": "إعلان جديد",
+      "titleLabel": "العنوان",
+      "titlePlaceholder": "عنوان مختصر وواضح",
+      "bodyLabel": "الرسالة",
+      "bodyPlaceholder": "ما الذي يحتاج السكان لمعرفته؟",
+      "attachmentsLabel": "صور (اختيارية، حتى 10)",
+      "submit": "نشر الإعلان",
+      "createdTitle": "تم نشر الإعلان",
+      "errorTitle": "تعذّر نشر الإعلان",
+      "partialUploadTitle": "تم نشر الإعلان",
+      "partialUploadBody": "تعذّر رفع {{count}} مرفق"
+    },
+    "poll": {
+      "title": "استطلاع جديد",
+      "questionLabel": "السؤال",
+      "questionPlaceholder": "ما الذي تريد سؤاله للسكان؟",
+      "descriptionLabel": "تفاصيل (اختياري)",
+      "descriptionPlaceholder": "أضف سياقًا يراه السكان",
+      "typeLabel": "نوع الاستطلاع",
+      "selectType": "اختر نوع الاستطلاع",
+      "typeLoadError": "تعذّر تحميل أنواع الاستطلاع",
+      "typeLoadErrorBody": "تعذّر تحميل أنواع الاستطلاع، لذا لا يمكن إنشاء استطلاع الآن.",
+      "typesEmptyTitle": "لا توجد أنواع استطلاع متاحة",
+      "typesEmptyBody": "لا توجد أنواع استطلاع للاختيار منها حاليًا، لذا لا يمكن إنشاء استطلاع الآن.",
+      "optionsLabel": "الخيارات",
+      "optionsHint": "{{min}}–{{max}} خيارات",
+      "optionPlaceholder": "خيار {{n}}",
+      "optionsError": "أضف خيارين فريدين على الأقل ولا تتركهما فارغين",
+      "addOption": "إضافة خيار",
+      "removeOption": "إزالة الخيار",
+      "dateRange": "نافذة التصويت",
+      "startsAt": "يبدأ",
+      "endsAt": "ينتهي",
+      "datesError": "وقت الانتهاء يجب أن يكون بعد البداية",
+      "anonymousLabel": "تصويت مجهول",
+      "anonymousHint": "إخفاء أسماء المصوّتين عن النتائج",
+      "allowAddOptionsLabel": "السماح للسكان بإضافة خيارات",
+      "allowAddOptionsHint": "يمكن للمصوّتين إرسال خياراتهم",
+      "submit": "نشر الاستطلاع",
+      "createdTitle": "تم نشر الاستطلاع",
+      "errorTitle": "تعذّر نشر الاستطلاع"
+    },
+    "dashboard": {
+      "createAnnouncement": "إنشاء إعلان",
+      "createPoll": "إنشاء استطلاع",
+      "allClear": "كل شيء على ما يرام",
+      "lastUpdated": "آخر تحديث {{when}}",
+      "alerts": {
+        "title": "يحتاج إلى انتباه · {{n}}",
+        "body": "اضغط لمراجعة التذاكر العاجلة",
+        "label": "{{n}} تذكرة عاجلة تحتاج إلى انتباهك"
+      },
+      "compose": {
+        "fabLabel": "إنشاء إعلان أو استطلاع",
+        "sheetTitle": "إنشاء",
+        "announcementHint": "أبلغ السكان بالأخبار",
+        "pollHint": "اطلب من السكان التصويت على شيء"
+      },
+      "tile": {
+        "requests": "الطلبات",
+        "complaints": "الشكاوى",
+        "maintenance": "الصيانة",
+        "community": "منشورات المجتمع",
+        "residents": "السكان",
+        "buildingInfo": "معلومات المبنى",
+        "activeTickets": "تذاكر نشطة",
+        "activeResidents": "سكان نشطون",
+        "complaintsCount": "{{n}} شكاوى",
+        "maintenanceCount": "{{n}} صيانة"
+      },
+      "urgent": {
+        "title": "يحتاج إلى انتباه",
+        "emptyTitle": "كل شيء على ما يرام",
+        "emptyBody": "لا توجد طوارئ أو تذاكر متجاوزة حاليًا."
+      },
+      "insights": {
+        "title": "هذا الشهر",
+        "trendCaption": "الأسهم تُظهر التغيّر مقارنة بالشهر الماضي",
+        "opened": "مفتوحة",
+        "resolved": "محلولة",
+        "avgTime": "متوسط الوقت",
+        "slaMet": "ضمن SLA",
+        "hoursValue": "{{n}} س",
+        "escalatedNow": "{{n}} لدى مدير المنشأة",
+        "slaBreached": "{{n}} تجاوزت اتفاقية الخدمة",
+        "backlog": "{{n}} مرحّلة من الشهر الماضي"
+      },
+      "recentTickets": {
+        "title": "أحدث التذاكر",
+        "empty": "أسبوع هادئ. لا جديد من السكان.",
+        "unit": "الوحدة",
+        "viewAll": "عرض الكل"
+      }
+    }
+  },
+  "fm": {
+    "appName": "ديارنا لإدارة المرافق",
+    "home": {
+      "title": "الرئيسية لمدير المرافق",
+      "subtitle": "مساحة عمل مدير المرافق. ستتوفر الميزات في الإصدارات القادمة.",
+      "signIn": "الانتقال إلى تسجيل الدخول"
+    },
+    "login": {
+      "title": "تسجيل الدخول",
+      "subtitle": "تسجيل دخول مدير المرافق قريبًا.",
+      "continue": "المتابعة إلى الرئيسية"
+    }
+  }
+}

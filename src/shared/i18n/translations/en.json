@@ -1,0 +1,1283 @@
+{
+  "common": {
+    "continue": "Continue",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "back": "Back",
+    "done": "Done",
+    "save": "Save",
+    "next": "Next",
+    "signOut": "Sign out",
+    "or": "or",
+    "loading": "Loading",
+    "error": "Something went wrong",
+    "retry": "Try again",
+    "more": "More options",
+    "clear": "Clear"
+  },
+  "imageViewer": {
+    "close": "Close",
+    "closeHint": "Closes the image viewer",
+    "counter": "{{current}} / {{total}}",
+    "imageA11y": "Image {{current}} of {{total}}",
+    "openA11y": "Open image {{index}} of {{total}} full screen",
+    "zoomHint": "Double tap to zoom",
+    "error": {
+      "title": "Couldn't load this image",
+      "body": "The link may have expired. Try again to refresh it."
+    }
+  },
+  "session": {
+    "expired": {
+      "title": "Session expired",
+      "body": "Please sign in again to continue."
+    }
+  },
+  "errors": {
+    "network": "No connection — try again",
+    "timeout": "The server took too long to respond. Please try again.",
+    "requestFailed": "We couldn't confirm whether that went through. Please check before trying again.",
+    "server": "Something went wrong on our end. Please try again.",
+    "generic": "Something went wrong. Please try again.",
+    "emailInvalid": "Enter a valid email address",
+    "emailRequired": "Email is required",
+    "buildingCodeRequired": "Building code is required",
+    "buildingNotFound": "We couldn't find that building. Check the code and try again.",
+    "otpRequired": "Enter the 4-digit code",
+    "otpInvalid": "That code is incorrect",
+    "otpTooManyAttempts": "Too many attempts. Start over.",
+    "tooManyRequests": "Hold on — slow down a moment.",
+    "tooManyRequestsSeconds": "Hold on — try again in {{seconds}}s.",
+    "tooManyRequestsMinutes": "Hold on — try again in {{minutes}}m.",
+    "actionFailed": "Action failed",
+    "nameRequired": "Name is required",
+    "nameTooShort": "Name must be at least 2 characters",
+    "mobileInvalid": "Enter a valid mobile number",
+    "mobileRequired": "Mobile number is required",
+    "genderRequired": "Please select an option",
+    "emailAlreadyRegistered": "You already have an account — sign in",
+    "photoAccessDenied": "Enable photo access in Settings",
+    "cameraAccessDenied": "Enable camera access in Settings"
+  },
+  "auth": {
+    "login": {
+      "heading": "Welcome back",
+      "subheading": "Sign in with your email to continue",
+      "emailPlaceholder": "Email address",
+      "submit": "Continue",
+      "biometric": "Face ID",
+      "biometricFingerprint": "Fingerprint",
+      "biometricTouchId": "Touch ID",
+      "noAccount": "New here?",
+      "createAccount": "Create account"
+    },
+    "otp": {
+      "heading": "Verification",
+      "emailSubheading": "Enter the 4-digit code sent to {{email}}",
+      "mobileSubheading": "Enter the 4-digit code sent to {{mobile}}",
+      "resendIn": "Resend in {{time}}",
+      "resend": "Resend code",
+      "submit": "Submit"
+    },
+    "signup": {
+      "step1": {
+        "heading": "Create your account",
+        "subheading": "We'll verify your building before sending a code",
+        "emailPlaceholder": "Email address",
+        "buildingCodePlaceholder": "Building code",
+        "helper": "Ask your building manager if you don't have one",
+        "submit": "Continue",
+        "haveAccount": "Already have an account?",
+        "signIn": "Sign in",
+        "scanQrLabel": "Scan building QR code",
+        "scanner": {
+          "title": "Scan building QR",
+          "subtitle": "Point your camera at the building QR code",
+          "requesting": "Requesting camera access…",
+          "permissionDenied": "Camera access denied",
+          "permissionHint": "Enable camera access to scan, or enter the code manually.",
+          "grantAccess": "Grant camera access",
+          "enterManually": "Enter manually",
+          "invalid": "That QR code couldn't be read. Try again.",
+          "retry": "Try again",
+          "filled": "Building code filled from QR"
+        }
+      },
+      "buildingCode": {
+        "heading": "Add your building code",
+        "subheading": "Your email is verified. We need your building code to send your request to the building manager for approval.",
+        "emailLabel": "Signing up as"
+      },
+      "step2": {
+        "heading": "Tell us about you",
+        "subheading": "This information goes in your building directory",
+        "firstNamePlaceholder": "First name",
+        "lastNamePlaceholder": "Last name",
+        "genderMale": "Male",
+        "genderFemale": "Female",
+        "mobilePlaceholder": "Mobile number",
+        "submit": "Continue"
+      }
+    },
+    "pendingApproval": {
+      "heading": "You're on the list",
+      "body": "Your building manager needs to approve your account. We'll let you know as soon as you're in.",
+      "labelEmail": "Email",
+      "checking": "Checking…",
+      "approved": {
+        "title": "Welcome!",
+        "body": "Your account has been approved.",
+        "cta": "Enter Dyarna"
+      },
+      "rejected": {
+        "heading": "Your request wasn't approved",
+        "body": "Your building manager didn't approve this account. If you think this is a mistake, contact your building management — or sign out and try again with a different building code."
+      }
+    },
+    "biometric": {
+      "unavailable": "Biometric unavailable — sign in with email"
+    },
+    "setupProfile": {
+      "heading": "Finish your profile",
+      "subheading": "Add a photo so your neighbors recognize you",
+      "submit": "Save & Continue"
+    },
+    "terms": {
+      "title": "Terms and Conditions",
+      "agree": "Agree",
+      "agreePrefix": "I have read and agree to the",
+      "checkboxLabel": "Agree to the Terms and Conditions",
+      "loginNotice": "By signing in, you agree to the",
+      "gate": {
+        "intro": "Please review and accept our Terms and Conditions to continue using Dyarna.",
+        "accept": "I Agree",
+        "accepting": "Recording your acceptance…",
+        "loading": "Loading the terms…",
+        "error": "We couldn't record your acceptance. Check your connection and try again.",
+        "failOpen": {
+          "notice": "We still can't record your acceptance, so we won't keep you waiting. You can continue to Dyarna now, and we'll ask you again next time you open the app.",
+          "continue": "Continue for now"
+        }
+      }
+    }
+  },
+  "language": {
+    "restarting": "Language updated — restarting…",
+    "restartTitle": "Language updated",
+    "restartBody": "Please close and reopen the app to finish applying the new layout direction.",
+    "toggle": "Switch language",
+    "en": "EN",
+    "ar": "AR"
+  },
+  "theme": {
+    "light": "Light Mode",
+    "dark": "Dark Mode"
+  },
+  "navigation": {
+    "community": "Community",
+    "requests": "Requests",
+    "services": "Services",
+    "marketplace": "Marketplace",
+    "profile": "Profile",
+    "feed": "Feed",
+    "dashboard": "Dashboard",
+    "complaints": "Complaints",
+    "maintenance": "Maintenance",
+    "residents": "Residents",
+    "notifications": "Notifications"
+  },
+  "profile": {
+    "settings": "Profile Settings",
+    "viewContacts": "View Contacts",
+    "buildingContacts": "Building directory",
+    "section": {
+      "account": "Account",
+      "preferences": "Preferences",
+      "about": "About"
+    },
+    "fields": {
+      "project": "Project",
+      "building": "Building",
+      "unit": "Unit"
+    },
+    "unlinkedBuilding": {
+      "title": "Not linked to a building",
+      "body": "Ask your building manager to link your unit."
+    },
+    "language": "Language",
+    "languageOption": {
+      "en": "English",
+      "ar": "العربية"
+    },
+    "themeRow": "Theme",
+    "themeOption": {
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "blockedUsers": "Blocked users",
+    "directoryVisibility": "Show in directory",
+    "version": "Version",
+    "changePhoto": "Change photo",
+    "takePhoto": "Take photo",
+    "chooseFromLibrary": "Choose from library",
+    "photoTooLarge": "That photo is too large (max 5 MB)",
+    "photoUpdated": "Profile photo updated",
+    "deleteAccount": {
+      "row": "Delete account",
+      "deleting": "Deleting account…",
+      "confirmTitle": "Delete your account?",
+      "confirmBody": "This permanently deletes your account and removes your profile from your building's directory. This cannot be undone.",
+      "confirmAction": "Delete account",
+      "deletedTitle": "Your account has been deleted"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "new": "New",
+    "markAllRead": "Mark all read",
+    "markAllDone": "All notifications marked as read",
+    "markAllError": "Couldn't mark all as read",
+    "bellA11y": "Notifications",
+    "bellA11yUnread": "Notifications, {{count}} unread",
+    "unreadCount_zero": "{{count}} unread",
+    "unreadCount_one": "1 unread",
+    "unreadCount_two": "{{count}} unread",
+    "unreadCount_few": "{{count}} unread",
+    "unreadCount_many": "{{count}} unread",
+    "unreadCount_other": "{{count}} unread",
+    "empty": {
+      "title": "You're all caught up",
+      "body": "Updates about your tickets — new comments, status changes and resolutions — will show up here."
+    },
+    "error": {
+      "title": "Couldn't load notifications",
+      "body": "We couldn't reach your notifications just now. Check your connection and try again."
+    },
+    "a11y": {
+      "unread": "unread",
+      "read": "read",
+      "opensTicket": "Opens the ticket",
+      "opensRequests": "Opens resident requests"
+    },
+    "status": {
+      "OPEN": "Open",
+      "IN_PROGRESS": "In progress",
+      "RESOLVED": "Resolved",
+      "CLOSED": "Closed",
+      "ESCALATED": "Escalated",
+      "NOT_ACTIONABLE": "Not actionable"
+    },
+    "types": {
+      "TICKET_CREATED": {
+        "title": "Ticket created",
+        "body": "Ticket {{ticketNumber}} has been created."
+      },
+      "TICKET_ASSIGNED": {
+        "title": "Ticket assigned to you",
+        "body": "Ticket {{ticketNumber}} has been assigned to you."
+      },
+      "TICKET_STATUS_CHANGED": {
+        "title": "Ticket status updated",
+        "body": "Ticket {{ticketNumber}} moved from {{oldStatus}} to {{newStatus}}."
+      },
+      "TICKET_COMMENT_ADDED": {
+        "title": "New comment",
+        "body": "A new comment was added to ticket {{ticketNumber}}."
+      },
+      "TICKET_RESOLVED": {
+        "title": "Ticket resolved",
+        "body": "Ticket {{ticketNumber}} has been resolved."
+      },
+      "TICKET_CLOSED": {
+        "title": "Ticket closed",
+        "body": "Ticket {{ticketNumber}} has been closed."
+      },
+      "TICKET_REOPENED": {
+        "title": "Ticket reopened",
+        "body": "Ticket {{ticketNumber}} has been reopened."
+      },
+      "TICKET_ESCALATED": {
+        "title": "Ticket escalated",
+        "body": "Ticket {{ticketNumber}} has been escalated."
+      },
+      "TICKET_DUE_SOON": {
+        "title": "Ticket due soon",
+        "body": "Ticket {{ticketNumber}} is approaching its SLA deadline."
+      },
+      "RESIDENT_LINK_REQUEST_CREATED": {
+        "title": "New resident request",
+        "body": "{{residentName}} asked to be linked to unit {{unitNumber}} in {{buildingName}} and needs your approval."
+      }
+    }
+  },
+  "placeholder": {
+    "community": {
+      "title": "Your community feed is almost here",
+      "body": "Posts, announcements, and events from your neighbors will appear here."
+    },
+    "requests": {
+      "title": "No requests yet",
+      "body": "Raise a maintenance or favor request to see it here."
+    },
+    "marketplace": {
+      "title": "Nothing for sale yet",
+      "body": "Listings from your compound will show up here."
+    },
+    "feed": {
+      "title": "Community feed coming soon",
+      "body": "You'll see everything your residents post from this tab."
+    },
+    "complaints": {
+      "title": "No complaints to review",
+      "body": "Complaints assigned to you will show up here."
+    },
+    "maintenance": {
+      "title": "No maintenance tickets",
+      "body": "Maintenance tickets from your building will appear here."
+    },
+    "residents": {
+      "title": "Resident directory",
+      "body": "Linked residents in your project will be listed here."
+    },
+    "contacts": {
+      "title": "Project contacts coming soon",
+      "body": "You'll see the management team for your building here."
+    }
+  },
+  "buildingContacts": {
+    "title": "Building directory",
+    "loadError": "Couldn't load contacts. Pull down to try again.",
+    "empty": "No contacts available yet.",
+    "noProject": "You're not linked to a building yet.",
+    "section": {
+      "facilityManager": "Facility manager",
+      "president": "Building president",
+      "residents": "Residents"
+    },
+    "residentsEmpty": "No residents have opted in to be listed.",
+    "residentsNoMatch": "No residents match",
+    "searchPlaceholder": "Search residents",
+    "unitLabel": "Unit {{n}}"
+  },
+  "blockedUsers": {
+    "title": "Blocked users",
+    "emptyTitle": "No blocked users",
+    "emptyBody": "People you block from the community feed will appear here.",
+    "unblock": "Unblock",
+    "unknownUser": "Community member"
+  },
+  "tickets": {
+    "emergency": "URGENT",
+    "filters": {
+      "all": "All",
+      "open": "Open",
+      "inProgress": "In progress",
+      "resolved": "Resolved"
+    },
+    "domainFilters": {
+      "all": "All",
+      "maintenance": "Maintenance",
+      "complaint": "Complaints"
+    },
+    "time": {
+      "justNow": "Just now",
+      "minutesAgo": "{{n}}m ago",
+      "hoursAgo": "{{n}}h ago",
+      "daysAgo": "{{n}}d ago",
+      "weeksAgo": "{{n}}w ago",
+      "monthsAgo": "{{n}}mo ago",
+      "yearsAgo": "{{n}}y ago"
+    },
+    "emptyRequests": {
+      "title": "No requests yet",
+      "body": "When you submit a complaint or maintenance request, it'll show up here."
+    },
+    "emptyRequestsFiltered": {
+      "title": "Nothing here yet",
+      "body": "No tickets match the current filter."
+    },
+    "timeline": {
+      "title": "Timeline",
+      "created": "Created",
+      "underReview": "Under review",
+      "inProgress": "In progress",
+      "escalated": "Escalated to facility manager",
+      "awaitingResolution": "With facility manager",
+      "resolved": "Resolved",
+      "closed": "Closed"
+    },
+    "emptyComplaints": {
+      "title": "No complaints assigned",
+      "body": "Complaints routed to you will appear here."
+    },
+    "emptyMaintenance": {
+      "title": "No maintenance tickets",
+      "body": "Maintenance work from your building will appear here."
+    },
+    "detail": {
+      "createdAt": "Opened",
+      "reportedBy": "Reported by",
+      "byUser": "by {{n}}",
+      "category": "Category",
+      "priority": "Priority",
+      "location": "Location",
+      "dueDate": "Due",
+      "building": "Building",
+      "unit": "Unit",
+      "assignedTo": "Assigned to",
+      "roleManager": "Manager",
+      "roleMaintenance": "Maintenance",
+      "internalNote": "Internal note",
+      "resolution": "Resolution",
+      "resolvedOn": "Resolved · {{date}}",
+      "repairCost": "Repair cost",
+      "noComments": "No comments yet",
+      "commentsTitle": "Activity",
+      "attachmentsTitle": "Attachments",
+      "loadError": "Couldn't load this ticket. Pull down to try again.",
+      "notFound": "Ticket not found",
+      "delete": "Delete",
+      "deleteTitle": "Delete ticket?",
+      "deleteBody": "This cannot be undone.",
+      "deleteConfirm": "Delete",
+      "deletedTitle": "Ticket deleted"
+    },
+    "rating": {
+      "prompt": "How would you rate the resolution?",
+      "alreadyRated": "You rated this ticket",
+      "starLabel_zero": "{{count}} stars",
+      "starLabel_one": "{{count}} star",
+      "starLabel_two": "{{count}} stars",
+      "starLabel_few": "{{count}} stars",
+      "starLabel_many": "{{count}} stars",
+      "starLabel_other": "{{count}} stars",
+      "commentPlaceholder": "Add a comment (optional)",
+      "submit": "Submit rating",
+      "thankYou": "Thanks for your feedback!",
+      "error": "Couldn't submit your rating. Please try again."
+    },
+    "priority": {
+      "LOW": "Low",
+      "MEDIUM": "Medium",
+      "HIGH": "High",
+      "CRITICAL": "Critical"
+    },
+    "compose": {
+      "titleCreate": "New request",
+      "domainLabel": "Type",
+      "domainMaintenance": "Maintenance",
+      "domainComplaint": "Complaint",
+      "categoryLabel": "Category",
+      "noCategories": "No categories available",
+      "buildingLabel": "Building",
+      "fieldUnit": "Unit number",
+      "unitPlaceholder": "e.g. A-12",
+      "fieldDescription": "What's going on?",
+      "descriptionPlaceholder": "Describe the issue so the team can help",
+      "fieldLocation": "Where is it? (optional)",
+      "locationPlaceholder": "e.g. kitchen sink, lobby",
+      "attachmentsLabel": "Photos (optional, up to 5)",
+      "submitCreate": "Submit",
+      "createdTitle": "Request submitted",
+      "errorTitle": "Couldn't submit request",
+      "partialUploadTitle": "Request submitted",
+      "partialUploadBody": "{{count}} attachment(s) failed to upload",
+      "discardTitle": "Discard request?",
+      "discardBody": "Your changes will be lost.",
+      "discard": "Discard",
+      "fabLabel": "New request",
+      "errors": {
+        "categoryRequired": "Pick a category",
+        "descriptionRequired": "Describe the issue",
+        "descriptionTooLong": "Description must be 2000 characters or fewer",
+        "buildingRequired": "Pick a building",
+        "unitRequired": "Add a unit number",
+        "generic": "Please check this field"
+      }
+    },
+    "president": {
+      "actions": {
+        "resolve": "Resolve complaint",
+        "escalate": "Escalate"
+      },
+      "resolve": {
+        "title": "Resolve complaint",
+        "commentLabel": "Resolution notes",
+        "commentPlaceholder": "Summarize how this was resolved",
+        "attachmentsLabel": "Photos (optional, up to 10)",
+        "submit": "Resolve",
+        "success": "Complaint resolved",
+        "error": "Couldn't resolve. Try again."
+      },
+      "escalate": {
+        "title": "Escalate to facility manager",
+        "subtitle": "The facility manager will pick up this ticket from here.",
+        "reasonLabel": "Reason for escalation",
+        "reasonPlaceholder": "Why does this need escalation?",
+        "submit": "Escalate",
+        "success": "Ticket escalated",
+        "error": "Couldn't escalate. Try again."
+      },
+      "filters": {
+        "title": "Filter complaints",
+        "advanced": "Filters",
+        "advancedWithCount": "Filters · {{n}}",
+        "clearAll": "Clear all",
+        "clearDates": "Clear dates",
+        "apply": "Apply",
+        "dateRange": "Date range",
+        "from": "From",
+        "to": "To",
+        "anyDate": "Any date",
+        "categories": "Categories",
+        "searchPlaceholder": "Search by title, description, or ticket #",
+        "status": {
+          "ALL": "All",
+          "OPEN": "Open",
+          "IN_PROGRESS": "In progress",
+          "RESOLVED": "Resolved",
+          "CLOSED": "Closed",
+          "ESCALATED": "Escalated",
+          "NOT_ACTIONABLE": "Not actionable"
+        }
+      }
+    }
+  },
+  "community": {
+    "pinned": "Pinned",
+    "authorRole": {
+      "PRESIDENT": "President",
+      "FACILITY_MANAGER": "FM",
+      "RESIDENT": "Resident"
+    },
+    "filter": {
+      "all": "All",
+      "mine": "My Posts",
+      "facilityManager": "Facility Manager",
+      "president": "President",
+      "general": "General",
+      "announcement": "Announcement",
+      "event": "Event",
+      "emergency": "Emergency"
+    },
+    "category": {
+      "GENERAL": "General",
+      "ANNOUNCEMENT": "Announcement",
+      "EVENT": "Event",
+      "EMERGENCY": "Emergency",
+      "POLL": "Poll"
+    },
+    "empty": {
+      "title": "No posts yet",
+      "body": "Be the first to share something with your neighbors."
+    },
+    "emptySearch": {
+      "title": "No posts match",
+      "body": "Try a different keyword."
+    },
+    "searchPlaceholder": "Search posts",
+    "detail": {
+      "comments": "Comments",
+      "noComments": "No comments yet",
+      "eventLocation": "Location",
+      "eventWhen": "When",
+      "loadError": "Couldn't load this post. Pull down to try again.",
+      "notFound": "Post not found"
+    }
+  },
+  "posts": {
+    "compose": {
+      "titleCreate": "New post",
+      "titleEdit": "Edit post",
+      "category": "Category",
+      "fieldTitle": "Title",
+      "titlePlaceholder": "A short headline",
+      "fieldBody": "Body",
+      "bodyPlaceholder": "Share something with your neighbours",
+      "images": "Photos",
+      "currentImages": "Photos in this post",
+      "imagesLocked": "Image changes require recreating the post.",
+      "addImage": "Add a photo",
+      "removeImage": "Remove photo",
+      "takePhoto": "Take photo",
+      "chooseFromLibrary": "Choose from library",
+      "attachFile": "Attach a file",
+      "fileTooLarge": "That image is too large (max 5 MB)",
+      "submitCreate": "Post",
+      "submitEdit": "Save",
+      "partialUploadTitle": "Post created",
+      "partialUploadBody": "{{count}} photo(s) failed to upload",
+      "createdTitle": "Posted",
+      "errorTitle": "Couldn't post",
+      "errorEditTitle": "Couldn't save changes",
+      "savedTitle": "Saved",
+      "deletedTitle": "Post deleted",
+      "discardTitle": "Discard post?",
+      "discardBody": "Your changes will be lost.",
+      "discard": "Discard",
+      "deleteTitle": "Delete post?",
+      "deleteBody": "This cannot be undone.",
+      "deleteConfirm": "Delete",
+      "edit": "Edit",
+      "delete": "Delete",
+      "fabLabel": "Compose post",
+      "eventStart": "Starts",
+      "eventEnd": "Ends",
+      "eventPickDate": "Pick a date & time",
+      "eventLocation": "Where (optional)",
+      "eventLocationPlaceholder": "e.g. Garden, Tower A lobby",
+      "eventCategory": "Event type",
+      "eventFamiliesOnly": "Families only",
+      "eventGuestsAllowed": "Guests allowed",
+      "eventCostSharing": "Cost sharing (Qattah)",
+      "errors": {
+        "titleRequired": "Add a title",
+        "titleTooLong": "Title must be 120 characters or fewer",
+        "bodyRequired": "Write a body",
+        "bodyTooLong": "Body must be 2000 characters or fewer",
+        "categoryRequired": "Pick a category",
+        "eventStartRequired": "Pick a start time",
+        "eventEndRequired": "Pick an end time",
+        "eventEndBeforeStart": "End must be after start",
+        "generic": "Please check this field"
+      }
+    },
+    "actions": {
+      "like": "Like",
+      "unlike": "Unlike",
+      "send": "Send",
+      "commentPlaceholder": "Write a comment"
+    },
+    "comments": {
+      "errorTitle": "Couldn't post comment"
+    },
+    "share": {
+      "label": "Share",
+      "intro": "Check out this post on Dyarna:",
+      "fallbackTitle": "Dyarna"
+    },
+    "moderation": {
+      "report": "Report post",
+      "reportTitle": "Report this post?",
+      "reportBody": "Tell us what's wrong with it. The post will be hidden from your feed and our team will review it.",
+      "reasons": {
+        "SPAM": "Spam",
+        "INAPPROPRIATE": "Inappropriate content",
+        "HARASSMENT": "Harassment or abuse",
+        "OTHER": "Something else"
+      },
+      "reportedTitle": "Thanks — the post has been hidden and reported",
+      "block": "Block user",
+      "blockTitle": "Block {{name}}?",
+      "blockBody": "You won't see their posts, comments, or listings anymore. Our team will also be notified.",
+      "blockConfirm": "Block",
+      "blockedTitle": "User blocked — their content has been removed"
+    }
+  },
+  "marketplace": {
+    "perMonth": "/ month",
+    "negotiable": "Negotiable",
+    "status": {
+      "PUBLISHED": "Available",
+      "SOLD": "Sold",
+      "RENTED": "Rented",
+      "EXPIRED": "Expired"
+    },
+    "statusUpdate": {
+      "action": "Change status",
+      "title": "Update status",
+      "body": "Pick the new status for this listing.",
+      "markSold": "Mark as sold",
+      "markRented": "Mark as rented",
+      "markExpired": "Mark as expired",
+      "successTitle": "Status updated"
+    },
+    "type": {
+      "SALE": "For Sale",
+      "RENT": "For Rent"
+    },
+    "condition": {
+      "NEW": "New",
+      "USED": "Used",
+      "LIKE_NEW": "Like new",
+      "REFURBISHED": "Refurbished"
+    },
+    "empty": {
+      "title": "Nothing for sale yet",
+      "body": "Listings from your compound will appear here."
+    },
+    "emptySearch": {
+      "title": "No listings match",
+      "body": "Try a different keyword."
+    },
+    "searchPlaceholder": "Search listings",
+    "compose": {
+      "titleCreate": "New listing",
+      "titleEdit": "Edit listing",
+      "typeLabel": "Listing type",
+      "categoryLabel": "Category",
+      "conditionLabel": "Condition",
+      "imagesLabel": "Photos (up to 5)",
+      "fieldTitle": "Title",
+      "titlePlaceholder": "What are you listing?",
+      "fieldDescription": "Description",
+      "descriptionPlaceholder": "Tell buyers what they need to know",
+      "fieldPrice": "Price",
+      "negotiable": "Price is negotiable",
+      "fieldLocation": "Location (optional)",
+      "locationPlaceholder": "e.g. Building A, Unit 12",
+      "fieldContactPhone": "Phone (optional)",
+      "fieldContactWhatsapp": "WhatsApp (optional)",
+      "submitCreate": "List it",
+      "submitEdit": "Save",
+      "createdTitle": "Listed",
+      "errorTitle": "Couldn't list item",
+      "savedTitle": "Saved",
+      "deletedTitle": "Listing deleted",
+      "partialUploadTitle": "Listing created",
+      "partialUploadBody": "{{count}} photo(s) failed to upload",
+      "discardTitle": "Discard listing?",
+      "discardBody": "Your changes will be lost.",
+      "discard": "Discard",
+      "deleteTitle": "Delete listing?",
+      "deleteBody": "This cannot be undone.",
+      "deleteConfirm": "Delete",
+      "delete": "Delete",
+      "edit": "Edit",
+      "fabLabel": "Create listing",
+      "errors": {
+        "titleRequired": "Add a title",
+        "titleTooLong": "Title must be 120 characters or fewer",
+        "descriptionRequired": "Add a description",
+        "descriptionTooLong": "Description must be 2000 characters or fewer",
+        "categoryRequired": "Pick a category",
+        "priceRequired": "Add a price",
+        "priceInvalid": "Enter a valid price",
+        "phoneInvalid": "Enter a 9-digit number starting with 5",
+        "generic": "Please check this field"
+      }
+    },
+    "detail": {
+      "seller": "Seller",
+      "building": "Building",
+      "location": "Location",
+      "posted": "Posted",
+      "call": "Call",
+      "whatsapp": "WhatsApp",
+      "loadError": "Couldn't load this listing. Pull down to try again.",
+      "notFound": "Listing not found"
+    },
+    "primary": {
+      "all": "All",
+      "sale": "For Sale",
+      "rent": "For Rent",
+      "free": "Free"
+    },
+    "filters": {
+      "button": "Filters",
+      "open": "Open filters",
+      "sort": "Sort",
+      "openSort": "Open sort options",
+      "title": "Filters",
+      "category": "Category",
+      "condition": "Condition",
+      "price": "Price range",
+      "min": "Min",
+      "max": "Max",
+      "anyMax": "Any",
+      "negotiableOnly": "Negotiable only",
+      "sortBy": "Sort by",
+      "apply": "Apply",
+      "reset": "Reset"
+    },
+    "sort": {
+      "newest": "Newest first",
+      "oldest": "Oldest first",
+      "priceAsc": "Price: low to high",
+      "priceDesc": "Price: high to low"
+    },
+    "emptyFiltered": {
+      "title": "No listings match",
+      "body": "Try relaxing the filters.",
+      "clear": "Clear filters"
+    }
+  },
+  "facilities": {
+    "title": "Facilities",
+    "projectWide": "Project-wide",
+    "capacityValue_zero": "Fits up to {{count}} people",
+    "capacityValue_one": "Fits 1 person",
+    "capacityValue_two": "Fits up to {{count}} people",
+    "capacityValue_few": "Fits up to {{count}} people",
+    "capacityValue_many": "Fits up to {{count}} people",
+    "capacityValue_other": "Fits up to {{count}} people",
+    "type": {
+      "GYM": "Gym",
+      "POOL": "Pool",
+      "BBQ": "BBQ area",
+      "MEETING_ROOM": "Meeting room",
+      "PARTY_HALL": "Party hall",
+      "TENNIS": "Tennis court",
+      "BASKETBALL": "Basketball court",
+      "PLAYGROUND": "Playground",
+      "ROOFTOP": "Rooftop",
+      "LOBBY": "Lobby",
+      "GUEST_PARKING": "Guest parking"
+    },
+    "entry": {
+      "title": "Facilities",
+      "subtitle": "Book the gym, pool and other shared spaces"
+    },
+    "list": {
+      "loadError": "Couldn't load facilities. Pull down to try again.",
+      "noProjectTitle": "We couldn't determine your project",
+      "noProjectBody": "Facilities are listed per project. Ask your facility manager to link your unit, then pull down to refresh.",
+      "noProjectCta": "Find your facility manager",
+      "emptyTitle": "No facilities yet",
+      "emptyBody": "Your project hasn't added any bookable spaces yet."
+    },
+    "detail": {
+      "loadError": "Couldn't load this facility. Pull down to try again.",
+      "notFound": "Facility not found",
+      "location": "Location",
+      "capacity": "Capacity",
+      "bookSlot": "Book a slot",
+      "requestSlot": "Request a slot"
+    },
+    "rules": {
+      "title": "Before you book",
+      "maxDuration_zero": "Up to {{count}} hours per booking",
+      "maxDuration_one": "Up to 1 hour per booking",
+      "maxDuration_two": "Up to {{count}} hours per booking",
+      "maxDuration_few": "Up to {{count}} hours per booking",
+      "maxDuration_many": "Up to {{count}} hours per booking",
+      "maxDuration_other": "Up to {{count}} hours per booking",
+      "advanceBooking_zero": "Book up to {{count}} days ahead",
+      "advanceBooking_one": "Book up to 1 day ahead",
+      "advanceBooking_two": "Book up to {{count}} days ahead",
+      "advanceBooking_few": "Book up to {{count}} days ahead",
+      "advanceBooking_many": "Book up to {{count}} days ahead",
+      "advanceBooking_other": "Book up to {{count}} days ahead",
+      "needsApproval": "A facility manager reviews your request",
+      "instantConfirm": "Confirmed as soon as you book"
+    },
+    "book": {
+      "title": "Book a slot",
+      "submitRequest": "Send request",
+      "submitBooking": "Confirm booking",
+      "startTime": "Start",
+      "endTime": "End",
+      "guests": "Guests",
+      "capacityHelper_zero": "Up to {{count}} people",
+      "capacityHelper_one": "Up to 1 person",
+      "capacityHelper_two": "Up to {{count}} people",
+      "capacityHelper_few": "Up to {{count}} people",
+      "capacityHelper_many": "Up to {{count}} people",
+      "capacityHelper_other": "Up to {{count}} people",
+      "titleField": "Title (optional)",
+      "titlePlaceholder": "e.g. Family gathering",
+      "notes": "Notes (optional)",
+      "notesPlaceholder": "Anything the facility manager should know",
+      "localTimeZone": "Times are in your local time ({{zone}})",
+      "localTimeNoZone": "Times are in your device's local time.",
+      "fromValue": "From {{value}}",
+      "toValue": "To {{value}}",
+      "durationLine": "Duration: {{value}}",
+      "durationHours_zero": "{{count}} hours",
+      "durationHours_one": "1 hour",
+      "durationHours_two": "{{count}} hours",
+      "durationHours_few": "{{count}} hours",
+      "durationHours_many": "{{count}} hours",
+      "durationHours_other": "{{count}} hours",
+      "durationMinutes_zero": "{{count}} minutes",
+      "durationMinutes_one": "1 minute",
+      "durationMinutes_two": "{{count}} minutes",
+      "durationMinutes_few": "{{count}} minutes",
+      "durationMinutes_many": "{{count}} minutes",
+      "durationMinutes_other": "{{count}} minutes",
+      "durationHoursMinutes": "{{hours}} hr {{minutes}} min",
+      "loadError": "Couldn't load this facility. Try again.",
+      "errorTitle": "Couldn't submit your booking",
+      "notice": {
+        "conflictTitle": "That slot is already taken",
+        "conflictBody": "Another booking overlaps the time you picked. Choose a different start or end time.",
+        "unavailableTitle": "This facility isn't available",
+        "unavailableBody": "This facility isn't open for bookings right now. Pick another time, or ask your facility manager."
+      },
+      "success": {
+        "pendingTitle": "Request submitted",
+        "pendingBody": "Awaiting facility manager approval.",
+        "confirmedTitle": "Booking confirmed",
+        "confirmedBody": "Your slot is reserved."
+      },
+      "errors": {
+        "endBeforeStart": "The end time must be after the start time.",
+        "durationTooLong": "That's longer than this facility allows in one booking.",
+        "tooFarAhead": "That's further ahead than this facility allows.",
+        "startInPast": "Pick a start time in the future.",
+        "overCapacity": "That's more guests than this facility holds.",
+        "guestCountInvalid": "Enter at least 1 guest.",
+        "titleTooLong": "That title is too long.",
+        "notesTooLong": "Those notes are too long.",
+        "generic": "Check this field and try again."
+      }
+    },
+    "bookings": {
+      "title": "Your bookings",
+      "loadError": "Couldn't load your bookings.",
+      "empty": "You haven't booked this facility yet.",
+      "cancelHint": "Need to change or cancel? Contact your facility manager.",
+      "timeUnknown": "Time not set",
+      "guestsValue_zero": "{{count}} guests",
+      "guestsValue_one": "1 guest",
+      "guestsValue_two": "{{count}} guests",
+      "guestsValue_few": "{{count}} guests",
+      "guestsValue_many": "{{count}} guests",
+      "guestsValue_other": "{{count}} guests",
+      "status": {
+        "PENDING": "Pending",
+        "APPROVED": "Approved",
+        "REJECTED": "Rejected",
+        "CANCELLED": "Cancelled",
+        "COMPLETED": "Completed",
+        "NO_SHOW": "No-show",
+        "UNKNOWN": "Unknown"
+      }
+    }
+  },
+  "polls": {
+    "title": "Polls",
+    "youVoted": "You voted",
+    "anonymousBadge": "Anonymous",
+    "rankedNotSupported": "Ranked-choice voting isn't supported in this version of the app. You can read the options below, but voting isn't available for this poll.",
+    "voterCount_zero": "No votes yet",
+    "voterCount_one": "1 person voted",
+    "voterCount_two": "2 people voted",
+    "voterCount_few": "{{count}} people voted",
+    "voterCount_many": "{{count}} people voted",
+    "voterCount_other": "{{count}} people voted",
+    "entry": {
+      "title": "Polls",
+      "subtitle": "Vote on decisions for your building"
+    },
+    "status": {
+      "open": "Open",
+      "ended": "Ended",
+      "closed": "Closed"
+    },
+    "type": {
+      "SINGLE_CHOICE": "Single choice",
+      "MULTIPLE_CHOICE": "Multiple choice",
+      "RANKED_CHOICE": "Ranked choice"
+    },
+    "time": {
+      "endsSoon": "Ends soon",
+      "endsInMinutes": "Ends in {{n}}m",
+      "endsInHours": "Ends in {{n}}h",
+      "endsInDays": "Ends in {{n}}d",
+      "endedAgo": "Ended {{when}}"
+    },
+    "list": {
+      "loadError": "Couldn't load polls. Pull down to try again.",
+      "emptyTitle": "No polls yet",
+      "emptyBody": "When your building president opens a poll, it appears here."
+    },
+    "detail": {
+      "loadError": "Couldn't load this poll. Pull down to try again.",
+      "notFound": "Poll not found",
+      "deadline": "Deadline",
+      "participation": "Turnout",
+      "votingClosed": "Voting has closed.",
+      "notAnonymousTitle": "Your name will be visible",
+      "notAnonymousBody": "This poll is not anonymous — the building president can see which option you chose.",
+      "anonymousNote": "Your vote is anonymous. The president sees the totals, not who voted for what."
+    },
+    "ballot": {
+      "chooseOne": "Choose one option",
+      "chooseUpTo": "Choose up to {{max}} options",
+      "remaining": "{{count}} left",
+      "limitReached": "Limit reached — deselect one to change your pick",
+      "submitVote": "Submit vote",
+      "changeVote": "Change vote",
+      "a11ySelectHint": "Double tap to select this option",
+      "a11yCapReachedHint": "Maximum selections reached. Deselect another option first."
+    },
+    "vote": {
+      "successTitle": "Vote recorded",
+      "changedTitle": "Vote updated",
+      "errorTitle": "Couldn't submit your vote"
+    },
+    "results": {
+      "title": "Results",
+      "hiddenUntilVote": "Results appear after you vote.",
+      "noVotesYet": "No one has voted yet.",
+      "optionA11y": "{{option}}: {{count}} votes, {{percent}} percent",
+      "yourChoiceA11y": "your choice",
+      "a11yRevealed": "Results are now visible"
+    },
+    "president": {
+      "sectionTitle": "President tools",
+      "seeVoters": "See who voted",
+      "anonymousExplain": "You made this poll anonymous, so individual votes stay private — even from you.",
+      "votersTitle": "Who voted",
+      "votersLoadError": "Couldn't load the voter list.",
+      "votersEmptyTitle": "No votes yet",
+      "votersEmptyBody": "As residents vote, their names appear here.",
+      "votersUnavailableTitle": "Voter names aren't recorded for this poll",
+      "votersUnavailableBody": "This poll was created before the app started recording who voted, so only the totals were saved. Polls you create from now on will show voter names.",
+      "votersAnonymousTitle": "This poll is anonymous",
+      "votersAnonymousBody": "You chose anonymous voting when you created this poll, so votes are never linked to a name.",
+      "noVotersForOption": "No votes",
+      "unknownVoter": "Resident",
+      "optionVotersA11y": "{{option}}, {{count}} votes",
+      "closePoll": "Close poll now",
+      "closeConfirmTitle": "Close this poll?",
+      "closeConfirmBody": "Residents will no longer be able to vote and the results become final. This can't be undone.",
+      "closeConfirmAction": "Close poll",
+      "closedTitle": "Poll closed",
+      "closeErrorTitle": "Couldn't close the poll"
+    }
+  },
+  "buildingInfo": {
+    "title": "Building info",
+    "searchPlaceholder": "Search rules, FAQs and guides",
+    "attachmentCount_zero": "No files",
+    "attachmentCount_one": "1 file",
+    "attachmentCount_two": "{{count}} files",
+    "attachmentCount_few": "{{count}} files",
+    "attachmentCount_many": "{{count}} files",
+    "attachmentCount_other": "{{count}} files",
+    "noResultsTitle": "No matches",
+    "noResultsBody": "Nothing in the library matches your search. Try a different word.",
+    "clearSearch": "Clear search",
+    "openAttachmentHint": "Opens the file",
+    "categories": {
+      "RULES": "Rules",
+      "FAQ": "FAQ",
+      "CONTRACT": "Contracts",
+      "WARRANTY": "Warranties",
+      "GUIDE": "Guides",
+      "EMERGENCY": "Emergency",
+      "OTHER": "Other",
+      "unknown": "Other documents"
+    },
+    "list": {
+      "loadError": "Couldn't load building info. Pull down to try again.",
+      "emptyTitle": "Nothing published yet",
+      "emptyBody": "Your building hasn't shared any rules, guides or documents yet.",
+      "notLinkedTitle": "You're not linked to a building yet",
+      "notLinkedBody": "Building info is published per building. Ask your facility manager to link your unit, then pull down to refresh."
+    },
+    "detail": {
+      "attachmentsTitle": "Attachments",
+      "noAttachments": "No files attached",
+      "openFailed": "Couldn't open this file. Try again.",
+      "linkExpired": "That download link expired. Tap the file again.",
+      "loadError": "Couldn't load this document.",
+      "notFoundTitle": "This document isn't available",
+      "fileSizeKb": "{{size}} KB",
+      "fileSizeMb": "{{size}} MB"
+    },
+    "assistant": {
+      "entryLabel": "Ask about your documents",
+      "entryHint": "Opens the document assistant",
+      "sheetTitle": "Document assistant",
+      "inputPlaceholder": "Ask a question in your own words",
+      "inputLabel": "Your question",
+      "send": "Send",
+      "close": "Close",
+      "idleTitle": "What would you like to know?",
+      "idleBody": "Ask about the rules, guides and documents your building has published. Every answer quotes the document it came from.",
+      "exampleQuestion1": "What are the pool hours?",
+      "exampleQuestion2": "Can I keep a pet?",
+      "exampleQuestion3": "Who do I call in an emergency?",
+      "loadingTitle": "Reading your building's documents…",
+      "loadingSlow": "Still working — longer documents take a moment.",
+      "loadingA11y": "Preparing your answer",
+      "sourcesTitle": "Sources",
+      "quotedFrom": "Quoted from {{title}}",
+      "quoteA11y": "Quote from {{title}}: {{quote}}",
+      "openSource": "Opens the document",
+      "relatedTitle": "Related documents",
+      "notFoundTitle": "Not in your documents",
+      "notFoundBody": "Your building's published documents don't cover this.",
+      "notFoundRelated": "These might be what you're looking for:",
+      "notFoundNoRelated": "Try different words, or ask your facility manager.",
+      "noCorpusTitle": "Nothing published yet",
+      "noCorpusBody": "Your building hasn't published any documents yet, so there is nothing to search. Your building's contacts can help in the meantime.",
+      "refusedTitle": "We can't share access codes",
+      "refusedBody": "For everyone's security, door codes, keys and access credentials aren't shared through the app. Your building's contacts can help you with access.",
+      "refusedCta": "Building contacts",
+      "blockedTitle": "We can't show that answer",
+      "blockedBody": "Part of that answer couldn't be shared. Your building's contacts can help.",
+      "outOfScopeTitle": "That's outside your documents",
+      "outOfScopeBody": "I can only answer from the documents your building has published — rules, guides, contracts and opening hours. Try asking about one of those.",
+      "reportIssueTitle": "That sounds like something to report",
+      "reportIssueBody": "The documents can't fix this one. Report it to your building and someone will pick it up.",
+      "degradedTitle": "The assistant isn't available right now",
+      "degradedBody": "We can still search your documents for the words you used.",
+      "degradedCta": "Search documents",
+      "unclassifiedTitle": "We couldn't read your question just now",
+      "unclassifiedBody": "We couldn't work out what you were asking just now. Nothing is wrong with your question — try again shortly, or search your documents for the words you used.",
+      "degradedBadge": "Limited answer",
+      "degradedBadgeHint": "Some documents couldn't be read this time.",
+      "disabledBody": "The document assistant is turned off for your building. You can still search the library.",
+      "reportPrompt": "Need this fixed? You can report it to your building.",
+      "reportCta": "Report this issue",
+      "errorTitle": "Couldn't get an answer"
+    }
+  },
+  "services": {
+    "title": "Services",
+    "tile": {
+      "requests": {
+        "title": "My requests",
+        "subtitle": "Track or raise a request"
+      },
+      "polls": {
+        "title": "Polls",
+        "subtitle": "Vote on decisions",
+        "badge_zero": "{{count}} open polls",
+        "badge_one": "1 open poll",
+        "badge_two": "{{count}} open polls",
+        "badge_few": "{{count}} open polls",
+        "badge_many": "{{count}} open polls",
+        "badge_other": "{{count}} open polls"
+      },
+      "buildingInfo": {
+        "title": "Building info",
+        "subtitle": "Rules, guides and documents"
+      },
+      "facilities": {
+        "title": "Facilities",
+        "subtitle": "Book shared spaces"
+      }
+    }
+  },
+  "residents": {
+    "callAriaLabel": "Call {{name}}",
+    "whatsappAriaLabel": "Message {{name}} on WhatsApp"
+  },
+  "president": {
+    "autoEscalate": {
+      "title": "Auto-escalate new complaints",
+      "subtitleOff": "New complaints will wait for you to review",
+      "subtitleOn": "New complaints route straight to the facility manager",
+      "confirmTitle": "Turn on auto-escalation?",
+      "confirmBody": "From now on, every new complaint that arrives will be escalated to the facility manager automatically. You can turn this off any time.",
+      "confirmAction": "Turn on",
+      "error": "Couldn't update auto-escalation. Try again.",
+      "noProject": "Link a building before turning this on.",
+      "reason": "Auto-escalated by president preference"
+    },
+    "announcement": {
+      "title": "New announcement",
+      "titleLabel": "Title",
+      "titlePlaceholder": "Short, scannable headline",
+      "bodyLabel": "Message",
+      "bodyPlaceholder": "What do residents need to know?",
+      "attachmentsLabel": "Photos (optional, up to 10)",
+      "submit": "Publish announcement",
+      "createdTitle": "Announcement published",
+      "errorTitle": "Couldn't publish announcement",
+      "partialUploadTitle": "Announcement published",
+      "partialUploadBody": "{{count}} attachment(s) failed to upload"
+    },
+    "poll": {
+      "title": "New poll",
+      "questionLabel": "Question",
+      "questionPlaceholder": "What do you want to ask residents?",
+      "descriptionLabel": "Details (optional)",
+      "descriptionPlaceholder": "Add context residents should see",
+      "typeLabel": "Poll type",
+      "selectType": "Select poll type",
+      "typeLoadError": "Couldn't load poll types",
+      "typeLoadErrorBody": "Poll types couldn't be loaded, so a poll can't be created yet.",
+      "typesEmptyTitle": "No poll types available",
+      "typesEmptyBody": "There are no poll types to choose from right now, so a poll can't be created yet.",
+      "optionsLabel": "Options",
+      "optionsHint": "{{min}}–{{max}} options",
+      "optionPlaceholder": "Option {{n}}",
+      "optionsError": "Add at least 2 unique, non-empty options",
+      "addOption": "Add option",
+      "removeOption": "Remove option",
+      "dateRange": "Voting window",
+      "startsAt": "Starts",
+      "endsAt": "Ends",
+      "datesError": "End must be after start",
+      "anonymousLabel": "Anonymous voting",
+      "anonymousHint": "Hide voter names from results",
+      "allowAddOptionsLabel": "Allow residents to add options",
+      "allowAddOptionsHint": "Voters can submit their own choices",
+      "submit": "Publish poll",
+      "createdTitle": "Poll published",
+      "errorTitle": "Couldn't publish poll"
+    },
+    "dashboard": {
+      "createAnnouncement": "Create announcement",
+      "createPoll": "Create poll",
+      "allClear": "All clear",
+      "lastUpdated": "Updated {{when}}",
+      "alerts": {
+        "title": "Needs attention · {{n}}",
+        "body": "Tap to review urgent tickets",
+        "label": "{{n}} urgent ticket(s) need your attention"
+      },
+      "compose": {
+        "fabLabel": "Create announcement or poll",
+        "sheetTitle": "Create",
+        "announcementHint": "Broadcast news to all residents",
+        "pollHint": "Ask residents to vote on something"
+      },
+      "tile": {
+        "requests": "Requests",
+        "complaints": "Complaints",
+        "maintenance": "Maintenance",
+        "community": "Community posts",
+        "residents": "Residents",
+        "buildingInfo": "Building info",
+        "activeTickets": "Active tickets",
+        "activeResidents": "Active residents",
+        "complaintsCount": "{{n}} complaints",
+        "maintenanceCount": "{{n}} maintenance"
+      },
+      "urgent": {
+        "title": "Needs attention",
+        "emptyTitle": "All clear",
+        "emptyBody": "No emergencies or breached tickets right now."
+      },
+      "insights": {
+        "title": "This month",
+        "trendCaption": "Arrows show change vs last month",
+        "opened": "Opened",
+        "resolved": "Resolved",
+        "avgTime": "Avg time",
+        "slaMet": "SLA met",
+        "hoursValue": "{{n}}h",
+        "escalatedNow": "{{n}} with the facility manager",
+        "slaBreached": "{{n}} past their SLA",
+        "backlog": "{{n}} carried over from last month"
+      },
+      "recentTickets": {
+        "title": "Recent tickets",
+        "empty": "Quiet week. Nothing new from residents.",
+        "unit": "Unit",
+        "viewAll": "View all"
+      }
+    }
+  },
+  "fm": {
+    "appName": "Dyarna FM",
+    "home": {
+      "title": "FM home",
+      "subtitle": "Facility manager workspace. Features arrive in upcoming releases.",
+      "signIn": "Go to sign in"
+    },
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Facility manager sign-in is coming soon.",
+      "continue": "Continue to FM home"
+    }
+  }
+}
