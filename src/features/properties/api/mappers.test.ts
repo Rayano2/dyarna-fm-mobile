@@ -35,7 +35,7 @@ describe('mapPropertyProject', () => {
       projectId: 7,
       projectName: 'Al Noor',
       cityCode: 'RUH',
-      president: { fullName: 'Sara Ali' },
+      president: { userId: undefined, fullName: 'Sara Ali', nameAvailable: true },
     });
     expect(project.buildings).toHaveLength(2);
     expect(project.buildings[0]?.units[0]).toEqual({
@@ -53,11 +53,45 @@ describe('mapPropertyProject', () => {
     expect(building).toEqual({ buildingCode: 'B-002', buildingName: 'B-002', units: [] });
   });
 
-  it('treats a missing or nameless president as none', () => {
+  it('treats a missing or old-shape nameless president as none', () => {
     expect(mapPropertyProject({ ...RAW_PROJECT, president: null }).president).toBeNull();
+    expect(mapPropertyProject({ ...RAW_PROJECT, president: undefined }).president).toBeNull();
     expect(
       mapPropertyProject({ ...RAW_PROJECT, president: { fullName: ' ' } }).president,
     ).toBeNull();
+  });
+
+  it('still maps the old {fullName}-only president shape', () => {
+    expect(
+      mapPropertyProject({ ...RAW_PROJECT, president: { fullName: ' Sara Ali ' } }).president,
+    ).toEqual({ userId: undefined, fullName: 'Sara Ali', nameAvailable: true });
+  });
+
+  it('keeps a new-shape president whose name is null, flagged unavailable', () => {
+    expect(
+      mapPropertyProject({
+        ...RAW_PROJECT,
+        president: { userId: 'u-9', fullName: null, nameAvailable: false },
+      }).president,
+    ).toEqual({ userId: 'u-9', fullName: '', nameAvailable: false });
+  });
+
+  it('flags a blank name unavailable even when BMS says it is available', () => {
+    expect(
+      mapPropertyProject({
+        ...RAW_PROJECT,
+        president: { userId: 'u-9', fullName: '  ', nameAvailable: true },
+      }).president,
+    ).toEqual({ userId: 'u-9', fullName: '', nameAvailable: false });
+  });
+
+  it('maps a new-shape president with a name', () => {
+    expect(
+      mapPropertyProject({
+        ...RAW_PROJECT,
+        president: { userId: 'u-9', fullName: 'Sara Ali', nameAvailable: true },
+      }).president,
+    ).toEqual({ userId: 'u-9', fullName: 'Sara Ali', nameAvailable: true });
   });
 
   it('accepts a string project id', () => {

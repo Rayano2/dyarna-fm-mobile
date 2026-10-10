@@ -10,7 +10,7 @@ export interface PropertyUnit {
   propertyUnitId: number;
   unitNumber: string;
   floorNumber: number;
-  /** 0 when absent: this endpoint does not send `occupantCount`. */
+  /** 0 when absent (older BMS builds did not send `occupantCount`). */
   occupantCount: number;
   /** Absent when vacant, or when BMS's UMS name lookup failed. */
   residentFullName: string | undefined;
@@ -24,13 +24,24 @@ export interface PropertyBuilding {
   units: PropertyUnit[];
 }
 
+/**
+ * The project's president. A president can exist while BMS's UMS name lookup
+ * fails: then `nameAvailable` is false and `fullName` is ''.
+ */
+export interface PropertyPresident {
+  /** Absent on older BMS builds, which sent only `{fullName}`. */
+  userId: string | undefined;
+  fullName: string;
+  nameAvailable: boolean;
+}
+
 /** BMS `ProjectHierarchyResponse`. */
 export interface PropertyProject {
   projectId: number;
   projectName: string;
   cityCode: string | undefined;
-  /** BMS sends only the name. Null when the project has no president. */
-  president: { fullName: string } | null;
+  /** Null only when the project has no president. */
+  president: PropertyPresident | null;
   buildings: PropertyBuilding[];
 }
 
@@ -83,18 +94,32 @@ export function mapPropertyBuilding(raw: unknown): PropertyBuilding {
   };
 }
 
+/**
+ * New shape: `{userId, fullName: string|null, nameAvailable}`, non-null
+ * whenever a president exists. Old shape: `{fullName}` only, where a blank
+ * name meant "no president".
+ */
+export function mapPropertyPresident(raw: unknown): PropertyPresident | null {
+  if (!raw || typeof raw !== 'object') return null;
+  const obj = raw as Record<string, unknown>;
+  const userId =
+    typeof obj.userId === 'number' && Number.isFinite(obj.userId)
+      ? String(obj.userId)
+      : asStringOrUndef(obj.userId)?.trim() || undefined;
+  const fullName = asString(obj.fullName).trim();
+  if (!userId && !fullName) return null;
+  return { userId, fullName, nameAvailable: obj.nameAvailable !== false && fullName !== '' };
+}
+
 export function mapPropertyProject(raw: unknown): PropertyProject {
   const obj = (raw ?? {}) as Record<string, unknown>;
   const projectId = toId(obj.projectId);
   if (!Number.isFinite(projectId)) throw new Error('project without an id');
-  const president = (obj.president ?? null) as Record<string, unknown> | null;
-  const presidentName =
-    president && typeof president === 'object' ? asString(president.fullName).trim() : '';
   return {
     projectId,
     projectName: asString(obj.projectName).trim(),
     cityCode: asStringOrUndef(obj.cityCode),
-    president: presidentName ? { fullName: presidentName } : null,
+    president: mapPropertyPresident(obj.president),
     buildings: safeMapList(asList(obj.buildings), mapPropertyBuilding, {
       feature: 'properties',
       entity: 'building',
