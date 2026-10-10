@@ -59,8 +59,10 @@ export default [
               // dragging React Native components in through the barrel — and,
               // for notifications, without creating a
               // tickets -> shell -> notifications -> tickets import cycle.
+              // requests/lib/units is shared with properties (occupancy) for the
+              // same reason: pure helpers, no RN screens through the barrel.
               regex:
-                '^(?!@/features/tickets/lib/(is-urgent|format-ticket-number)$)@/features/[^/]+/.+',
+                '^(?!@/features/tickets/lib/(is-urgent|format-ticket-number)$|@/features/requests/lib/units$)@/features/[^/]+/.+',
               message:
                 "Deep feature imports are forbidden — import from the feature barrel ('@/features/<name>') instead.",
             },
