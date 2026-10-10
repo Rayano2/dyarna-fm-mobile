@@ -49,6 +49,11 @@ export const queryKeys = {
     /** `GET api/bms/company-reps/dashboardInfo` (pending-requests count). */
     dashboardInfo: ['fm', 'dashboard-info'] as const,
   },
+  /** FM payment reminders (T12). BMS `api/bms/payment-reminders`, Bearer-scoped. */
+  fmPaymentReminders: {
+    all: ['fm', 'payment-reminders'] as const,
+    status: (sendId: string | null) => ['fm', 'payment-reminders', 'status', sendId] as const,
+  },
   tms: {
     /** Prefix covering every ticket list + detail cache. */
     tickets: ['tms', 'tickets'] as const,
