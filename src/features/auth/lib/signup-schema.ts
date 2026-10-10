@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { FieldErrors, Resolver } from 'react-hook-form';
+import { toAsciiDigits } from '@/shared/lib/to-ascii-digits';
 
 export const GENDER_CODES = ['MALE', 'FEMALE'] as const;
 export type GenderCode = (typeof GENDER_CODES)[number];
@@ -34,7 +35,11 @@ export const signupSchema = z.object({
     .pipe(z.email({ error: 'invalidEmail' })),
   firstName: z.string().trim().min(2, { error: 'firstNameMin' }),
   lastName: z.string().trim().min(2, { error: 'lastNameMin' }),
-  mobile: z.string().trim().regex(MOBILE_PATTERN, { error: 'mobileInvalid' }),
+  // Arabic keyboards type Arabic-Indic digits; convert them before the pattern check.
+  mobile: z
+    .string()
+    .overwrite((v) => toAsciiDigits(v).trim())
+    .regex(MOBILE_PATTERN, { error: 'mobileInvalid' }),
   genderCode: z.enum(GENDER_CODES, { error: 'genderInvalid' }),
   password: z
     .string()

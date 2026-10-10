@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 
 import { useZodErrorText } from '@/shared/i18n/zod-error';
+import { toAsciiDigits } from '@/shared/lib/to-ascii-digits';
 import {
   Button,
   HapticPressable,
@@ -212,7 +213,8 @@ export function SignupForm({
             editable={!submitting}
             value={field.value}
             onChangeText={(value) => {
-              field.onChange(value);
+              // Show Arabic-Indic digits as ASCII as they are typed (the schema converts too).
+              field.onChange(toAsciiDigits(value));
               clearBanner();
             }}
             onBlur={field.onBlur}

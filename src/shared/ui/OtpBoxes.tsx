@@ -7,6 +7,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { StyleSheet } from 'react-native-unistyles';
+import { sanitizeOtpInput } from './otp-digits';
 
 export interface OtpBoxesProps {
   value: string;
@@ -48,7 +49,7 @@ export function OtpBoxes({
   const shakeStyle = useAnimatedStyle(() => ({ transform: [{ translateX: shake.value }] }));
 
   function handleChange(text: string) {
-    const digits = text.replaceAll(/\D/g, '').slice(0, length);
+    const digits = sanitizeOtpInput(text, length);
     onChange(digits);
     if (digits.length === length) onComplete?.(digits);
   }

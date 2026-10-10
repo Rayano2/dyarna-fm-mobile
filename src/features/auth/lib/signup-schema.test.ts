@@ -65,6 +65,15 @@ describe('signup form validation (mirrors the FM web signupSchema)', () => {
     expect(await errorFor('mobile', '5123a5678')).toBe('mobileInvalid');
   });
 
+  it('mobile: Arabic-Indic and Persian digits are converted, not rejected', async () => {
+    const arabic = await validate({ mobile: '٥١٢٣٤٥٦٧٨' });
+    expect(arabic.errors).toEqual({});
+    expect(arabic.values).toMatchObject({ mobile: '512345678' });
+    const persian = await validate({ mobile: '۵۱۲۳۴۵۶۷۸' });
+    expect(persian.values).toMatchObject({ mobile: '512345678' });
+    expect(await errorFor('mobile', '٤١٢٣٤٥٦٧٨')).toBe('mobileInvalid');
+  });
+
   it('gender: MALE or FEMALE only', async () => {
     expect(await errorFor('genderCode', 'MALE')).toBeUndefined();
     expect(await errorFor('genderCode', 'FEMALE')).toBeUndefined();
