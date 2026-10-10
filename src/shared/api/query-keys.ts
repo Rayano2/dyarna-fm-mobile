@@ -166,6 +166,11 @@ export const queryKeys = {
     dashboardInfo: ['bms', 'company-reps', 'dashboard-info'] as const,
     /** Count of the rep's not-yet-completed todos, for the "My tasks" KPI. */
     todosActive: ['bms', 'todos', 'active-count'] as const,
+    /** Prefix of every todo query: todo mutations invalidate this, which also
+     *  refreshes `todosActive` above. */
+    todos: ['bms', 'todos'] as const,
+    /** The Todos screen list (`GET api/bms/todos`, first 100 by priority). */
+    todosList: ['bms', 'todos', 'list'] as const,
     residentCount: (projectId: string | undefined) =>
       ['bms', 'company-reps', 'resident-count', projectId] as const,
     /** FM properties hierarchy: projects -> buildings -> units (`properties-list`, not paged). */

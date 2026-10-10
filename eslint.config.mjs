@@ -59,8 +59,10 @@ export default [
               // dragging React Native components in through the barrel — and,
               // for notifications, without creating a
               // tickets -> shell -> notifications -> tickets import cycle.
+              // todos-path lets the dashboard KPI share the todos endpoint the
+              // same way.
               regex:
-                '^(?!@/features/tickets/lib/(is-urgent|format-ticket-number)$)@/features/[^/]+/.+',
+                '^(?!@/features/(tickets/lib/(is-urgent|format-ticket-number)|todos/api/todos-path)$)@/features/[^/]+/.+',
               message:
                 "Deep feature imports are forbidden — import from the feature barrel ('@/features/<name>') instead.",
             },
