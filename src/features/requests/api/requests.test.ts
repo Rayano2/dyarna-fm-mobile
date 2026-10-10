@@ -70,7 +70,7 @@ describe('fetchResidentRequests (GET api/bms/residents)', () => {
 });
 
 describe('approve', () => {
-  it('success: closes the sheet and invalidates requests, the dashboard count and units', async () => {
+  it('success: closes the sheet and invalidates requests, the dashboard count, units and properties', async () => {
     let path = '';
     server.use(
       http.patch(`${BMS}/resident-link-requests/:id/:unit/approve`, ({ params }) => {
@@ -90,6 +90,7 @@ describe('approve', () => {
         queryKeys.fmResidents.requests,
         queryKeys.fmResidents.dashboardInfo,
         queryKeys.fmResidents.buildingUnitsAll,
+        queryKeys.bms.propertiesList,
       ],
     });
   });

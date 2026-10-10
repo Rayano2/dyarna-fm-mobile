@@ -41,7 +41,7 @@ export default [
       'no-restricted-syntax': [
         'error',
         {
-          selector: "Literal[value=/^#(?:[0-9a-fA-F]{3}){1,2}$/]",
+          selector: 'Literal[value=/^#(?:[0-9a-fA-F]{3}){1,2}$/]',
           message: 'Raw hex colors not allowed in components — use theme tokens.',
         },
       ],
@@ -59,10 +59,8 @@ export default [
               // dragging React Native components in through the barrel — and,
               // for notifications, without creating a
               // tickets -> shell -> notifications -> tickets import cycle.
-              // requests/lib/units is shared with properties (occupancy) for the
-              // same reason: pure helpers, no RN screens through the barrel.
               regex:
-                '^(?!@/features/tickets/lib/(is-urgent|format-ticket-number)$|@/features/requests/lib/units$)@/features/[^/]+/.+',
+                '^(?!@/features/tickets/lib/(is-urgent|format-ticket-number)$)@/features/[^/]+/.+',
               message:
                 "Deep feature imports are forbidden — import from the feature barrel ('@/features/<name>') instead.",
             },

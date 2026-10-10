@@ -221,11 +221,12 @@ describe('offboard', () => {
     expect(classifyOffboardError(new Error('socket'))).toBe('generic');
   });
 
-  it('invalidates the residents list, details and unit occupancy', () => {
+  it('invalidates the residents list, details, unit occupancy and properties', () => {
     expect(OFFBOARD_INVALIDATIONS).toEqual([
       queryKeys.fmResidents.residents,
       queryKeys.fmResidents.residentDetails,
       queryKeys.fmResidents.buildingUnitsAll,
+      queryKeys.bms.propertiesList,
     ]);
   });
 });

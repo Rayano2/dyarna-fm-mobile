@@ -2,6 +2,7 @@ import { Share, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { Badge, Button, HapticPressable, Icons, useIsRtl, useRtlTextStyle } from '@/shared/ui';
+import { ltr } from '@/shared/lib/bidi';
 import { logger } from '@/shared/lib/logger';
 import type { PropertyBuilding, PropertyUnit } from '../api/mappers';
 import { UnitTile } from './UnitTile';
@@ -57,7 +58,7 @@ export function BuildingSection({
         ) : (
           <View style={styles.grid}>
             {units.map((unit) => (
-              <UnitTile key={unit.unitNumber} unit={unit} />
+              <UnitTile key={unit.propertyUnitId || unit.unitNumber} unit={unit} />
             ))}
           </View>
         )}
@@ -97,7 +98,7 @@ export function BuildingSection({
               {building.buildingName}
             </Text>
             <Text style={styles.code} numberOfLines={1}>
-              {building.buildingCode}
+              {ltr(building.buildingCode)}
             </Text>
           </View>
           <Badge

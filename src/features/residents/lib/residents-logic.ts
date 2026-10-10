@@ -36,6 +36,7 @@ export const OFFBOARD_INVALIDATIONS: readonly (readonly unknown[])[] = [
   queryKeys.fmResidents.residents,
   queryKeys.fmResidents.residentDetails,
   queryKeys.fmResidents.buildingUnitsAll,
+  queryKeys.bms.propertiesList,
 ];
 
 /**

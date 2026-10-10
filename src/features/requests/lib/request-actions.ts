@@ -48,7 +48,11 @@ export function approveSuccessEffect(): ApproveEffect {
     closeSheet: true,
     toast: 'approvedToast',
     // The unit is now occupied, so every cached unit list is stale as well.
-    invalidate: [...DECIDED_INVALIDATIONS, queryKeys.fmResidents.buildingUnitsAll],
+    invalidate: [
+      ...DECIDED_INVALIDATIONS,
+      queryKeys.fmResidents.buildingUnitsAll,
+      queryKeys.bms.propertiesList,
+    ],
   };
 }
 

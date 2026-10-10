@@ -1,7 +1,5 @@
-// Deep import on purpose (allow-listed in eslint.config.mjs): the barrel
-// drags React Native screens into these node-tested helpers.
-import { unitOccupancy } from '@/features/requests/lib/units';
 import type { ProjectBuildingFilter } from '@/shared/lib/project-building-filter';
+import { unitOccupancy } from '@/shared/lib/unit-occupancy';
 import type { ProjectUser, PropertyBuilding, PropertyProject, PropertyUnit } from '../api/mappers';
 
 export interface OccupancyStats {

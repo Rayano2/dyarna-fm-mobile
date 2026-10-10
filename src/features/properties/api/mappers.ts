@@ -113,7 +113,10 @@ export function mapProjectUser(raw: unknown): ProjectUser {
   const obj = (raw ?? {}) as Record<string, unknown>;
   const userId = asString(obj.userId);
   if (!userId) throw new Error('user without an id');
-  return { userId, fullName: asString(obj.fullName).trim() };
+  const fullName = asString(obj.fullName).trim();
+  // A nameless row can't be told apart in the picker or the confirm copy.
+  if (!fullName) throw new Error('user without a name');
+  return { userId, fullName };
 }
 
 /** A plain list today; the web also tolerates a `{content}` page, so do we. */

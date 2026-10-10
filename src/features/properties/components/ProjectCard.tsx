@@ -28,15 +28,18 @@ export function ProjectCard({
   const occupancy = t('fm.properties.occupiedOf', { occupied: stats.occupied, total: stats.units });
 
   return (
-    <HapticPressable
-      onPress={() => onOpen(project)}
-      accessibilityRole="button"
-      accessibilityLabel={[project.projectName, project.cityCode, counts, occupancy]
-        .filter(Boolean)
-        .join(', ')}
-      testID={`property-project-${project.projectId}`}
-    >
-      <Card style={styles.card}>
+    <Card style={styles.card}>
+      {/* Only the summary opens the project; the president control is a
+          sibling so screen readers can reach it on its own. */}
+      <HapticPressable
+        onPress={() => onOpen(project)}
+        accessibilityRole="button"
+        accessibilityLabel={[project.projectName, project.cityCode, counts, occupancy]
+          .filter(Boolean)
+          .join(', ')}
+        style={styles.summary}
+        testID={`property-project-${project.projectId}`}
+      >
         <View style={styles.topRow}>
           <View style={styles.iconBox}>
             <Icons.Buildings size={20} color={theme.colors.primary} weight="regular" />
@@ -57,34 +60,35 @@ export function ProjectCard({
         </View>
         <Text style={[styles.counts, rtlText]}>{counts}</Text>
         <OccupancyBar ratio={stats.ratio} caption={occupancy} />
-        <View style={styles.president}>
-          {project.president ? (
-            <Badge
-              tone="primarySubtle"
-              size="md"
-              icon={<Icons.Star size={12} color={theme.colors.primary} weight="fill" />}
-              label={`${t('fm.properties.president')}: ${project.president.fullName}`}
-              numberOfLines={1}
-            />
-          ) : (
-            <Button
-              label={t('fm.properties.assignPresident')}
-              variant="secondary"
-              size="sm"
-              hitSlop={4}
-              leadingIcon={<Icons.UserPlus size={16} color={theme.colors.primary} />}
-              onPress={() => onAssignPresident(project)}
-              testID={`assign-president-${project.projectId}`}
-            />
-          )}
-        </View>
-      </Card>
-    </HapticPressable>
+      </HapticPressable>
+      <View style={styles.president}>
+        {project.president ? (
+          <Badge
+            tone="primarySubtle"
+            size="md"
+            icon={<Icons.Star size={12} color={theme.colors.primary} weight="fill" />}
+            label={`${t('fm.properties.president')}: ${project.president.fullName}`}
+            numberOfLines={1}
+          />
+        ) : (
+          <Button
+            label={t('fm.properties.assignPresident')}
+            variant="secondary"
+            size="sm"
+            hitSlop={4}
+            leadingIcon={<Icons.UserPlus size={16} color={theme.colors.primary} />}
+            onPress={() => onAssignPresident(project)}
+            testID={`assign-president-${project.projectId}`}
+          />
+        )}
+      </View>
+    </Card>
   );
 }
 
 const styles = StyleSheet.create((theme) => ({
   card: { gap: theme.spacing[12] },
+  summary: { gap: theme.spacing[12] },
   topRow: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing[12] },
   iconBox: {
     width: 36,

@@ -1,25 +1,5 @@
+import { unitOccupancy } from '@/shared/lib/unit-occupancy';
 import type { BuildingUnit } from '../api/mappers';
-
-export interface UnitOccupancy {
-  occupied: boolean;
-  /** Occupied units can't be picked: BMS refuses with BMS_400_14 anyway. */
-  selectable: boolean;
-  /** Residents beyond the named one ("+n"). 0 when there is at most one. */
-  extraOccupants: number;
-}
-
-/**
- * A unit with a named resident is occupied even when `occupantCount` is
- * missing (older BMS builds report the name but not the count).
- */
-export function unitOccupancy(unit: BuildingUnit): UnitOccupancy {
-  const occupied = unit.occupantCount > 0 || !!unit.residentFullName;
-  return {
-    occupied,
-    selectable: !occupied,
-    extraOccupants: Math.max(0, unit.occupantCount - 1),
-  };
-}
 
 /**
  * Which hint the approve sheet shows above the unit list:

@@ -1,6 +1,7 @@
 import { Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
+import { ltr } from '@/shared/lib/bidi';
 import { Badge, Card, Icons, useRtlTextStyle } from '@/shared/ui';
 import type { PropertyUnit } from '../api/mappers';
 import { isOccupied } from '../lib/occupancy';
@@ -20,7 +21,7 @@ export function UnitTile({ unit }: UnitTileProps): React.JSX.Element {
     <View style={styles.cell}>
       <Card style={styles.card}>
         <Text style={styles.unitNumber} numberOfLines={1}>
-          {unit.unitNumber}
+          {ltr(unit.unitNumber)}
         </Text>
         <Text style={[styles.muted, rtlText]}>
           {t('fm.properties.floor', { n: unit.floorNumber })}
@@ -36,7 +37,7 @@ export function UnitTile({ unit }: UnitTileProps): React.JSX.Element {
               <View style={styles.phoneRow}>
                 <Icons.Phone size={12} color={theme.colors.textMuted} weight="regular" />
                 <Text style={[styles.muted, styles.ltr]} numberOfLines={1}>
-                  {unit.residentMobile}
+                  {ltr(unit.residentMobile)}
                 </Text>
               </View>
             ) : null}

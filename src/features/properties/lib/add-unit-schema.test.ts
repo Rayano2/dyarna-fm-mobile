@@ -15,6 +15,25 @@ describe('addUnitSchema', () => {
     expect(addUnitSchema.parse({ unitNumber: 'A', floorNumber: '10' }).floorNumber).toBe(10);
   });
 
+  it('accepts Arabic-Indic digits and sends ASCII', () => {
+    expect(addUnitSchema.parse({ unitNumber: '١٠٢', floorNumber: '٣' })).toEqual({
+      unitNumber: '102',
+      floorNumber: 3,
+    });
+    expect(addUnitSchema.parse({ unitNumber: 'A', floorNumber: '١٠' }).floorNumber).toBe(10);
+  });
+
+  it('accepts Persian (Extended Arabic-Indic) digits', () => {
+    expect(addUnitSchema.parse({ unitNumber: '۲۰۱', floorNumber: '۷' })).toEqual({
+      unitNumber: '201',
+      floorNumber: 7,
+    });
+  });
+
+  it('still rejects an out-of-range Arabic floor', () => {
+    expect(addUnitSchema.safeParse({ unitNumber: 'A', floorNumber: '١١' }).success).toBe(false);
+  });
+
   it('requires a unit number', () => {
     const result = addUnitSchema.safeParse({ unitNumber: '   ', floorNumber: '1' });
     expect(result.success).toBe(false);

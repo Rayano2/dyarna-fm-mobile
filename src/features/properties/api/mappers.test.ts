@@ -114,10 +114,14 @@ describe('mapPropertiesList', () => {
 });
 
 describe('mapProjectUsers', () => {
-  it('maps a plain list and drops users without an id', () => {
-    expect(mapProjectUsers([{ userId: 'u1', fullName: ' Ali ' }, { fullName: 'ghost' }])).toEqual([
-      { userId: 'u1', fullName: 'Ali' },
-    ]);
+  it('maps a plain list and drops users without an id or a name', () => {
+    expect(
+      mapProjectUsers([
+        { userId: 'u1', fullName: ' Ali ' },
+        { fullName: 'ghost' },
+        { userId: 'u3', fullName: ' ' },
+      ]),
+    ).toEqual([{ userId: 'u1', fullName: 'Ali' }]);
   });
 
   it('accepts a page body', () => {

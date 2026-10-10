@@ -114,7 +114,7 @@ export const AssignPresidentSheet = forwardRef<BottomSheetRef, AssignPresidentSh
         <View style={styles.footer}>
           <View style={styles.footerButton}>
             <Button
-              label={t('common.cancel')}
+              label={t('common.back')}
               variant="ghost"
               fullWidth
               disabled={assign.isPending}
