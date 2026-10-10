@@ -10,6 +10,7 @@ import {
   FM_HOME_HREF,
   loginFm,
   loginResolver,
+  SIGNUP_HREF,
   useAuthStore,
   type LoginFailureKind,
   type LoginFormValues,
@@ -26,9 +27,6 @@ import {
   RTL_INLINE,
   useIsRtl,
 } from '@/shared/ui';
-
-// Company signup arrives with T11; the slot is reserved below.
-const SHOW_SIGNUP = false;
 
 export default function LoginScreen(): React.JSX.Element {
   const { t } = useTranslation();
@@ -227,12 +225,18 @@ export default function LoginScreen(): React.JSX.Element {
         />
       </View>
 
-      {SHOW_SIGNUP ? (
-        <View style={styles.signupRow}>
-          <Text style={styles.signupText}>{t('fm.login.noAccount')}</Text>
-          <Button label={t('fm.login.createAccount')} variant="ghost" size="sm" hitSlop={4} />
-        </View>
-      ) : null}
+      <View style={styles.signupRow}>
+        <Text style={styles.signupText}>{t('fm.login.noAccount')}</Text>
+        <Button
+          label={t('fm.login.createAccount')}
+          variant="ghost"
+          size="sm"
+          hitSlop={4}
+          onPress={() => router.push(SIGNUP_HREF as never)}
+          disabled={submitting}
+          testID="login-create-account"
+        />
+      </View>
     </Screen>
   );
 }
