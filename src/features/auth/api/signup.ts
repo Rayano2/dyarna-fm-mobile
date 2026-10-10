@@ -14,13 +14,18 @@ export const COMPANY_REP_VERIFY_EMAIL_PATH = 'api/bms/company-reps/verify-email'
 const registerResponseSchema = z.object({ accessToken: z.string().min(1) });
 
 /**
- * Why a signup step failed. `emailTaken` and `invalidCode` have their own copy;
- * `other` carries the ApiError (when there is one) so transport and rate-limit
- * failures get the shared wording from `getUserMessage`.
+ * Why a signup step failed. `invalidCode` and `sessionExpired` have their own
+ * copy; `other` carries the ApiError (when there is one) so transport and
+ * rate-limit failures get the shared wording from `getUserMessage`.
+ *
+ * There is no "email already registered" reason: BMS (c9ec2bc) wraps every UMS
+ * register error and answers 500 BMS_500_00 "Internal server error", so the
+ * client cannot tell a duplicate email apart. The generic register copy points
+ * existing users to sign in instead.
  */
 export type SignupFailure =
-  | { reason: 'emailTaken' }
   | { reason: 'invalidCode' }
+  | { reason: 'sessionExpired' }
   | { reason: 'other'; error: ApiError | null };
 
 export type RegisterOutcome =
@@ -33,40 +38,26 @@ export type VerifyOutcome = { kind: 'success' } | { kind: 'failure'; failure: Si
 // with, whatever session token is active.
 const SKIP_SESSION_AUTH = { 'x-skip-auth': '1' } as const;
 
-// BMS rethrows UMS's error as a plain RuntimeException ("Registration failed:
-// ..."), so a duplicate email usually arrives as a 500 carrying UMS's text:
-// EMAIL_ALREADY_USED (UMS_400_01, "Email is already used") or
-// COMPANY_REP_ALREADY_REGISTERED (UMS_409_10). Match the code or the wording.
-const EMAIL_TAKEN_MESSAGE =
-  /UMS_400_01|UMS_409_10|email is already used|already registered with this email/i;
-
 function isTransportOrRateLimit(error: ApiError): boolean {
   return error.status === 0 || error.status === 429 || error.code === ERROR_CODES.TOO_MANY_REQUESTS;
 }
 
 export function mapRegisterError(error: unknown): SignupFailure {
-  if (!(error instanceof ApiError)) return { reason: 'other', error: null };
-  if (isTransportOrRateLimit(error)) return { reason: 'other', error };
-  if (
-    error.status === 409 ||
-    error.code === 'EMAIL_ALREADY_REGISTERED' ||
-    EMAIL_TAKEN_MESSAGE.test(`${error.code} ${error.message}`)
-  ) {
-    return { reason: 'emailTaken' };
-  }
-  return { reason: 'other', error };
+  return { reason: 'other', error: error instanceof ApiError ? error : null };
 }
 
 /**
  * A wrong, blank or expired code comes back from BMS/UMS as a 500 with no
- * traceId (a raw RuntimeException), and an expired temp token as a 401. Both
- * mean "this code didn't work", so every definitive 4xx and a plain 500 map to
- * `invalidCode`. Transport failures, 429s and gateway errors (502-504) keep the
- * shared wording.
+ * traceId (a raw RuntimeException): every definitive 4xx and a plain 500 map to
+ * `invalidCode`. A 401 is different: the temp token itself has expired, and no
+ * code will work until the user registers again (which re-sends a code and
+ * overwrites the pending UMS user). Transport failures, 429s and gateway
+ * errors (502-504) keep the shared wording.
  */
 export function mapVerifyError(error: unknown): SignupFailure {
   if (!(error instanceof ApiError)) return { reason: 'other', error: null };
   if (isTransportOrRateLimit(error)) return { reason: 'other', error };
+  if (error.status === 401) return { reason: 'sessionExpired' };
   if ((error.status >= 400 && error.status < 500) || error.status === 500) {
     return { reason: 'invalidCode' };
   }
@@ -79,7 +70,7 @@ export function signupFailureMessage(
   step: 'register' | 'verify',
   t: TFunction,
 ): string {
-  if (failure.reason === 'emailTaken') return t('fm.signup.errors.emailTaken');
+  if (failure.reason === 'sessionExpired') return t('fm.signup.errors.sessionExpired');
   if (failure.reason === 'invalidCode') return t('fm.signup.errors.invalidCode');
   if (failure.error && (isTransportOrRateLimit(failure.error) || failure.error.status >= 502)) {
     return getUserMessage(failure.error, t);

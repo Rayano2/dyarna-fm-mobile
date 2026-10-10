@@ -30,6 +30,8 @@ export default function SignupScreen(): React.JSX.Element {
   const pushToast = useToastStore((s) => s.push);
 
   const [step, setStep] = useState<Step>('form');
+  // What the user typed, to refill the form after "Edit details". The password
+  // is never kept: it is blanked here and must be re-entered.
   const [submitted, setSubmitted] = useState<SignupFormValues | undefined>();
   const [formError, setFormError] = useState<string | null>(null);
   const [code, setCode] = useState('');
@@ -39,17 +41,21 @@ export default function SignupScreen(): React.JSX.Element {
   // a session, and it dies with this screen. Sent once, on verify-email.
   const tempTokenRef = useRef<string | null>(null);
 
-  const register = useMutation({ mutationFn: registerCompanyRep });
+  // The mutations' state would otherwise retain the password (variables) and the
+  // temp token (data): reset() after every attempt and gcTime 0 drop them.
+  const register = useMutation({ mutationFn: registerCompanyRep, gcTime: 0 });
   const verify = useMutation({
     mutationFn: ({ token, otp }: { token: string; otp: string }) => verifySignupEmail(token, otp),
+    gcTime: 0,
   });
 
   const onRegister = async (values: SignupFormValues): Promise<void> => {
     setFormError(null);
     const outcome = await register.mutateAsync(values).catch(() => null);
+    register.reset();
     if (outcome?.kind === 'success') {
       tempTokenRef.current = outcome.tempToken;
-      setSubmitted(values);
+      setSubmitted({ ...values, password: '' });
       setCode('');
       setOtpError(null);
       setCodeRejected(false);
@@ -63,8 +69,8 @@ export default function SignupScreen(): React.JSX.Element {
       'register',
       t,
     );
+    // The banner is an alert live region; it announces itself.
     setFormError(message);
-    AccessibilityInfo.announceForAccessibility(message);
   };
 
   const onVerify = async (): Promise<void> => {
@@ -77,6 +83,7 @@ export default function SignupScreen(): React.JSX.Element {
     setOtpError(null);
     setCodeRejected(false);
     const outcome = await verify.mutateAsync({ token, otp: code }).catch(() => null);
+    verify.reset();
     if (outcome?.kind === 'success') {
       tempTokenRef.current = null;
       setStep('success');
@@ -87,7 +94,6 @@ export default function SignupScreen(): React.JSX.Element {
     const message = signupFailureMessage(failure, 'verify', t);
     setOtpError(message);
     setCodeRejected(failure.reason === 'invalidCode');
-    AccessibilityInfo.announceForAccessibility(message);
   };
 
   const onCodeChange = (value: string): void => {

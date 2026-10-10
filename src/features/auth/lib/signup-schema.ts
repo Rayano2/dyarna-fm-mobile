@@ -22,7 +22,8 @@ export const PASSWORD_RULES = [
 export type PasswordRuleKey = (typeof PASSWORD_RULES)[number]['key'];
 
 /**
- * Same rules as the FM web `signupSchema` (shared/schema.ts:9-24). Messages are
+ * The FM web `signupSchema` rules (shared/schema.ts:9-24), except that email,
+ * names and mobile are trimmed first (the web does not trim). Messages are
  * i18n key suffixes under `fm.signup.errors.*` (read with `useZodErrorText('fm.signup')`).
  * Field names match BMS `UmsCompanyRepCreateRequest`, so the parsed values are the body.
  */

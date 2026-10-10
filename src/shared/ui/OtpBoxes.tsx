@@ -16,6 +16,8 @@ export interface OtpBoxesProps {
   error?: boolean;
   disabled?: boolean;
   autoFocus?: boolean;
+  /** Read by screen readers on the (visually hidden) input that takes the digits. */
+  accessibilityLabel?: string;
 }
 
 export function OtpBoxes({
@@ -26,6 +28,7 @@ export function OtpBoxes({
   error,
   disabled,
   autoFocus = true,
+  accessibilityLabel,
 }: OtpBoxesProps) {
   const inputRef = useRef<TextInput>(null);
   const shake = useSharedValue(0);
@@ -78,6 +81,7 @@ export function OtpBoxes({
       <TextInput
         ref={inputRef}
         testID="otp-input"
+        {...(accessibilityLabel ? { accessibilityLabel } : {})}
         value={value}
         onChangeText={handleChange}
         keyboardType="number-pad"

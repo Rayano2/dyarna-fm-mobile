@@ -115,22 +115,22 @@ describe('registerCompanyRep (BMS POST api/bms/company-reps/register)', () => {
     });
   });
 
-  it('maps the duplicate-email 500 BMS sends to emailTaken', async () => {
+  it('maps the BMS 500 (every UMS register error, duplicates included) to the register copy', async () => {
     server.use(
       http.post(REGISTER_URL, () =>
         HttpResponse.json(
-          {
-            message:
-              'Registration failed: [400] {"code":"UMS_400_01","message":"Email is already used"}',
-          },
+          { code: 'BMS_500_00', message: 'Internal server error' },
           { status: 500 },
         ),
       ),
     );
-    await expect(registerCompanyRep(VALUES)).resolves.toEqual({
-      kind: 'failure',
-      failure: { reason: 'emailTaken' },
-    });
+    const outcome = await registerCompanyRep(VALUES);
+    expect(outcome.kind).toBe('failure');
+    if (outcome.kind !== 'failure') return;
+    expect(outcome.failure.reason).toBe('other');
+    expect(signupFailureMessage(outcome.failure, 'register', t)).toBe(
+      'fm.signup.errors.registerFailed',
+    );
   });
 });
 
@@ -180,7 +180,7 @@ describe('verifySignupEmail (BMS POST api/bms/company-reps/verify-email)', () =>
     expectNothingPersisted();
   });
 
-  it('a 401 (expired temp token) is invalidCode and never logs the session out', async () => {
+  it('a 401 (expired temp token) is sessionExpired and never logs the session out', async () => {
     const logout = vi.fn(async () => {});
     registerApiDependencies({
       logout,
@@ -190,7 +190,7 @@ describe('verifySignupEmail (BMS POST api/bms/company-reps/verify-email)', () =>
     server.use(http.post(VERIFY_URL, () => HttpResponse.json({}, { status: 401 })));
     await expect(verifySignupEmail(TEMP_TOKEN, '1234')).resolves.toEqual({
       kind: 'failure',
-      failure: { reason: 'invalidCode' },
+      failure: { reason: 'sessionExpired' },
     });
     expect(logout).not.toHaveBeenCalled();
   });
@@ -206,10 +206,15 @@ describe('verifySignupEmail (BMS POST api/bms/company-reps/verify-email)', () =>
 });
 
 describe('signup error mapping', () => {
-  it('verify: blank/wrong code (400, 500) and auth failures (401, 403) are invalidCode', () => {
-    for (const status of [400, 401, 403, 404, 500]) {
+  it('verify: blank/wrong code (400, 500) and other 4xx are invalidCode', () => {
+    for (const status of [400, 403, 404, 500]) {
       expect(mapVerifyError(apiError(status))).toEqual({ reason: 'invalidCode' });
     }
+  });
+
+  it('verify: 401 means the temp token expired, not the code', () => {
+    expect(mapVerifyError(apiError(401))).toEqual({ reason: 'sessionExpired' });
+    expect(mapVerifyError(apiError(401, 'UNAUTHORIZED'))).toEqual({ reason: 'sessionExpired' });
   });
 
   it('verify: 429, gateway errors and transport failures are not blamed on the code', () => {
@@ -219,29 +224,15 @@ describe('signup error mapping', () => {
     expect(mapVerifyError(new Error('boom'))).toEqual({ reason: 'other', error: null });
   });
 
-  it('register: 409 and the UMS duplicate codes/messages are emailTaken', () => {
-    expect(mapRegisterError(apiError(409))).toEqual({ reason: 'emailTaken' });
-    expect(mapRegisterError(apiError(400, 'UMS_400_01'))).toEqual({ reason: 'emailTaken' });
-    expect(
-      mapRegisterError(apiError(500, 'UNKNOWN', 'Registration failed: Email is already used')),
-    ).toEqual({ reason: 'emailTaken' });
-    expect(
-      mapRegisterError(
-        apiError(500, 'UNKNOWN', 'Company representative already registered with this email'),
-      ),
-    ).toEqual({ reason: 'emailTaken' });
-  });
-
-  it('register: a duplicate MOBILE is not reported as a duplicate email', () => {
-    const failure = mapRegisterError(
-      apiError(500, 'UNKNOWN', 'This mobile number is already verified by another user'),
-    );
-    expect(failure.reason).toBe('other');
+  it('register: every failure is other, keeping the ApiError for the shared copy', () => {
+    const error = apiError(500, 'BMS_500_00');
+    expect(mapRegisterError(error)).toEqual({ reason: 'other', error });
+    expect(mapRegisterError(new Error('boom'))).toEqual({ reason: 'other', error: null });
   });
 
   it('messages: specific keys, shared copy for transport/429/gateway, step fallback otherwise', () => {
-    expect(signupFailureMessage({ reason: 'emailTaken' }, 'register', t)).toBe(
-      'fm.signup.errors.emailTaken',
+    expect(signupFailureMessage({ reason: 'sessionExpired' }, 'verify', t)).toBe(
+      'fm.signup.errors.sessionExpired',
     );
     expect(signupFailureMessage({ reason: 'invalidCode' }, 'verify', t)).toBe(
       'fm.signup.errors.invalidCode',

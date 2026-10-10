@@ -7,14 +7,18 @@ function mask(value: string): string {
   return value.slice(0, 3) + '***' + value.slice(-3);
 }
 
+// Keys whose values are credentials: masked in both request and response logs.
+const SENSITIVE_KEY = /token|otp|password/i;
+
+function maskValue(value: unknown): unknown {
+  return typeof value === 'string' ? mask(value) : '***';
+}
+
 function maskBody(body: unknown): unknown {
   if (typeof body !== 'object' || body === null) return body;
   const clone: Record<string, unknown> = { ...(body as Record<string, unknown>) };
   for (const key of Object.keys(clone)) {
-    if (/token|otp|password/i.test(key)) {
-      const v = clone[key];
-      clone[key] = typeof v === 'string' ? mask(v) : '***';
-    }
+    if (SENSITIVE_KEY.test(key)) clone[key] = maskValue(clone[key]);
   }
   return clone;
 }
@@ -44,7 +48,8 @@ export function loggerRequest(service: ServiceName): BeforeRequestHook {
   };
 }
 
-function summarizeResponseBody(parsed: unknown): Record<string, unknown> {
+/** Exported for tests. Credentials (e.g. a signup temp accessToken) are masked. */
+export function summarizeResponseBody(parsed: unknown): Record<string, unknown> {
   if (parsed === undefined || parsed === null) return { value: parsed };
   if (Array.isArray(parsed)) {
     return {
@@ -65,6 +70,8 @@ function summarizeResponseBody(parsed: unknown): Record<string, unknown> {
         };
       } else if (value && typeof value === 'object') {
         summary[key] = { objectKeys: Object.keys(value as object) };
+      } else if (SENSITIVE_KEY.test(key)) {
+        summary[key] = maskValue(value);
       } else {
         summary[key] = value;
       }

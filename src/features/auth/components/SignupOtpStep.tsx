@@ -52,8 +52,10 @@ export function SignupOtpStep({
         </Text>
       </View>
 
-      <View style={styles.boxes} accessibilityLabel={t('fm.signup.otp.codeLabel')}>
+      <View style={styles.boxes}>
         <OtpBoxes
+          accessibilityLabel={t('fm.signup.otp.codeLabel')}
+          autoFocus
           value={code}
           onChange={onCodeChange}
           length={SIGNUP_OTP_LENGTH}

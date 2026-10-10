@@ -172,6 +172,7 @@ export function SignupForm({
             textContentType="emailAddress"
             // Email addresses are always LTR, even in Arabic.
             textAlign="left"
+            forceLtr
             returnKeyType="next"
             submitBehavior="submit"
             onSubmitEditing={() => mobileRef.current?.focus()}
@@ -204,6 +205,7 @@ export function SignupForm({
             textContentType="telephoneNumber"
             // Phone numbers are always LTR, even in Arabic.
             textAlign="left"
+            forceLtr
             returnKeyType="next"
             submitBehavior="submit"
             onSubmitEditing={() => passwordRef.current?.focus()}

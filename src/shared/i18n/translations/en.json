@@ -1352,9 +1352,9 @@
         "passwordLower": "Password must contain at least one lowercase letter",
         "passwordDigit": "Password must contain at least one number",
         "passwordSpecial": "Password must contain at least one special character (@$!%*?&#)",
-        "emailTaken": "This email is already registered. Sign in instead.",
-        "registerFailed": "An error occurred during registration. Please try again.",
+        "registerFailed": "An error occurred during registration. Please try again. If you already have an account, sign in instead.",
         "invalidCode": "That code is incorrect or has expired. Check your email and try again.",
+        "sessionExpired": "This verification session has expired. Tap \"Edit details\" and submit again to get a new code.",
         "verifyFailed": "We couldn't verify your email. Please try again."
       }
     },
