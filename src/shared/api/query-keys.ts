@@ -139,6 +139,8 @@ export const queryKeys = {
   },
   bms: {
     myProjects: ['bms', 'projects', 'my-projects'] as const,
+    /** `GET api/bms/companies/logo` (FM settings). */
+    companyLogo: ['bms', 'companies', 'logo'] as const,
     projectResidents: ['bms', 'project-residents'] as const,
     escalationSettings: (scopeKey: string | null) =>
       ['bms', 'escalation-settings', scopeKey] as const,
