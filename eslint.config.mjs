@@ -41,7 +41,7 @@ export default [
       'no-restricted-syntax': [
         'error',
         {
-          selector: 'Literal[value=/^#(?:[0-9a-fA-F]{3}){1,2}$/]',
+          selector: "Literal[value=/^#(?:[0-9a-fA-F]{3}){1,2}$/]",
           message: 'Raw hex colors not allowed in components — use theme tokens.',
         },
       ],
