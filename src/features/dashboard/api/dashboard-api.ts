@@ -8,21 +8,13 @@ import {
 } from '@/shared/api/coerce';
 import { safeMapList } from '@/shared/api/safe-map';
 import { toUtcIso } from '@/shared/lib/to-utc-iso';
+import { TODOS_PATH, TODOS_QUERY } from '@/features/todos/api/todos-path';
 
 /**
  * BMS-TMS `CompanyRepresentativeController` (`api/bms/company-reps`) ->
  * `GET /dashboardInfo`, returning `DashboardInfoResponse`.
  */
 export const DASHBOARD_INFO_PATH = 'api/bms/company-reps/dashboardInfo';
-
-/**
- * BMS-TMS `TodoItemController`, served under `api/bms/todos` (BMS 3b415db)
- * so the prod gateway routes it like every other BMS call.
- */
-export const TODOS_PATH = 'api/bms/todos';
-
-/** Same query the web dashboard runs: first 100 todos, by priority. */
-const TODOS_QUERY = { page: 0, size: 100, sort: 'priority,asc' } as const;
 
 /** One `topOpenTickets` row (BMS `TicketResponse`, the fields the card shows). */
 export interface DashboardTicket {

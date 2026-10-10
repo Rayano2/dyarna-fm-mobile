@@ -2019,6 +2019,46 @@
       "selectProjectBody": "Pick a project above to see its data.",
       "projectA11y": "Project: {{value}}",
       "buildingA11y": "Building: {{value}}"
+    },
+    "todos": {
+      "title": "Todos",
+      "active": "Active",
+      "completed": "Completed",
+      "add": "Add task",
+      "edit": "Edit task",
+      "editHint": "Opens the task for editing",
+      "urgent": "Needs attention",
+      "emptyActive": "No active tasks",
+      "emptyCompleted": "No completed tasks yet",
+      "loadFailed": "Couldn't load tasks",
+      "titleLabel": "Title",
+      "titleRequired": "Title is required",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Add more detail (optional)",
+      "priorityLabel": "Priority",
+      "priority": {
+        "LOW": "Low",
+        "MEDIUM": "Medium",
+        "HIGH": "High"
+      },
+      "dueDateLabel": "Due date",
+      "noDueDate": "No due date",
+      "clearDueDate": "Clear",
+      "dueDateLocked": "A saved due date can be changed but not removed.",
+      "due": {
+        "overdue": "Overdue",
+        "today": "Due today",
+        "tomorrow": "Due tomorrow"
+      },
+      "saved": "Task added",
+      "updated": "Task updated",
+      "saveFailed": "Couldn't save the task",
+      "deleteTitle": "Delete this task?",
+      "deleteBody": "This can't be undone.",
+      "delete": "Delete",
+      "deleted": "Task deleted",
+      "deleteFailed": "Couldn't delete the task",
+      "toggleFailed": "Couldn't update the task"
     }
   }
 }

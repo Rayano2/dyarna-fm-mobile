@@ -2019,6 +2019,46 @@
       "selectProjectBody": "اختر مشروعًا من الأعلى لعرض بياناته.",
       "projectA11y": "المشروع: {{value}}",
       "buildingA11y": "المبنى: {{value}}"
+    },
+    "todos": {
+      "title": "المهام",
+      "active": "نشطة",
+      "completed": "مكتملة",
+      "add": "إضافة مهمة",
+      "edit": "تعديل المهمة",
+      "editHint": "يفتح المهمة للتعديل",
+      "urgent": "تحتاج إلى اهتمام",
+      "emptyActive": "لا توجد مهام نشطة",
+      "emptyCompleted": "لا توجد مهام مكتملة حتى الآن",
+      "loadFailed": "تعذّر تحميل المهام",
+      "titleLabel": "العنوان",
+      "titleRequired": "العنوان مطلوب",
+      "descriptionLabel": "الوصف",
+      "descriptionPlaceholder": "أضف مزيدًا من التفاصيل (اختياري)",
+      "priorityLabel": "الأولوية",
+      "priority": {
+        "LOW": "منخفضة",
+        "MEDIUM": "متوسطة",
+        "HIGH": "عالية"
+      },
+      "dueDateLabel": "تاريخ الاستحقاق",
+      "noDueDate": "بلا تاريخ استحقاق",
+      "clearDueDate": "إزالة",
+      "dueDateLocked": "يمكن تغيير تاريخ الاستحقاق المحفوظ لكن لا يمكن إزالته.",
+      "due": {
+        "overdue": "متأخرة",
+        "today": "تستحق اليوم",
+        "tomorrow": "تستحق غدًا"
+      },
+      "saved": "تمت إضافة المهمة",
+      "updated": "تم تحديث المهمة",
+      "saveFailed": "تعذّر حفظ المهمة",
+      "deleteTitle": "حذف هذه المهمة؟",
+      "deleteBody": "لا يمكن التراجع عن هذا الإجراء.",
+      "delete": "حذف",
+      "deleted": "تم حذف المهمة",
+      "deleteFailed": "تعذّر حذف المهمة",
+      "toggleFailed": "تعذّر تحديث المهمة"
     }
   }
 }
