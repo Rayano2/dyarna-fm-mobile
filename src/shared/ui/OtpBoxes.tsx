@@ -7,6 +7,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { StyleSheet } from 'react-native-unistyles';
+import { sanitizeOtpInput } from './otp-digits';
 
 export interface OtpBoxesProps {
   value: string;
@@ -16,6 +17,8 @@ export interface OtpBoxesProps {
   error?: boolean;
   disabled?: boolean;
   autoFocus?: boolean;
+  /** Read by screen readers on the (visually hidden) input that takes the digits. */
+  accessibilityLabel?: string;
 }
 
 export function OtpBoxes({
@@ -26,6 +29,7 @@ export function OtpBoxes({
   error,
   disabled,
   autoFocus = true,
+  accessibilityLabel,
 }: OtpBoxesProps) {
   const inputRef = useRef<TextInput>(null);
   const shake = useSharedValue(0);
@@ -45,7 +49,7 @@ export function OtpBoxes({
   const shakeStyle = useAnimatedStyle(() => ({ transform: [{ translateX: shake.value }] }));
 
   function handleChange(text: string) {
-    const digits = text.replaceAll(/\D/g, '').slice(0, length);
+    const digits = sanitizeOtpInput(text, length);
     onChange(digits);
     if (digits.length === length) onComplete?.(digits);
   }
@@ -78,6 +82,7 @@ export function OtpBoxes({
       <TextInput
         ref={inputRef}
         testID="otp-input"
+        {...(accessibilityLabel ? { accessibilityLabel } : {})}
         value={value}
         onChangeText={handleChange}
         keyboardType="number-pad"

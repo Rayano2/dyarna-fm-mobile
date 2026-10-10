@@ -9,10 +9,23 @@ export interface InputProps extends Omit<TextInputProps, 'style'> {
   error?: string | undefined;
   helper?: string | undefined;
   testID?: string | undefined;
+  /** For values that always read left-to-right (email, phone), even in Arabic. */
+  forceLtr?: boolean | undefined;
 }
 
 export const Input = forwardRef<TextInput, InputProps>(function Input(
-  { label, leadingIcon, trailingIcon, error, helper, onFocus, onBlur, placeholder, ...rest },
+  {
+    label,
+    leadingIcon,
+    trailingIcon,
+    error,
+    helper,
+    onFocus,
+    onBlur,
+    placeholder,
+    forceLtr,
+    ...rest
+  },
   ref,
 ) {
   const [focused, setFocused] = useState(false);
@@ -28,7 +41,7 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
           ref={ref}
           placeholder={placeholder}
           placeholderTextColor={theme.colors.textMuted}
-          style={styles.input}
+          style={[styles.input, forceLtr ? LTR_INPUT : null]}
           onFocus={(e) => {
             setFocused(true);
             onFocus?.(e);
@@ -46,6 +59,8 @@ export const Input = forwardRef<TextInput, InputProps>(function Input(
     </View>
   );
 });
+
+const LTR_INPUT = { writingDirection: 'ltr', textAlign: 'left' } as const;
 
 const styles = StyleSheet.create((theme) => ({
   wrapper: { gap: theme.spacing[6] },

@@ -2,6 +2,7 @@ import type { SessionStatus } from '../stores/authStore';
 
 export const FM_HOME_HREF = '/(fm)';
 export const LOGIN_HREF = '/(auth)/login';
+export const SIGNUP_HREF = '/(auth)/signup';
 
 export type RouteGroup = 'auth' | 'fm';
 
