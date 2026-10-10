@@ -1,10 +1,10 @@
-import type { ScopeProject } from '../api/projects-buildings';
+import type { FilterProject } from '@/shared/api/project-buildings-filter';
 
 export interface ScopeSnapshotInput {
   hydrated: boolean;
   /** The projects query has succeeded. */
   loaded: boolean;
-  projects: readonly ScopeProject[];
+  projects: readonly FilterProject[];
   storedProjectId: string | null;
   storedBuildingId: string | null;
 }
@@ -25,14 +25,14 @@ export type ScopeFix =
 export function reconcileScope(input: ScopeSnapshotInput): ScopeFix {
   const { hydrated, loaded, projects, storedProjectId, storedBuildingId } = input;
   if (!hydrated || !loaded) return null;
-  const only = projects.length === 1 ? projects[0]!.projectId : null;
-  const project = projects.find((p) => p.projectId === storedProjectId);
+  const only = projects.length === 1 ? String(projects[0]!.projectId) : null;
+  const project = projects.find((p) => String(p.projectId) === storedProjectId);
   if (storedProjectId && !project) return { kind: 'setProject', projectId: only };
   if (!storedProjectId) return only ? { kind: 'setProject', projectId: only } : null;
   if (
     project &&
     storedBuildingId &&
-    !project.buildings.some((b) => b.buildingId === storedBuildingId)
+    !project.buildings.some((b) => String(b.buildingId) === storedBuildingId)
   ) {
     return { kind: 'clearBuilding' };
   }

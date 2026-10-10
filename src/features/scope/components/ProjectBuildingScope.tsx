@@ -1,14 +1,13 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 import { Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import {
-  BottomSheet,
-  HapticPressable,
-  Icons,
-  useRtlTextStyle,
-  type BottomSheetRef,
-} from '@/shared/ui';
+  buildingsForProject,
+  type ProjectBuildingFilter,
+} from '@/shared/lib/project-building-filter';
+import { HapticPressable, Icons, type BottomSheetRef } from '@/shared/ui';
+import { FilterSheet } from '@/shared/ui/FilterSheet';
 import type { ScopeValue } from '../hooks/useScope';
 
 export interface ProjectBuildingScopeProps {
@@ -52,34 +51,10 @@ function PickerChip({
   );
 }
 
-interface OptionRowProps {
-  label: string;
-  selected: boolean;
-  onPress: () => void;
-}
-
-function OptionRow({ label, selected, onPress }: OptionRowProps) {
-  const { theme } = useUnistyles();
-  const rtlText = useRtlTextStyle();
-  return (
-    <HapticPressable
-      onPress={onPress}
-      accessibilityRole="button"
-      accessibilityLabel={label}
-      accessibilityState={{ selected }}
-      style={styles.option}
-    >
-      <Text style={[styles.optionText, rtlText]} numberOfLines={2}>
-        {label}
-      </Text>
-      {selected ? <Icons.Check size={18} color={theme.colors.primary} weight="bold" /> : null}
-    </HapticPressable>
-  );
-}
-
 /**
- * Sticky project + building picker shared by the four community screens.
- * Each chip opens a bottom-sheet list; picks persist across the screens.
+ * Sticky project + building summary shared by the four community screens.
+ * Either chip opens the shared FM `FilterSheet` with a mandatory project;
+ * applied picks persist across the screens (`fmScopeStore`).
  */
 export function ProjectBuildingScope({
   scope,
@@ -87,83 +62,67 @@ export function ProjectBuildingScope({
   trailing,
 }: ProjectBuildingScopeProps) {
   const { t } = useTranslation();
-  const projectSheet = useRef<BottomSheetRef>(null);
-  const buildingSheet = useRef<BottomSheetRef>(null);
+  const sheet = useRef<BottomSheetRef>(null);
+  const { project, building, setProject, setBuilding } = scope;
 
-  const pickProject = useCallback(
-    (projectId: string) => {
-      scope.setProject(projectId);
-      projectSheet.current?.dismiss();
-    },
-    [scope],
-  );
-  const pickBuilding = useCallback(
-    (buildingId: string | null) => {
-      scope.setBuilding(buildingId);
-      buildingSheet.current?.dismiss();
-    },
-    [scope],
+  const value = useMemo<ProjectBuildingFilter>(
+    () => ({
+      projectId: project?.projectId ?? null,
+      buildingCode: building?.buildingCode ?? null,
+    }),
+    [project, building],
   );
 
-  const projectLabel = scope.project?.projectName ?? t('fm.scope.selectProject');
-  const buildingLabel = scope.building?.buildingName ?? t('fm.scope.allBuildings');
+  const onApply = useCallback(
+    (next: ProjectBuildingFilter) => {
+      if (next.projectId === null) return;
+      // Changing the project clears the stored building, so set it second.
+      setProject(String(next.projectId));
+      const picked = buildingsForProject(scope.projects, next.projectId).find(
+        (b) => b.buildingCode === next.buildingCode,
+      );
+      setBuilding(picked ? String(picked.buildingId) : null);
+    },
+    [scope.projects, setProject, setBuilding],
+  );
+
+  const open = useCallback(() => sheet.current?.present(), []);
+  const projectLabel = project?.projectName ?? t('fm.scope.selectProject');
+  const buildingLabel = building?.buildingName ?? t('fm.filters.allBuildings');
 
   return (
     <View style={styles.row}>
       <View style={styles.chips}>
         <PickerChip
           label={projectLabel}
-          placeholder={!scope.project}
+          placeholder={!project}
           disabled={scope.projects.length === 0}
           accessibilityLabel={t('fm.scope.projectA11y', { value: projectLabel })}
-          onPress={() => projectSheet.current?.present()}
+          onPress={open}
         />
         {showBuilding ? (
           <PickerChip
             label={buildingLabel}
-            placeholder={!scope.building}
-            disabled={!scope.project}
+            placeholder={!building}
+            disabled={!project}
             accessibilityLabel={t('fm.scope.buildingA11y', { value: buildingLabel })}
-            onPress={() => buildingSheet.current?.present()}
+            onPress={open}
           />
         ) : null}
       </View>
       {trailing}
 
-      <BottomSheet ref={projectSheet} scrollable snapPoints={['50%', '85%']}>
-        <Text style={styles.sheetTitle} accessibilityRole="header">
-          {t('fm.scope.project')}
-        </Text>
-        {scope.projects.map((p) => (
-          <OptionRow
-            key={p.projectId}
-            label={p.projectName}
-            selected={p.projectId === scope.projectId}
-            onPress={() => pickProject(p.projectId)}
-          />
-        ))}
-      </BottomSheet>
-
-      {showBuilding ? (
-        <BottomSheet ref={buildingSheet} scrollable snapPoints={['50%', '85%']}>
-          <Text style={styles.sheetTitle} accessibilityRole="header">
-            {t('fm.scope.building')}
-          </Text>
-          <OptionRow
-            label={t('fm.scope.allBuildings')}
-            selected={!scope.buildingId}
-            onPress={() => pickBuilding(null)}
-          />
-          {(scope.project?.buildings ?? []).map((b) => (
-            <OptionRow
-              key={b.buildingId}
-              label={b.buildingName}
-              selected={b.buildingId === scope.buildingId}
-              onPress={() => pickBuilding(b.buildingId)}
-            />
-          ))}
-        </BottomSheet>
-      ) : null}
+      <FilterSheet
+        ref={sheet}
+        value={value}
+        onApply={onApply}
+        projects={scope.projects}
+        loading={scope.isLoading}
+        error={scope.isError}
+        onRetry={scope.refetch}
+        requireProject
+        showBuilding={showBuilding}
+      />
     </View>
   );
 }
@@ -198,26 +157,4 @@ const styles = StyleSheet.create((theme) => ({
     color: theme.colors.textPrimary,
   },
   chipPlaceholder: { color: theme.colors.textSecondary },
-  sheetTitle: {
-    fontSize: theme.type.heading.md.size,
-    lineHeight: theme.type.heading.md.lineHeight,
-    fontWeight: '600',
-    color: theme.colors.textPrimary,
-    marginBottom: theme.spacing[8],
-  },
-  option: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: theme.spacing[12],
-    minHeight: 48,
-    paddingVertical: theme.spacing[8],
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.borderHairline,
-  },
-  optionText: {
-    flex: 1,
-    fontSize: theme.type.body.md.size,
-    lineHeight: theme.type.body.md.lineHeight,
-    color: theme.colors.textPrimary,
-  },
 }));

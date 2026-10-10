@@ -1,14 +1,17 @@
 import { useEffect, useMemo } from 'react';
-import type { ScopeBuilding, ScopeProject } from '../api/projects-buildings';
+import type { FilterBuilding, FilterProject } from '@/shared/api/project-buildings-filter';
+import { useProjectsBuildingsFilter } from '@/shared/hooks/useProjectsBuildingsFilter';
 import { useScopeStore } from '@/shared/stores/fmScopeStore';
-import { useScopeProjects } from './useScopeProjects';
 import { reconcileScope } from '../lib/reconcile-scope';
 
 export interface ScopeValue {
-  projects: ScopeProject[];
-  project: ScopeProject | undefined;
-  building: ScopeBuilding | undefined;
-  /** Only set once it is known to belong to the rep (validated against the list). */
+  projects: FilterProject[];
+  project: FilterProject | undefined;
+  building: FilterBuilding | undefined;
+  /**
+   * Only set once it is known to belong to the rep (validated against the
+   * list). BMS `Long`s as strings, so they go straight into a query param.
+   */
   projectId: string | undefined;
   buildingId: string | undefined;
   isLoading: boolean;
@@ -23,7 +26,7 @@ export interface ScopeValue {
  * projects. Auto-selects the project when the rep has exactly one.
  */
 export function useScope(): ScopeValue {
-  const query = useScopeProjects();
+  const query = useProjectsBuildingsFilter();
   const storedProjectId = useScopeStore((s) => s.projectId);
   const storedBuildingId = useScopeStore((s) => s.buildingId);
   const hydrated = useScopeStore((s) => s.hydrated);
@@ -36,8 +39,8 @@ export function useScope(): ScopeValue {
   }, [hydrate]);
 
   const projects = useMemo(() => query.data ?? [], [query.data]);
-  const project = projects.find((p) => p.projectId === storedProjectId);
-  const building = project?.buildings.find((b) => b.buildingId === storedBuildingId);
+  const project = projects.find((p) => String(p.projectId) === storedProjectId);
+  const building = project?.buildings.find((b) => String(b.buildingId) === storedBuildingId);
 
   useEffect(() => {
     const fix = reconcileScope({
@@ -63,8 +66,8 @@ export function useScope(): ScopeValue {
     projects,
     project,
     building,
-    projectId: project?.projectId,
-    buildingId: building?.buildingId,
+    projectId: project ? String(project.projectId) : undefined,
+    buildingId: building ? String(building.buildingId) : undefined,
     isLoading: query.isLoading || !hydrated,
     isError: query.isError,
     refetch: () => {

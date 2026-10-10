@@ -3,7 +3,8 @@ import { Text, View } from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import { FieldLabel, zodFormResolver, type ScopeBuilding } from '@/features/scope';
+import { FieldLabel, zodFormResolver } from '@/features/scope';
+import type { FilterBuilding } from '@/shared/api/project-buildings-filter';
 import { useLocaleStore } from '@/shared/stores/localeStore';
 import { useToastStore } from '@/shared/stores/toastStore';
 import {
@@ -41,7 +42,7 @@ import { formatExpiry } from './BuildingInfoCard';
 
 export interface BuildingInfoFormSheetProps {
   projectId: string | undefined;
-  buildings: ScopeBuilding[];
+  buildings: FilterBuilding[];
   editing: BuildingInfoItem | null;
   defaultBuildingId: string | undefined;
   /** Bumped by the screen each time the sheet opens, to re-seed the form. */
@@ -218,10 +219,10 @@ export const BuildingInfoFormSheet = forwardRef<BottomSheetRef, BuildingInfoForm
                   />
                   {buildings.map((b) => (
                     <Chip
-                      key={b.buildingId}
+                      key={b.buildingCode}
                       label={b.buildingName}
-                      selected={field.value === b.buildingId}
-                      onPress={() => field.onChange(b.buildingId)}
+                      selected={field.value === String(b.buildingId)}
+                      onPress={() => field.onChange(String(b.buildingId))}
                     />
                   ))}
                 </ChipRow>

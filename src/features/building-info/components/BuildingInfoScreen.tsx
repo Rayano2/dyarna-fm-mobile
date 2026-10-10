@@ -56,7 +56,7 @@ export function BuildingInfoScreen() {
 
   const buildingNames = useMemo(() => {
     const map = new Map<string, string>();
-    for (const b of scope.project?.buildings ?? []) map.set(b.buildingId, b.buildingName);
+    for (const b of scope.project?.buildings ?? []) map.set(String(b.buildingId), b.buildingName);
     return map;
   }, [scope.project]);
 

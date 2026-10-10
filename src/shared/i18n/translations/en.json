@@ -1887,11 +1887,8 @@
       }
     },
     "scope": {
-      "project": "Project",
-      "building": "Building",
       "selectProject": "Select a project",
       "selectProjectBody": "Pick a project above to see its data.",
-      "allBuildings": "All buildings",
       "projectA11y": "Project: {{value}}",
       "buildingA11y": "Building: {{value}}"
     }

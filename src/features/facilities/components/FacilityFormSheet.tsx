@@ -3,7 +3,8 @@ import { Text, View } from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
-import { FieldLabel, zodFormResolver, type ScopeBuilding } from '@/features/scope';
+import { FieldLabel, zodFormResolver } from '@/features/scope';
+import type { FilterBuilding } from '@/shared/api/project-buildings-filter';
 import { useToastStore } from '@/shared/stores/toastStore';
 import {
   BottomSheet,
@@ -34,7 +35,7 @@ import { FACILITY_TYPES, facilityTypeLabel } from '../lib/facility-meta';
 
 export interface FacilityFormSheetProps {
   projectId: string | undefined;
-  buildings: ScopeBuilding[];
+  buildings: FilterBuilding[];
   /** The facility being edited; null = create. */
   editing: Facility | null;
   /** Building preselected for a new facility (the current filter). */
@@ -210,10 +211,10 @@ export const FacilityFormSheet = forwardRef<BottomSheetRef, FacilityFormSheetPro
                   />
                   {buildings.map((b) => (
                     <Chip
-                      key={b.buildingId}
+                      key={b.buildingCode}
                       label={b.buildingName}
-                      selected={field.value === b.buildingId}
-                      onPress={() => field.onChange(b.buildingId)}
+                      selected={field.value === String(b.buildingId)}
+                      onPress={() => field.onChange(String(b.buildingId))}
                     />
                   ))}
                 </ChipRow>

@@ -1,13 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import type { ScopeProject } from '../api/projects-buildings';
+import type { FilterProject } from '@/shared/api/project-buildings-filter';
 import { reconcileScope, type ScopeSnapshotInput } from './reconcile-scope';
 
-const P7: ScopeProject = {
-  projectId: '7',
+const P7: FilterProject = {
+  projectId: 7,
   projectName: 'Palm',
-  buildings: [{ buildingId: '3', buildingCode: 'B3', buildingName: 'Tower 3' }],
+  buildings: [{ buildingId: 3, buildingCode: 'B3', buildingName: 'Tower 3' }],
 };
-const P8: ScopeProject = { projectId: '8', projectName: 'Oasis', buildings: [] };
+const P8: FilterProject = { projectId: 8, projectName: 'Oasis', buildings: [] };
 
 const base: ScopeSnapshotInput = {
   hydrated: true,

@@ -1887,11 +1887,8 @@
       }
     },
     "scope": {
-      "project": "المشروع",
-      "building": "المبنى",
       "selectProject": "اختر مشروعًا",
       "selectProjectBody": "اختر مشروعًا من الأعلى لعرض بياناته.",
-      "allBuildings": "كل المباني",
       "projectA11y": "المشروع: {{value}}",
       "buildingA11y": "المبنى: {{value}}"
     }
