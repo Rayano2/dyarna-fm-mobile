@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import {
   useMutation,
   useQuery,
+  type QueryObserverOptions,
   type UseMutationResult,
   type UseQueryResult,
 } from '@tanstack/react-query';
@@ -13,10 +14,12 @@ import type {
 } from '../api/mappers';
 import { fetchPaymentReminderStatus, sendPaymentReminder } from '../api/payment-reminders';
 import {
-  isPollingStopped,
-  nextPollFailures,
+  initialPollState,
+  isPollStopped,
   pollIntervalFor,
-  shouldPoll,
+  reducePoll,
+  type PollEvent,
+  type PollState,
 } from '../lib/payment-reminders-logic';
 
 /** Errors are surfaced by the screen (toast + inline due-date error), not here. */
@@ -28,53 +31,81 @@ export function useSendPaymentReminder(): UseMutationResult<
   return useMutation({ mutationFn: sendPaymentReminder });
 }
 
-export interface PaymentReminderStatusResult {
-  query: UseQueryResult<PaymentReminderSend>;
-  /** Gave up after MAX_POLL_FAILURES consecutive failures. */
-  stopped: boolean;
-  /** Resets the failure counter, which re-enables the poll. */
-  resume: () => void;
-}
+type StatusKey = ReturnType<typeof queryKeys.fmPaymentReminders.status>;
 
 /**
- * Polls a send every 2s until it is COMPLETED / COMPLETED_WITH_ERRORS, and
- * stops after MAX_POLL_FAILURES consecutive failures (web parity). The counter
- * is keyed by sendId, so a new send always starts from zero.
+ * The status query, built outside React so it can be driven by a
+ * QueryObserver in tests. Every poll reports its outcome through `onPoll`;
+ * the caller folds it into a PollState (`reducePoll`) and flips `enabled`.
  */
-export function usePaymentReminderStatus(sendId: string | null): PaymentReminderStatusResult {
-  const [failures, setFailures] = useState<{ sendId: string | null; count: number }>({
-    sendId: null,
-    count: 0,
-  });
-  const count = failures.sendId === sendId ? failures.count : 0;
-
-  const record = useCallback(
-    (outcome: 'success' | 'failure') =>
-      setFailures((prev) => ({
-        sendId,
-        count: nextPollFailures(prev.sendId === sendId ? prev.count : 0, outcome),
-      })),
-    [sendId],
-  );
-
-  const query = useQuery({
+export function paymentReminderStatusOptions(
+  sendId: string | null,
+  enabled: boolean,
+  onPoll: (event: PollEvent) => void,
+): QueryObserverOptions<
+  PaymentReminderSend,
+  unknown,
+  PaymentReminderSend,
+  PaymentReminderSend,
+  StatusKey
+> {
+  return {
     queryKey: queryKeys.fmPaymentReminders.status(sendId),
     queryFn: async () => {
       try {
         const result = await fetchPaymentReminderStatus(sendId ?? '');
-        record('success');
+        onPoll({ type: 'success', status: result.status, now: Date.now() });
         return result;
       } catch (error) {
-        record('failure');
+        onPoll({ type: 'failure' });
         throw error;
       }
     },
-    enabled: shouldPoll(sendId, count),
-    refetchInterval: (q) => pollIntervalFor(q.state.data?.status),
+    enabled: sendId !== null && enabled,
+    refetchInterval: (query) => pollIntervalFor(query.state.data?.status),
     retry: false,
-  });
+  };
+}
 
-  const resume = useCallback(() => setFailures({ sendId, count: 0 }), [sendId]);
+export interface ActiveSend {
+  sendId: string;
+  /** When the 202 came back (epoch ms): starts the "still queued" window. */
+  sentAt: number;
+}
 
-  return { query, stopped: isPollingStopped(count), resume };
+export interface PaymentReminderStatusResult {
+  query: UseQueryResult<PaymentReminderSend, unknown>;
+  /** Gave up: MAX_POLL_FAILURES consecutive failures, or still QUEUED after 3 minutes. */
+  stopped: boolean;
+  /** Stopped because the send is still QUEUED (not because polls failed). */
+  stalled: boolean;
+  /** "Check again": clears the failures and opens a fresh stall window. */
+  resume: () => void;
+}
+
+/**
+ * Polls a send every 2s until COMPLETED / COMPLETED_WITH_ERRORS (web parity),
+ * stopping after MAX_POLL_FAILURES consecutive failures or once it has sat in
+ * QUEUED for QUEUED_STALL_MS. The state is keyed by sendId, so a new send
+ * always starts clean.
+ */
+export function usePaymentReminderStatus(send: ActiveSend | null): PaymentReminderStatusResult {
+  const sendId = send?.sendId ?? null;
+  const sentAt = send?.sentAt ?? 0;
+  const [tracked, setTracked] = useState<{ sendId: string | null; poll: PollState } | null>(null);
+  const poll = tracked?.sendId === sendId ? tracked.poll : initialPollState(sentAt);
+
+  const dispatch = useCallback(
+    (event: PollEvent) =>
+      setTracked((prev) => ({
+        sendId,
+        poll: reducePoll(prev?.sendId === sendId ? prev.poll : initialPollState(sentAt), event),
+      })),
+    [sendId, sentAt],
+  );
+
+  const query = useQuery(paymentReminderStatusOptions(sendId, !isPollStopped(poll), dispatch));
+  const resume = useCallback(() => dispatch({ type: 'resume', now: Date.now() }), [dispatch]);
+
+  return { query, stopped: isPollStopped(poll), stalled: poll.stalled, resume };
 }

@@ -1,4 +1,4 @@
-import { ApiError } from '@/shared/api/errors';
+import { ApiError, ERROR_CODES, isUnconfirmedError } from '@/shared/api/errors';
 import { toAsciiDigits } from '@/shared/lib/to-ascii-digits';
 import type { ProjectBuildingFilter } from '@/shared/lib/project-building-filter';
 import type { Resident } from '@/features/residents';
@@ -17,8 +17,12 @@ export const REMINDER_CURRENCY = 'SAR';
 /** Mirrors the DTO's `@Digits(integer = 10, fraction = 2)`, so it fails in-field. */
 export const AMOUNT_PATTERN = /^\d{1,10}(\.\d{1,2})?$/;
 
-/** Arabic decimal separator (U+066B), typed by Arabic decimal pads. */
-const ARABIC_DECIMAL = /٫/g;
+/**
+ * Decimal separators a decimal pad can type: the Arabic one (U+066B) and the
+ * comma that comma-decimal locales show. The Arabic THOUSANDS separator
+ * (U+066C) is deliberately not mapped, so "١٬٠٠٠" stays invalid.
+ */
+const DECIMAL_SEPARATORS = /[٫,]/g;
 
 /** SELECTED beats a filter; a filter beats ALL. There is no manual toggle. */
 export function deriveTargetMode(
@@ -32,7 +36,7 @@ export function deriveTargetMode(
 
 /** ASCII digits and a `.` decimal point, trimmed. */
 export function normalizeAmount(raw: string): string {
-  return toAsciiDigits(raw).replaceAll(ARABIC_DECIMAL, '.').trim();
+  return toAsciiDigits(raw).replaceAll(DECIMAL_SEPARATORS, '.').trim();
 }
 
 /** The positive amount (at most 10 integer and 2 fraction digits), or null. */
@@ -109,18 +113,97 @@ export function pollIntervalFor(status?: PaymentReminderStatus): number | false 
   return isTerminalStatus(status) ? false : POLL_INTERVAL_MS;
 }
 
-/** A success resets the consecutive-failure count; a failure adds one. */
-export function nextPollFailures(previous: number, outcome: 'success' | 'failure'): number {
-  return outcome === 'success' ? 0 : previous + 1;
+/** A send still QUEUED this long after it started (or after "Check again") stops polling. */
+export const QUEUED_STALL_MS = 3 * 60_000;
+
+export interface PollState {
+  /** Consecutive failed polls. */
+  failures: number;
+  /** Still QUEUED after QUEUED_STALL_MS. */
+  stalled: boolean;
+  /** When the current stall window began (epoch ms). */
+  windowStart: number;
 }
 
-export function isPollingStopped(failures: number): boolean {
-  return failures >= MAX_POLL_FAILURES;
+export type PollEvent =
+  | { type: 'success'; status: PaymentReminderStatus; now: number }
+  | { type: 'failure' }
+  | { type: 'resume'; now: number };
+
+export function initialPollState(startedAt: number): PollState {
+  return { failures: 0, stalled: false, windowStart: startedAt };
 }
 
-/** Whether the status query should run at all. */
-export function shouldPoll(sendId: string | null, failures: number): boolean {
-  return sendId !== null && !isPollingStopped(failures);
+/**
+ * A success resets the consecutive-failure count and flags a stall once the
+ * send has sat in QUEUED for QUEUED_STALL_MS; a failure adds one; "Check
+ * again" clears both and opens a fresh stall window.
+ */
+export function reducePoll(state: PollState, event: PollEvent): PollState {
+  if (event.type === 'failure') return { ...state, failures: state.failures + 1 };
+  if (event.type === 'resume') return initialPollState(event.now);
+  return {
+    ...state,
+    failures: 0,
+    stalled: event.status === 'QUEUED' && event.now - state.windowStart >= QUEUED_STALL_MS,
+  };
+}
+
+export function isPollStopped(state: PollState): boolean {
+  return state.failures >= MAX_POLL_FAILURES || state.stalled;
+}
+
+export type CompletionOutcome = 'success' | 'partial';
+
+/** Any failure, or nobody reached at all, is a partial result, not a success. */
+export function completionOutcome(send: {
+  sentCount: number | undefined;
+  failedCount: number | undefined;
+}): CompletionOutcome {
+  return (send.failedCount ?? 0) === 0 && (send.sentCount ?? 0) > 0 ? 'success' : 'partial';
+}
+
+/**
+ * The POST never came back (TIMEOUT / REQUEST_FAILED), so the broadcast may
+ * already be on its way: the copy must not invite a blind retry.
+ */
+export function isUnconfirmedSendError(error: unknown): boolean {
+  return (
+    isUnconfirmedError(error) || (error instanceof ApiError && error.code === ERROR_CODES.TIMEOUT)
+  );
+}
+
+export interface Latch {
+  current: boolean;
+}
+
+export interface SendHandlers<R> {
+  onSuccess: (result: R) => void;
+  onError: (error: unknown) => void;
+  onSettled: () => void;
+}
+
+/**
+ * Synchronous single-flight for the broadcast. `isPending` only flips on the
+ * next render, so a double tap on "Yes, send" would otherwise POST twice. The
+ * latch is set before `mutate` and released when the mutation settles.
+ * Returns whether the send was started.
+ */
+export function latchedSend<P, R>(
+  latch: Latch,
+  payload: P,
+  mutate: (payload: P, handlers: SendHandlers<R>) => void,
+  handlers: Omit<SendHandlers<R>, 'onSettled'>,
+): boolean {
+  if (latch.current) return false;
+  latch.current = true;
+  mutate(payload, {
+    ...handlers,
+    onSettled: () => {
+      latch.current = false;
+    },
+  });
+  return true;
 }
 
 /**

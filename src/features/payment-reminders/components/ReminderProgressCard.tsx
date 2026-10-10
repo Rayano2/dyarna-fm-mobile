@@ -11,6 +11,8 @@ export interface ReminderProgressCardProps {
   /** Server-resolved audience size (status first, then the 202 body). */
   targetedCount: number | undefined;
   pollStopped: boolean;
+  /** Stopped because the send is still QUEUED after 3 minutes, not because polls failed. */
+  stalled: boolean;
   onCheckAgain: () => void;
   onNewReminder: () => void;
 }
@@ -19,6 +21,7 @@ export function ReminderProgressCard({
   status,
   targetedCount,
   pollStopped,
+  stalled,
   onCheckAgain,
   onNewReminder,
 }: ReminderProgressCardProps): React.JSX.Element {
@@ -87,9 +90,17 @@ export function ReminderProgressCard({
           <Icons.Warning size={20} color={theme.colors.error} weight="bold" />
           <View style={styles.alertBody}>
             <Text style={[styles.alertTitle, rtlText]}>
-              {t('fm.paymentReminders.pollErrorTitle')}
+              {t(
+                stalled ? 'fm.paymentReminders.stalledTitle' : 'fm.paymentReminders.pollErrorTitle',
+              )}
             </Text>
-            <Text style={[styles.hint, rtlText]}>{t('fm.paymentReminders.pollErrorMessage')}</Text>
+            <Text style={[styles.hint, rtlText]}>
+              {t(
+                stalled
+                  ? 'fm.paymentReminders.stalledMessage'
+                  : 'fm.paymentReminders.pollErrorMessage',
+              )}
+            </Text>
           </View>
         </View>
         <View style={styles.actions}>

@@ -1646,7 +1646,6 @@
       "messagePlaceholder": "Write the reminder text residents will see...",
       "amountLabel": "Amount",
       "amountRequired": "Enter an amount greater than 0",
-      "currencyLabel": "Currency",
       "dueDateLabel": "Due date",
       "selectDueDate": "Pick a date",
       "dueDateInPast": "The due date must be today or later",
@@ -1691,7 +1690,12 @@
       "successMessage_other": "Delivered to {{count}} residents.",
       "partialTitle": "Sent with some failures",
       "errorTitle": "Send failed",
-      "errorMessage": "Failed to send the payment reminder. Please try again."
+      "errorMessage": "Failed to send the payment reminder. Please try again.",
+      "unconfirmedTitle": "Send not confirmed",
+      "unconfirmedMessage": "We couldn't confirm the reminder was sent. Check before sending again — it may already be on its way.",
+      "stalledTitle": "Still queued",
+      "stalledMessage": "This reminder has been queued for more than 3 minutes. Check again later, or start a new one.",
+      "resultSummary": "Delivered: {{sent}} · No device: {{noDevice}} · Failed: {{failed}}"
     },
     "filters": {
       "filterTitle": "Filter",

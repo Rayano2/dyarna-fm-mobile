@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Text, View } from 'react-native';
+import { AccessibilityInfo, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { filterResidentsBySearch, useResidents } from '@/features/residents';
@@ -30,14 +30,21 @@ import {
 } from '@/shared/ui';
 import { FilterButton, FilterSheet } from '@/shared/ui/FilterSheet';
 import type { PaymentReminderQueued, PaymentReminderTargetMode } from '../api/mappers';
-import { usePaymentReminderStatus, useSendPaymentReminder } from '../hooks/usePaymentReminders';
+import {
+  usePaymentReminderStatus,
+  useSendPaymentReminder,
+  type ActiveSend,
+} from '../hooks/usePaymentReminders';
 import {
   buildPaymentReminderPayload,
+  completionOutcome,
   dedupeResidents,
   deriveTargetMode,
   isDueDateInPast,
   isDueDateRejection,
   isTerminalStatus,
+  isUnconfirmedSendError,
+  latchedSend,
   parseAmount,
   REMINDER_CURRENCY,
   startOfLocalDay,
@@ -91,9 +98,12 @@ export function PaymentRemindersScreen(): React.JSX.Element {
   const [pickerOpen, setPickerOpen] = useState(false);
 
   // Send
-  const [sendId, setSendId] = useState<string | null>(null);
+  const [activeSend, setActiveSend] = useState<ActiveSend | null>(null);
+  const sendId = activeSend?.sendId ?? null;
   const [queued, setQueued] = useState<PaymentReminderQueued | null>(null);
   const toastedSendId = useRef<string | null>(null);
+  // Synchronous single-flight: isPending only updates on the next render.
+  const sendLatch = useRef(false);
 
   const filterOptions = useProjectsBuildingsFilter();
   const residents = useResidents({
@@ -101,7 +111,7 @@ export function PaymentRemindersScreen(): React.JSX.Element {
     buildingCode: filter.buildingCode,
   });
   const sendMutation = useSendPaymentReminder();
-  const poll = usePaymentReminderStatus(sendId);
+  const poll = usePaymentReminderStatus(activeSend);
   const sendStatus = poll.query.data;
 
   const loaded = useMemo(
@@ -143,15 +153,25 @@ export function PaymentRemindersScreen(): React.JSX.Element {
     if (!sendStatus || !isTerminalStatus(sendStatus.status)) return;
     if (toastedSendId.current === sendStatus.sendId) return;
     toastedSendId.current = sendStatus.sendId;
-    if ((sendStatus.failedCount ?? 0) === 0) {
-      push({
-        variant: 'success',
-        title: t('fm.paymentReminders.successTitle'),
-        body: t('fm.paymentReminders.successMessage', { count: sendStatus.sentCount ?? 0 }),
-      });
-    } else {
-      push({ variant: 'warning', title: t('fm.paymentReminders.partialTitle') });
-    }
+    const toast =
+      completionOutcome(sendStatus) === 'success'
+        ? {
+            variant: 'success' as const,
+            title: t('fm.paymentReminders.successTitle'),
+            body: t('fm.paymentReminders.successMessage', { count: sendStatus.sentCount ?? 0 }),
+          }
+        : {
+            variant: 'warning' as const,
+            title: t('fm.paymentReminders.partialTitle'),
+            body: t('fm.paymentReminders.resultSummary', {
+              sent: sendStatus.sentCount ?? 0,
+              noDevice: sendStatus.noDeviceCount ?? 0,
+              failed: sendStatus.failedCount ?? 0,
+            }),
+          };
+    push(toast);
+    // iOS VoiceOver does not read live regions; announce the result explicitly.
+    AccessibilityInfo.announceForAccessibility(`${toast.title}. ${toast.body}`);
   }, [sendStatus, push, t]);
 
   const applyFilter = useCallback(
@@ -167,6 +187,8 @@ export function PaymentRemindersScreen(): React.JSX.Element {
   const clearFilters = (): void => {
     applyFilter(EMPTY_PROJECT_BUILDING_FILTER);
     setSearch('');
+    // Always, even when no project/building was set (applyFilter no-ops then).
+    setSelected(new Set());
   };
 
   const toggle = useCallback(
@@ -178,16 +200,24 @@ export function PaymentRemindersScreen(): React.JSX.Element {
 
   const onConfirm = (): void => {
     if (!payload) return;
-    setDueDateServerRejected(false);
-    sendMutation.mutate(payload, {
-      onSuccess: (result) => {
+    const started = latchedSend(sendLatch, payload, sendMutation.mutate, {
+      onSuccess: (result: PaymentReminderQueued) => {
         setQueued(result);
-        setSendId(result.sendId);
+        setActiveSend({ sendId: result.sendId, sentAt: Date.now() });
         dismissConfirm();
       },
       onError: (error) => {
         // Form values are kept so the FM can retry.
         dismissConfirm();
+        if (isUnconfirmedSendError(error)) {
+          // The broadcast may already be out: never invite a blind retry.
+          push({
+            variant: 'warning',
+            title: t('fm.paymentReminders.unconfirmedTitle'),
+            body: t('fm.paymentReminders.unconfirmedMessage'),
+          });
+          return;
+        }
         const dueDateRejected = isDueDateRejection(error);
         if (dueDateRejected) setDueDateServerRejected(true);
         push({
@@ -201,10 +231,11 @@ export function PaymentRemindersScreen(): React.JSX.Element {
         });
       },
     });
+    if (started) setDueDateServerRejected(false);
   };
 
   const newReminder = (): void => {
-    setSendId(null);
+    setActiveSend(null);
     setQueued(null);
     setTitle('');
     setMessage('');
@@ -220,12 +251,15 @@ export function PaymentRemindersScreen(): React.JSX.Element {
   const showDueDateError = dueDateInPast || dueDateServerRejected;
   const searchOrFilter = hasFilter || search.trim().length > 0;
 
-  const recipientsLine =
-    recipientCount === undefined
-      ? t('fm.paymentReminders.recipientsCountLoading')
-      : recipientCount === 0
-        ? t('fm.paymentReminders.noRecipients')
-        : t('fm.paymentReminders.recipientsCount', { count: recipientCount });
+  // Web parity: "counting" while the residents query is (re)fetching. Loading
+  // the next page does not change the server total, so it does not count.
+  const counting =
+    recipientCount === undefined || (residents.isFetching && !residents.isFetchingNextPage);
+  const recipientsLine = counting
+    ? t('fm.paymentReminders.recipientsCountLoading')
+    : recipientCount === 0
+      ? t('fm.paymentReminders.noRecipients')
+      : t('fm.paymentReminders.recipientsCount', { count: recipientCount });
 
   let list: React.ReactNode;
   if (residents.isLoading) {
@@ -309,6 +343,7 @@ export function PaymentRemindersScreen(): React.JSX.Element {
             status={sendStatus}
             targetedCount={sendStatus?.totalTargeted ?? queued?.totalTargeted}
             pollStopped={poll.stopped}
+            stalled={poll.stalled}
             onCheckAgain={poll.resume}
             onNewReminder={newReminder}
           />

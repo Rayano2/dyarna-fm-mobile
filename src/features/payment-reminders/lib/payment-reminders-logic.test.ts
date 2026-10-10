@@ -1,22 +1,27 @@
 import { afterEach, describe, expect, it } from 'vitest';
-import { ApiError } from '@/shared/api/errors';
+import { ApiError, ERROR_CODES } from '@/shared/api/errors';
 import { EMPTY_PROJECT_BUILDING_FILTER } from '@/shared/lib/project-building-filter';
 import { mapQueued, mapReminderStatus, mapSend } from '../api/mappers';
 import {
   buildPaymentReminderPayload,
+  completionOutcome,
   deriveTargetMode,
+  initialPollState,
   isDueDateInPast,
   isDueDateRejection,
-  isPollingStopped,
+  isPollStopped,
+  isUnconfirmedSendError,
+  latchedSend,
   MAX_POLL_FAILURES,
-  nextPollFailures,
   normalizeAmount,
   parseAmount,
   pollIntervalFor,
-  shouldPoll,
+  QUEUED_STALL_MS,
+  reducePoll,
   toLocalIsoDate,
   toggleSelection,
   type PaymentReminderForm,
+  type PollState,
 } from './payment-reminders-logic';
 
 const NOW = new Date(2026, 9, 10, 12, 0, 0); // 10 Oct 2026, local noon
@@ -76,7 +81,16 @@ describe('amount', () => {
     expect(parseAmount('12.345')).toBeNull();
     expect(parseAmount('12345678901')).toBeNull();
     expect(parseAmount('1234567890.99')).toBe(1_234_567_890.99);
+  });
+
+  it('reads a comma as the decimal separator but keeps rejecting U+066C', () => {
+    expect(normalizeAmount('12,5')).toBe('12.5');
+    expect(parseAmount('12,50')).toBe(12.5);
+    // "1,000" becomes "1.000": three decimals, so still rejected.
     expect(parseAmount('1,000')).toBeNull();
+    // Arabic thousands separator is not a decimal point.
+    expect(parseAmount('١٬٠٠٠')).toBeNull();
+    expect(normalizeAmount('١٬٠٠٠')).toBe('1٬000');
   });
 });
 
@@ -233,27 +247,85 @@ describe('polling', () => {
   });
 
   it('stops after MAX_POLL_FAILURES consecutive failures', () => {
-    let failures = 0;
+    let state = initialPollState(0);
     for (let i = 0; i < MAX_POLL_FAILURES - 1; i += 1) {
-      failures = nextPollFailures(failures, 'failure');
-      expect(isPollingStopped(failures)).toBe(false);
-      expect(shouldPoll('42', failures)).toBe(true);
+      state = reducePoll(state, { type: 'failure' });
+      expect(isPollStopped(state)).toBe(false);
     }
-    failures = nextPollFailures(failures, 'failure');
-    expect(isPollingStopped(failures)).toBe(true);
-    expect(shouldPoll('42', failures)).toBe(false);
+    state = reducePoll(state, { type: 'failure' });
+    expect(isPollStopped(state)).toBe(true);
   });
 
   it('a success resets the count, so only consecutive failures stop the poll', () => {
-    let failures = nextPollFailures(nextPollFailures(0, 'failure'), 'failure');
-    failures = nextPollFailures(failures, 'success');
-    expect(failures).toBe(0);
-    failures = nextPollFailures(failures, 'failure');
-    expect(isPollingStopped(failures)).toBe(false);
+    let state = reducePoll(reducePoll(initialPollState(0), { type: 'failure' }), {
+      type: 'failure',
+    });
+    state = reducePoll(state, { type: 'success', status: 'QUEUED', now: 1000 });
+    expect(state.failures).toBe(0);
+    state = reducePoll(state, { type: 'failure' });
+    expect(isPollStopped(state)).toBe(false);
   });
 
-  it('never polls without a sendId', () => {
-    expect(shouldPoll(null, 0)).toBe(false);
+  it('stalls once a send is still QUEUED 3 minutes after it started', () => {
+    const start = 10_000;
+    const queued = (now: number) =>
+      reducePoll(initialPollState(start), { type: 'success', status: 'QUEUED', now });
+    expect(QUEUED_STALL_MS).toBe(180_000);
+    expect(isPollStopped(queued(start + QUEUED_STALL_MS - 1))).toBe(false);
+    expect(queued(start + QUEUED_STALL_MS)).toMatchObject({ stalled: true });
+    expect(isPollStopped(queued(start + QUEUED_STALL_MS))).toBe(true);
+  });
+
+  it('resume clears failures and the stall, and opens a fresh window', () => {
+    const stopped: PollState = { failures: 3, stalled: true, windowStart: 0 };
+    expect(reducePoll(stopped, { type: 'resume', now: 500_000 })).toEqual({
+      failures: 0,
+      stalled: false,
+      windowStart: 500_000,
+    });
+  });
+});
+
+describe('completionOutcome', () => {
+  it('is success only when someone was reached and nothing failed', () => {
+    expect(completionOutcome({ sentCount: 5, failedCount: 0 })).toBe('success');
+    expect(completionOutcome({ sentCount: 5, failedCount: 1 })).toBe('partial');
+  });
+
+  it('treats nobody reached (sentCount 0) as partial, not success', () => {
+    expect(completionOutcome({ sentCount: 0, failedCount: 0 })).toBe('partial');
+    expect(completionOutcome({ sentCount: undefined, failedCount: undefined })).toBe('partial');
+  });
+});
+
+function coded(code: string, status = 0): ApiError {
+  return new ApiError({ code, status, service: 'bms', raw: null });
+}
+
+describe('isUnconfirmedSendError', () => {
+  it('is true for REQUEST_FAILED and TIMEOUT only', () => {
+    expect(isUnconfirmedSendError(coded(ERROR_CODES.REQUEST_FAILED))).toBe(true);
+    expect(isUnconfirmedSendError(coded(ERROR_CODES.TIMEOUT))).toBe(true);
+    expect(isUnconfirmedSendError(coded(ERROR_CODES.NETWORK))).toBe(false);
+    expect(isUnconfirmedSendError(coded('BMS_500_00', 500))).toBe(false);
+    expect(isUnconfirmedSendError(new Error('boom'))).toBe(false);
+  });
+});
+
+describe('latchedSend', () => {
+  it('lets one send through until it settles', () => {
+    const latch = { current: false };
+    const calls: { onSettled: () => void }[] = [];
+    const mutate = (_payload: string, handlers: { onSettled: () => void }): void => {
+      calls.push(handlers);
+    };
+    const handlers = { onSuccess: () => {}, onError: () => {} };
+    expect(latchedSend(latch, 'p', mutate, handlers)).toBe(true);
+    expect(latchedSend(latch, 'p', mutate, handlers)).toBe(false);
+    expect(calls).toHaveLength(1);
+    calls[0]?.onSettled();
+    expect(latchedSend(latch, 'p', mutate, handlers)).toBe(true);
+    expect(calls).toHaveLength(2);
   });
 });
 
