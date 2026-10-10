@@ -1538,6 +1538,7 @@
       "occupiedOf": "{{occupied}}/{{total}} مشغولة",
       "assignPresident": "تعيين رئيس",
       "president": "الرئيس",
+      "nameUnavailable": "الاسم غير متاح",
       "floor": "الطابق {{n}}",
       "addUnit": "إضافة وحدة",
       "unitNumberLabel": "رقم الوحدة",

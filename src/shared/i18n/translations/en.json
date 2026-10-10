@@ -1538,6 +1538,7 @@
       "occupiedOf": "{{occupied}}/{{total}} occupied",
       "assignPresident": "Assign president",
       "president": "President",
+      "nameUnavailable": "Name unavailable",
       "floor": "Floor {{n}}",
       "addUnit": "Add unit",
       "unitNumberLabel": "Unit number",

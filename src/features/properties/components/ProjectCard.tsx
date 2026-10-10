@@ -62,7 +62,7 @@ export function ProjectCard({
         <OccupancyBar ratio={stats.ratio} caption={occupancy} />
       </HapticPressable>
       <View style={styles.president}>
-        {project.president ? (
+        {project.president?.nameAvailable ? (
           <Badge
             tone="primarySubtle"
             size="md"
@@ -70,6 +70,26 @@ export function ProjectCard({
             label={`${t('fm.properties.president')}: ${project.president.fullName}`}
             numberOfLines={1}
           />
+        ) : project.president ? (
+          // A president exists but BMS couldn't resolve the name: never offer
+          // to assign one, just say the name is missing.
+          <View
+            style={styles.presidentRow}
+            accessible
+            accessibilityLabel={`${t('fm.properties.president')}: ${t('fm.properties.nameUnavailable')}`}
+            testID={`president-name-unavailable-${project.projectId}`}
+          >
+            <Badge
+              tone="primarySubtle"
+              size="md"
+              icon={<Icons.Star size={12} color={theme.colors.primary} weight="fill" />}
+              label={t('fm.properties.president')}
+              numberOfLines={1}
+            />
+            <Text style={[styles.muted, rtlText]} numberOfLines={1}>
+              {t('fm.properties.nameUnavailable')}
+            </Text>
+          </View>
         ) : (
           <Button
             label={t('fm.properties.assignPresident')}
@@ -109,4 +129,10 @@ const styles = StyleSheet.create((theme) => ({
   muted: { fontSize: theme.type.body.sm.size, color: theme.colors.textMuted },
   counts: { fontSize: theme.type.body.sm.size, color: theme.colors.textSecondary },
   president: { flexDirection: 'row', alignItems: 'center' },
+  presidentRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing[8],
+    flexShrink: 1,
+  },
 }));

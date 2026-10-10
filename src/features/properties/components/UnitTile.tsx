@@ -32,7 +32,12 @@ export function UnitTile({ unit }: UnitTileProps): React.JSX.Element {
               <Text style={[styles.name, rtlText]} numberOfLines={1}>
                 {unit.residentFullName}
               </Text>
-            ) : null}
+            ) : (
+              // Occupied per `occupantCount`, but BMS couldn't resolve a name.
+              <Text style={[styles.muted, rtlText]} numberOfLines={1}>
+                {t('fm.properties.nameUnavailable')}
+              </Text>
+            )}
             {unit.residentMobile ? (
               <View style={styles.phoneRow}>
                 <Icons.Phone size={12} color={theme.colors.textMuted} weight="regular" />
