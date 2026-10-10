@@ -15,6 +15,19 @@ const appId = isDev ? 'com.dyarna.fm.dev' : 'com.dyarna.fm';
 const appName = isDev ? 'Dyarna FM Dev' : 'Dyarna FM';
 const appNameAr = isDev ? `${ar.fm.appName} Dev` : ar.fm.appName;
 
+// Camera + photo-library permission prompts (ImagePickerRow: ticket resolve
+// photos, building documents). Info.plist carries the English copy; the Arabic
+// copy goes into ar.lproj/InfoPlist.strings via the localized-app-name plugin,
+// which owns that file.
+const cameraUsage = {
+  en: 'Dyarna FM uses the camera to attach photos to tickets and building documents.',
+  ar: 'يستخدم مدير ديارنا الكاميرا لإرفاق الصور بالتذاكر ومستندات المبنى.',
+};
+const photoLibraryUsage = {
+  en: 'Dyarna FM uses your photos to attach images to tickets and building documents.',
+  ar: 'يستخدم مدير ديارنا صورك لإرفاقها بالتذاكر ومستندات المبنى.',
+};
+
 // TODO(T6 / owner): create a dedicated EAS project for this app
 // (`eas init` -> slug "dyarna-fm") and set EAS_PROJECT_ID, or hard-code the id
 // here. Do NOT reuse the resident app's projectId.
@@ -32,14 +45,6 @@ const easProjectId = process.env.EAS_PROJECT_ID;
 //    android.extraProguardRules keeping com.google.firebase.**,
 //    com.google.android.gms.**, io.invertase.firebase.**, okhttp3.**, okio.**;
 //  - port plugins/with-firebase-modular-headers from dyarna-rn.
-
-// Camera + photo-library permission prompts (ImagePickerRow, first used by the
-// T7 ticket resolve sheet). iOS shows one string per key; the localized-name
-// plugin owns InfoPlist.strings, so the prompt carries both languages.
-const cameraPermission =
-  'Dyarna FM uses the camera to attach photos to tickets. / يستخدم تطبيق ديارنا الكاميرا لإرفاق الصور بالتذاكر.';
-const photosPermission =
-  'Dyarna FM uses your photos to attach images to tickets. / يستخدم تطبيق ديارنا صورك لإرفاقها بالتذاكر.';
 
 const config: ExpoConfig = {
   name: appName,
@@ -59,8 +64,8 @@ const config: ExpoConfig = {
     bundleIdentifier: appId,
     supportsTablet: false,
     infoPlist: {
-      NSPhotoLibraryUsageDescription: photosPermission,
-      NSCameraUsageDescription: cameraPermission,
+      NSPhotoLibraryUsageDescription: photoLibraryUsage.en,
+      NSCameraUsageDescription: cameraUsage.en,
     },
   },
   android: {
@@ -84,11 +89,30 @@ const config: ExpoConfig = {
     './plugins/with-okhttp-connection-pool',
     // Localised home-screen label: English devices show "Dyarna FM", Arabic
     // devices show fm.appName from ar.json. Ported from dyarna-rn.
-    ['./plugins/with-localized-app-name', { en: appName, ar: appNameAr }],
+    [
+      './plugins/with-localized-app-name',
+      {
+        en: appName,
+        ar: appNameAr,
+        iosUsage: {
+          en: {
+            NSPhotoLibraryUsageDescription: photoLibraryUsage.en,
+            NSCameraUsageDescription: cameraUsage.en,
+          },
+          ar: {
+            NSPhotoLibraryUsageDescription: photoLibraryUsage.ar,
+            NSCameraUsageDescription: cameraUsage.ar,
+          },
+        },
+      },
+    ],
     // Android only: android:largeHeap="true" so a full-size camera capture via
     // ImagePickerRow cannot kill the process (dyarna-rn #35). Mitigation only.
     './plugins/with-android-large-heap',
-    ['expo-image-picker', { cameraPermission, photosPermission }],
+    [
+      'expo-image-picker',
+      { cameraPermission: cameraUsage.en, photosPermission: photoLibraryUsage.en },
+    ],
   ],
   runtimeVersion: { policy: 'appVersion' },
   ...(easProjectId ? { extra: { eas: { projectId: easProjectId } } } : {}),

@@ -41,6 +41,13 @@ export interface FilterSheetProps {
   labels?: Partial<FilterSheetLabels>;
   /** Extra sections rendered above the project/building pickers (e.g. a status filter). */
   children?: React.ReactNode;
+  /**
+   * A project is mandatory (the community screens query by one): hides
+   * "All projects", and Reset clears only the building.
+   */
+  requireProject?: boolean;
+  /** `false` hides the building section (project-only screens). Default `true`. */
+  showBuilding?: boolean;
 }
 
 /** The shared `fm.filters.*` copy, with any caller overrides applied. */
@@ -144,6 +151,8 @@ export const FilterSheet = forwardRef<BottomSheetRef, FilterSheetProps>(function
     onRetry,
     labels: overrides,
     children,
+    requireProject = false,
+    showBuilding = true,
   },
   ref,
 ) {
@@ -173,7 +182,11 @@ export const FilterSheet = forwardRef<BottomSheetRef, FilterSheetProps>(function
           label={labels.reset}
           variant="ghost"
           fullWidth
-          onPress={() => setDraft(EMPTY_PROJECT_BUILDING_FILTER)}
+          onPress={() =>
+            setDraft((d) =>
+              requireProject ? selectBuilding(d, null) : EMPTY_PROJECT_BUILDING_FILTER,
+            )
+          }
         />
       </View>
       <View style={styles.footerButton}>
@@ -214,11 +227,13 @@ export const FilterSheet = forwardRef<BottomSheetRef, FilterSheetProps>(function
         <>
           <Text style={[styles.section, rtlText]}>{labels.project}</Text>
           <View accessibilityRole="radiogroup" style={styles.group}>
-            <OptionRow
-              label={labels.allProjects}
-              selected={draft.projectId === null}
-              onPress={() => setDraft((d) => selectProject(d, null))}
-            />
+            {requireProject ? null : (
+              <OptionRow
+                label={labels.allProjects}
+                selected={draft.projectId === null}
+                onPress={() => setDraft((d) => selectProject(d, null))}
+              />
+            )}
             {projects.map((p) => (
               <OptionRow
                 key={p.projectId}
@@ -229,25 +244,29 @@ export const FilterSheet = forwardRef<BottomSheetRef, FilterSheetProps>(function
             ))}
           </View>
 
-          <Text style={[styles.section, rtlText]}>{labels.building}</Text>
-          <View accessibilityRole="radiogroup" style={styles.group}>
-            <OptionRow
-              label={labels.allBuildings}
-              selected={draft.buildingCode === null}
-              disabled={draft.projectId === null}
-              onPress={() => setDraft((d) => selectBuilding(d, null))}
-            />
-            {buildings.map((b) => (
-              <OptionRow
-                key={b.buildingCode}
-                label={b.buildingName}
-                selected={draft.buildingCode === b.buildingCode}
-                onPress={() => setDraft((d) => selectBuilding(d, b.buildingCode))}
-              />
-            ))}
-          </View>
-          {draft.projectId === null ? (
-            <Text style={[styles.hint, rtlText]}>{labels.chooseProjectFirst}</Text>
+          {showBuilding ? (
+            <>
+              <Text style={[styles.section, rtlText]}>{labels.building}</Text>
+              <View accessibilityRole="radiogroup" style={styles.group}>
+                <OptionRow
+                  label={labels.allBuildings}
+                  selected={draft.buildingCode === null}
+                  disabled={draft.projectId === null}
+                  onPress={() => setDraft((d) => selectBuilding(d, null))}
+                />
+                {buildings.map((b) => (
+                  <OptionRow
+                    key={b.buildingCode}
+                    label={b.buildingName}
+                    selected={draft.buildingCode === b.buildingCode}
+                    onPress={() => setDraft((d) => selectBuilding(d, b.buildingCode))}
+                  />
+                ))}
+              </View>
+              {draft.projectId === null ? (
+                <Text style={[styles.hint, rtlText]}>{labels.chooseProjectFirst}</Text>
+              ) : null}
+            </>
           ) : null}
         </>
       )}
