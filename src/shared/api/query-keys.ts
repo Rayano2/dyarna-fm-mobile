@@ -25,6 +25,30 @@ export const queryKeys = {
     legalTermsAcceptance: (userId: string | null) =>
       ['ums', 'legal', 'terms', 'acceptance', userId] as const,
   },
+  /**
+   * FM resident requests + residents (T8). All BMS `company-reps` / `residents`
+   * endpoints, scoped server-side to the caller's company from the Bearer
+   * principal, so no key carries a company id.
+   */
+  fmResidents: {
+    /** Prefix covering every resident-request list. */
+    requests: ['fm', 'resident-requests'] as const,
+    requestList: (status: string | null, projectId: number | null, buildingCode: string | null) =>
+      ['fm', 'resident-requests', status, projectId, buildingCode] as const,
+    /** Prefix covering every building's unit list. */
+    buildingUnitsAll: ['fm', 'building-units'] as const,
+    buildingUnits: (buildingCode: string | undefined) =>
+      ['fm', 'building-units', buildingCode] as const,
+    /** Prefix covering every residents list. */
+    residents: ['fm', 'residents-list'] as const,
+    residentList: (projectId: number | null, buildingCode: string | null) =>
+      ['fm', 'residents-list', projectId, buildingCode] as const,
+    /** Prefix covering every resident detail. */
+    residentDetails: ['fm', 'resident-details'] as const,
+    residentDetail: (userId: string | undefined) => ['fm', 'resident-details', userId] as const,
+    /** `GET api/bms/company-reps/dashboardInfo` (pending-requests count). */
+    dashboardInfo: ['fm', 'dashboard-info'] as const,
+  },
   tms: {
     /** Prefix covering every ticket list + detail cache. */
     tickets: ['tms', 'tickets'] as const,
@@ -118,7 +142,10 @@ export const queryKeys = {
     notifications: ['bms', 'notifications'] as const,
     notificationsList: ['bms', 'notifications', 'list'] as const,
     notificationsUnreadCount: ['bms', 'notifications', 'unread-count'] as const,
-    /** FM ticket filter data: the rep's projects with their buildings. */
+    /**
+     * FM filter data (tickets, requests, residents): the rep's projects with
+     * their buildings. One cache entry, fetched by `useProjectsBuildingsFilter`.
+     */
     projectsBuildingsFilter: ['bms', 'company-reps', 'projects-buildings-filter'] as const,
   },
 } as const;

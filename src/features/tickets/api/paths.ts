@@ -20,6 +20,3 @@ export const ticketPaths = {
   comments: (ticketId: number): string => `${TICKETS}/${ticketId}/comments`,
   companyAttachments: (ticketId: number): string => `${TICKETS}/${ticketId}/attachments/company`,
 } as const;
-
-/** BMS route (bmsClient): projects with their buildings for the company rep. */
-export const PROJECTS_BUILDINGS_FILTER_PATH = 'api/bms/company-reps/projects-buildings-filter';
