@@ -34,6 +34,7 @@ const MoreIcon = makeTabIcon(Icons.SquaresFour);
 // them out of the tab bar while the bar stays visible on them.
 const HIDDEN_ROUTES = [
   'properties',
+  'properties/[projectId]',
   'residents',
   'residents/[id]',
   'announcements',

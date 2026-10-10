@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { Badge, HapticPressable, Icons, RTL_INLINE, useIsRtl } from '@/shared/ui';
 import type { BuildingUnit } from '../api/mappers';
-import { unitOccupancy } from '../lib/units';
+import { unitOccupancy } from '@/shared/lib/unit-occupancy';
 
 export interface UnitOptionProps {
   unit: BuildingUnit;

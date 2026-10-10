@@ -166,6 +166,11 @@ export const queryKeys = {
     todosActive: ['bms', 'todos', 'active-count'] as const,
     residentCount: (projectId: string | undefined) =>
       ['bms', 'company-reps', 'resident-count', projectId] as const,
+    /** FM properties hierarchy: projects -> buildings -> units (`properties-list`, not paged). */
+    propertiesList: ['bms', 'company-reps', 'properties-list'] as const,
+    /** Users eligible to become a project's president. */
+    projectUsers: (projectId: number | undefined) =>
+      ['bms', 'company-reps', 'project-users', projectId] as const,
   },
 } as const;
 

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { BuildingUnit } from '../api/mappers';
-import { reconcileSelection, summarizeUnits, unitOccupancy } from './units';
+import { unitOccupancy } from '@/shared/lib/unit-occupancy';
+import { reconcileSelection, summarizeUnits } from './units';
 
 function unit(unitNumber: string, occupantCount: number, residentFullName?: string): BuildingUnit {
   return { propertyUnitId: 1, unitNumber, occupantCount, residentFullName };

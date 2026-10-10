@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { FieldErrors, Resolver } from 'react-hook-form';
+import { toAsciiDigits } from '@/shared/lib/to-ascii-digits';
 import type { ComposeImage } from '@/shared/ui';
 
 export const REPAIR_COST_MAX = 100_000;
@@ -14,11 +15,7 @@ const COST_PATTERN = /^\d+(?:\.\d{1,2})?$/;
  * Returns `undefined` when the text is not a valid amount.
  */
 export function parseRepairCost(input: string): number | null | undefined {
-  const normalized = input
-    .trim()
-    .replaceAll(/[٠-٩]/g, (d) => String(d.codePointAt(0)! - 1632)) // U+0660 Arabic-Indic zero
-    .replaceAll(/[۰-۹]/g, (d) => String(d.codePointAt(0)! - 1776)) // U+06F0 Extended Arabic-Indic zero
-    .replace(/[,٫]/, '.');
+  const normalized = toAsciiDigits(input.trim()).replace(/[,٫]/, '.');
   if (normalized === '') return null;
   if (!COST_PATTERN.test(normalized)) return undefined;
   const value = Number(normalized);
