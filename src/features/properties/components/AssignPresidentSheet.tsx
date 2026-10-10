@@ -1,53 +1,22 @@
 import { forwardRef, useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, useUnistyles } from 'react-native-unistyles';
+import { StyleSheet } from 'react-native-unistyles';
 import { useToastStore } from '@/shared/stores/toastStore';
 import {
   BottomSheet,
   Button,
   EmptyState,
-  HapticPressable,
-  Icons,
+  OptionRow,
   SearchBar,
   showApiErrorToast,
   Skeleton,
   useRtlTextStyle,
   type BottomSheetRef,
 } from '@/shared/ui';
-import type { ProjectUser, PropertyProject } from '../api/mappers';
+import type { PropertyProject } from '../api/mappers';
 import { useAssignPresident, useProjectUsers } from '../hooks/useProperties';
 import { searchUsers } from '../lib/occupancy';
-
-interface UserOptionProps {
-  user: ProjectUser;
-  selected: boolean;
-  onSelect: (userId: string) => void;
-}
-
-/** The FilterSheet option-row pattern: a radio with a check when chosen. */
-function UserOption({ user, selected, onSelect }: UserOptionProps): React.JSX.Element {
-  const { theme } = useUnistyles();
-  const rtlText = useRtlTextStyle();
-  return (
-    <HapticPressable
-      onPress={() => onSelect(user.userId)}
-      scaleOnPress={1}
-      accessibilityRole="radio"
-      accessibilityState={{ checked: selected }}
-      accessibilityLabel={user.fullName}
-      style={[styles.option, selected && styles.optionSelected]}
-    >
-      <Text
-        style={[styles.optionLabel, selected && styles.optionLabelSelected, rtlText]}
-        numberOfLines={1}
-      >
-        {user.fullName}
-      </Text>
-      {selected ? <Icons.Check size={18} color={theme.colors.primary} weight="bold" /> : null}
-    </HapticPressable>
-  );
-}
 
 export interface AssignPresidentSheetProps {
   /** The project being edited; null while the sheet is closed. */
@@ -169,11 +138,11 @@ export const AssignPresidentSheet = forwardRef<BottomSheetRef, AssignPresidentSh
           accessibilityLabel={t('fm.properties.assignPresidentTitle')}
         >
           {visible.map((user) => (
-            <UserOption
+            <OptionRow
               key={user.userId}
-              user={user}
+              label={user.fullName}
               selected={selected?.userId === user.userId}
-              onSelect={setSelectedId}
+              onPress={() => setSelectedId(user.userId)}
             />
           ))}
         </View>
@@ -241,23 +210,6 @@ const styles = StyleSheet.create((theme) => ({
     lineHeight: theme.type.body.md.lineHeight,
     color: theme.colors.textPrimary,
   },
-  option: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: theme.spacing[12],
-    minHeight: 44,
-    paddingHorizontal: theme.spacing[12],
-    borderRadius: theme.radius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.borderSubtle,
-    backgroundColor: theme.colors.surface,
-  },
-  optionSelected: {
-    borderColor: theme.colors.primary,
-    backgroundColor: theme.colors.primaryFaint,
-  },
-  optionLabel: { flex: 1, fontSize: theme.type.body.md.size, color: theme.colors.textPrimary },
-  optionLabelSelected: { fontWeight: '600' },
   footer: { flexDirection: 'row', gap: theme.spacing[12] },
   footerButton: { flex: 1 },
 }));

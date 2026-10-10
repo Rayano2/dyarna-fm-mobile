@@ -1299,6 +1299,87 @@
       "logoutBody": "You'll need to sign in again to continue.",
       "cancel": "Cancel"
     },
+    "settings": {
+      "title": "Settings",
+      "profileTitle": "Profile",
+      "buildingQrTitle": "Building QR code",
+      "buildingQrA11y": "Building QR code {{code}}",
+      "project": "Project",
+      "building": "Building",
+      "buildingQrEmpty": "No buildings yet",
+      "buildingQrError": "Couldn't load buildings",
+      "shareCode": "Share code",
+      "logoTitle": "Company logo",
+      "uploadLogo": "Upload logo",
+      "replaceLogo": "Replace logo",
+      "deleteLogo": "Delete logo",
+      "deleteLogoTitle": "Remove logo?",
+      "deleteLogoBody": "This removes your company logo from the app.",
+      "remove": "Remove",
+      "logoError": "Couldn't load the logo",
+      "pngOnlyError": "Please choose a PNG image",
+      "fileTooLarge": "The image is too large (max 2MB)",
+      "logoUploadSuccess": "Logo updated",
+      "logoUploadError": "Couldn't upload the logo",
+      "logoDeleteSuccess": "Logo removed",
+      "logoDeleteError": "Couldn't remove the logo",
+      "appearanceTitle": "Appearance",
+      "darkMode": "Dark mode",
+      "language": "Language"
+    },
+    "support": {
+      "title": "Help & Support",
+      "faqTitle": "Frequently asked questions",
+      "contactTitle": "Contact us",
+      "contact": {
+        "email": "Email",
+        "whatsapp": "WhatsApp",
+        "phone": "Phone",
+        "whatsappPrefill": "Hello Dyarna Support, I need help with the Facility Manager app."
+      },
+      "openFailed": "Couldn't open that link",
+      "faq": {
+        "items": {
+          "approveResidentRequest": {
+            "question": "How do I approve or reject a resident's request to join my building?",
+            "answer": "Open Resident Requests, find the pending request and click Approve. You must pick a unit before the Approve button becomes active — the dialog lists every unit in that building, and units that are already occupied appear disabled with their current occupant's name. To turn a request down, click Reject and enter a reason; the reason is required."
+          },
+          "startProgressMissing": {
+            "question": "Why is there no Start Progress button on a ticket?",
+            "answer": "The ticket has to be assigned to you first. Open the ticket and click Assign to Me — Start Progress then appears. As the ticket screen itself explains, clicking Start Progress is what starts the SLA timer, so assign a ticket to yourself only when you are ready to work on it."
+          },
+          "slaTimerAndBreach": {
+            "question": "What does the countdown on a ticket mean, and what is Breached SLA?",
+            "answer": "A ticket shows one countdown at a time: the response timer while the ticket is in its response phase, then the resolve timer. Yellow means the timer is still running; when it turns red with a warning triangle and reads Breached SLA, the deadline for that phase has passed. The dashboard takes the breach flag from the backend, so it reflects the SLA policy applied to that ticket's priority."
+          },
+          "buildingCodeAndJoining": {
+            "question": "How do residents join my building?",
+            "answer": "Open Settings and go to Building QR code. Choose the project, then the building, to see that building's code and its QR code; tap Share code to send the code to residents. Once a resident uses that code to request to join, the request appears in Resident Requests for you to approve."
+          },
+          "bookingStuckPending": {
+            "question": "Why is a resident's booking stuck on Pending?",
+            "answer": "Because that facility is set to require your approval. Open Facility Bookings, pick the project, and the pending rows are the ones waiting on your decision — Approve confirms the booking, Reject asks you for a reason. If you would rather bookings confirm instantly, edit the facility and turn off \"Bookings need my approval\"."
+          },
+          "facilitySetup": {
+            "question": "How do I set up a facility and its booking rules?",
+            "answer": "Go to Facilities, choose the project and add a new facility. You set a name, a type, a capacity and a scope — either the whole project or one building — then the rules: whether bookings need your approval, how far ahead residents may book (1-365 days, 30 by default, or no limit at all), and the maximum length of a single booking (1-24 hours, 4 by default). Deactivating a facility later stops new bookings only; bookings already confirmed are not cancelled and you have to handle them yourself."
+          },
+          "offboardResident": {
+            "question": "How do I end a resident's residency in a unit?",
+            "answer": "Open Residents, select the resident and click Remove from building. This ends their residency in that unit, frees the unit for a new resident and stops their access to that building's community immediately — but it does not delete their Dyarna account, and their posts, votes and open tickets stay as they are. You can add an optional reason of up to 500 characters, which is kept in the audit log. If the resident is the building president, reassign the presidency to another resident first, otherwise the removal is refused."
+          },
+          "paymentReminderRecipients": {
+            "question": "Who actually receives a payment reminder?",
+            "answer": "Whichever Recipients mode you pick: All residents goes to everyone in your projects, Filtered residents to everyone matching the current project/building filter, and Selected residents only to the rows you ticked. The search box only narrows the list on screen — it does not change who receives the reminder. Everyone gets the same title, message, amount and due date as a push notification in the Dyarna mobile app; it is a general reminder, not a per-resident bill."
+          }
+        }
+      }
+    },
+    "notFound": {
+      "title": "Page not found",
+      "body": "This screen doesn't exist or has moved.",
+      "cta": "Go to dashboard"
+    },
     "nav": {
       "dashboard": "Dashboard",
       "tickets": "Tickets",
