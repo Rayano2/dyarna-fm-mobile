@@ -7,8 +7,12 @@ import {
   type UseMutationResult,
   type UseQueryResult,
 } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { queryKeys } from '@/shared/api/query-keys';
 import { STALE } from '@/shared/query';
+import { useToastStore } from '@/shared/stores/toastStore';
+// Direct module: the '@/shared/ui' barrel pulls in React Native components.
+import { showApiErrorToast } from '@/shared/ui/error-toast';
 import {
   createTodo,
   deleteTodo,
@@ -56,38 +60,46 @@ export function useDeleteTodo(): UseMutationResult<void, Error, number> {
   return useMutation({ mutationFn: deleteTodo, onSuccess: () => invalidate() });
 }
 
-export interface ToggleContext {
-  previous: Todo[] | undefined;
+function flipTodo(qc: QueryClient, id: number): void {
+  qc.setQueryData<Todo[]>(queryKeys.bms.todosList, (list) =>
+    list?.map((todo) => (todo.todoId === id ? { ...todo, isCompleted: !todo.isCompleted } : todo)),
+  );
 }
 
 /**
- * Flips `isCompleted` in the cached list immediately, restores the snapshot if
- * the PATCH fails, and re-syncs every todo query either way. Plain options (not
- * inlined in the hook) so the rollback is testable with a bare QueryClient.
+ * Flips `isCompleted` in the cached list immediately and re-syncs every todo
+ * query when settled. On failure only THAT todo is flipped back, so a rapid
+ * toggle of another row (or a second toggle of the same row that succeeded on
+ * the server) is not wiped out by restoring a stale snapshot. `onFailure` runs
+ * at the hook level, so it fires even if the row has re-rendered or unmounted.
+ * Plain options (not inlined in the hook) so the rollback is testable with a
+ * bare QueryClient.
  */
 export function toggleTodoOptions(
   qc: QueryClient,
-): MutationOptions<void, Error, number, ToggleContext> {
+  onFailure?: (error: Error) => void,
+): MutationOptions<void, Error, number> {
   return {
     mutationFn: toggleTodo,
     onMutate: async (id) => {
       await qc.cancelQueries({ queryKey: queryKeys.bms.todosList });
-      const previous = qc.getQueryData<Todo[]>(queryKeys.bms.todosList);
-      qc.setQueryData<Todo[]>(queryKeys.bms.todosList, (list) =>
-        list?.map((todo) =>
-          todo.todoId === id ? { ...todo, isCompleted: !todo.isCompleted } : todo,
-        ),
-      );
-      return { previous };
+      flipTodo(qc, id);
     },
-    onError: (_error, _id, context) => {
-      if (context?.previous) qc.setQueryData(queryKeys.bms.todosList, context.previous);
+    onError: (error, id) => {
+      flipTodo(qc, id);
+      onFailure?.(error);
     },
     onSettled: () => qc.invalidateQueries({ queryKey: queryKeys.bms.todos }),
   };
 }
 
-export function useToggleTodo(): UseMutationResult<void, Error, number, ToggleContext> {
+export function useToggleTodo(): UseMutationResult<void, Error, number> {
   const qc = useQueryClient();
-  return useMutation(toggleTodoOptions(qc));
+  const { t } = useTranslation();
+  const push = useToastStore((s) => s.push);
+  return useMutation(
+    toggleTodoOptions(qc, (error) =>
+      showApiErrorToast(push, error, t, { fallbackTitle: t('fm.todos.toggleFailed') }),
+    ),
+  );
 }

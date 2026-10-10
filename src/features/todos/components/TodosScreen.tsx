@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { ShellHeader } from '@/features/shell';
 import { useQueryErrorToast } from '@/shared/hooks/useQueryErrorToast';
-import { useToastStore } from '@/shared/stores/toastStore';
 import {
   Button,
   EmptyState,
@@ -12,7 +11,6 @@ import {
   Screen,
   SegmentedPill,
   Skeleton,
-  showApiErrorToast,
   useRtlTextStyle,
   type BottomSheetRef,
 } from '@/shared/ui';
@@ -39,7 +37,6 @@ export function TodosScreen(): React.JSX.Element {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
   const rtlText = useRtlTextStyle();
-  const push = useToastStore((s) => s.push);
   const [segment, setSegment] = useState<Segment>('active');
   const [editing, setEditing] = useState<Todo | null>(null);
   const [deleting, setDeleting] = useState<Todo | null>(null);
@@ -47,6 +44,7 @@ export function TodosScreen(): React.JSX.Element {
   const deleteSheet = useRef<BottomSheetRef>(null);
 
   const query = useTodos();
+  const { refetch } = query;
   const { mutate: toggleTodo } = useToggleTodo();
   const [refreshing, setRefreshing] = useState(false);
   useQueryErrorToast(query.error, query.errorUpdatedAt);
@@ -64,24 +62,17 @@ export function TodosScreen(): React.JSX.Element {
     setDeleting(todo);
     deleteSheet.current?.present();
   }, []);
-  const onToggle = useCallback(
-    (todo: Todo) => {
-      toggleTodo(todo.todoId, {
-        onError: (error) =>
-          showApiErrorToast(push, error, t, { fallbackTitle: t('fm.todos.toggleFailed') }),
-      });
-    },
-    [toggleTodo, push, t],
-  );
+  // Failures are toasted (and rolled back) inside useToggleTodo.
+  const onToggle = useCallback((todo: Todo) => toggleTodo(todo.todoId), [toggleTodo]);
   // A local flag, not `isRefetching`, so mutation-driven refetches don't spin the control.
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
-      await query.refetch();
+      await refetch();
     } finally {
       setRefreshing(false);
     }
-  }, [query]);
+  }, [refetch]);
 
   const renderRows = (todos: Todo[]): React.JSX.Element[] =>
     todos.map((todo) => (
@@ -102,7 +93,7 @@ export function TodosScreen(): React.JSX.Element {
       <EmptyState
         illustration={<Icons.Warning size={64} color={theme.colors.textMuted} weight="duotone" />}
         title={t('fm.todos.loadFailed')}
-        cta={{ label: t('common.retry'), onPress: () => void query.refetch() }}
+        cta={{ label: t('common.retry'), onPress: () => void refetch() }}
       />
     );
   } else if (segment === 'completed') {

@@ -21,6 +21,7 @@ import {
   parseLocalDateTime,
 } from './lib/local-date-time';
 import { compareTodos, groupTodos, isUrgentTodo, sortTodos } from './lib/todo-order';
+import { applyPick, firstPickerStep, nextPickerStep } from './lib/todo-picker';
 import { todoSchema } from './lib/todo-schema';
 
 const TODOS = 'https://bms.test.local/api/bms/todos';
@@ -107,7 +108,9 @@ describe('getDueStatus', () => {
 describe('getDueStatus across time zones', () => {
   const original = process.env.TZ;
   afterEach(() => {
-    process.env.TZ = original;
+    // Assigning undefined would set the string "undefined" (read as UTC).
+    if (original === undefined) delete process.env.TZ;
+    else process.env.TZ = original;
   });
 
   it.each(['Asia/Riyadh', 'America/Los_Angeles', 'Pacific/Kiritimati'])(
@@ -314,19 +317,83 @@ describe('optimistic toggle', () => {
     expect(qc.getQueryState(queryKeys.bms.todosActive)?.isInvalidated).toBe(true);
   });
 
-  it('rolls back on error', async () => {
-    server.use(
-      http.patch(`${TODOS}/1/toggle`, () =>
-        HttpResponse.json({ message: 'nope' }, { status: 500 }),
-      ),
-    );
+  it('rolls back only the failed todo and reports the error', async () => {
     const qc = setup();
-    const observer = new MutationObserver(qc, toggleTodoOptions(qc));
+    server.use(
+      http.patch(`${TODOS}/1/toggle`, () => {
+        // Another row changes while this request is in flight (a rapid toggle).
+        qc.setQueryData<Todo[]>(queryKeys.bms.todosList, (list) =>
+          list?.map((x) => (x.todoId === 2 ? { ...x, isCompleted: false } : x)),
+        );
+        return HttpResponse.json({ message: 'nope' }, { status: 500 });
+      }),
+    );
+    const failures: Error[] = [];
+    const observer = new MutationObserver(
+      qc,
+      toggleTodoOptions(qc, (error) => failures.push(error)),
+    );
     await expect(observer.mutate(1)).rejects.toBeTruthy();
+    // Todo 1 is back to active; todo 2 keeps its newer state (a snapshot
+    // restore would have reverted it to completed).
     expect(qc.getQueryData<Todo[]>(queryKeys.bms.todosList)?.map((x) => x.isCompleted)).toEqual([
       false,
-      true,
+      false,
     ]);
+    expect(failures).toHaveLength(1);
+  });
+
+  it('keeps a second, successful toggle of the same todo when the first fails', async () => {
+    const qc = setup();
+    let calls = 0;
+    server.use(
+      http.patch(`${TODOS}/1/toggle`, () => {
+        calls += 1;
+        return calls === 1
+          ? HttpResponse.json({ message: 'nope' }, { status: 500 })
+          : HttpResponse.json({ todoId: 1 });
+      }),
+    );
+    const observer = new MutationObserver(qc, toggleTodoOptions(qc));
+    const first = observer.mutate(1).catch(() => {});
+    const second = new MutationObserver(qc, toggleTodoOptions(qc)).mutate(1);
+    await Promise.all([first, second]);
+    // Server toggled once (the second call), so the row ends completed.
+    expect(qc.getQueryData<Todo[]>(queryKeys.bms.todosList)?.[0]?.isCompleted).toBe(true);
+  });
+});
+
+describe('due-date picker steps', () => {
+  it('opens one combined dialog on iOS and the day dialog elsewhere', () => {
+    expect(firstPickerStep('ios')).toBe('datetime');
+    expect(firstPickerStep('android')).toBe('date');
+  });
+
+  it('chains date -> time and ends after time or datetime', () => {
+    expect(nextPickerStep('date')).toBe('time');
+    expect(nextPickerStep('time')).toBeUndefined();
+    expect(nextPickerStep('datetime')).toBeUndefined();
+  });
+
+  const CURRENT = new Date(2026, 9, 14, 9, 30, 45);
+  const PICKED = new Date(2026, 9, 20, 17, 5, 12);
+
+  it('takes only the day from the date dialog', () => {
+    expect(formatLocalDateTime(applyPick('date', CURRENT, PICKED))).toBe('2026-10-20T09:30:00');
+  });
+
+  it('takes only the time from the time dialog', () => {
+    expect(formatLocalDateTime(applyPick('time', CURRENT, PICKED))).toBe('2026-10-14T17:05:00');
+  });
+
+  it('takes both from the combined iOS dialog, dropping seconds', () => {
+    expect(formatLocalDateTime(applyPick('datetime', CURRENT, PICKED))).toBe('2026-10-20T17:05:00');
+  });
+
+  it('does not mutate its inputs', () => {
+    const current = new Date(CURRENT);
+    applyPick('date', current, PICKED);
+    expect(current.getTime()).toBe(CURRENT.getTime());
   });
 });
 

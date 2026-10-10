@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useRef, useState } from 'react';
+import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { Platform, Text, View } from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -26,6 +26,12 @@ import { useCreateTodo, useUpdateTodo } from '../hooks/useTodos';
 import { formatDueLong } from '../lib/format-due';
 import { formatLocalDateTime, parseLocalDateTime } from '../lib/local-date-time';
 import {
+  applyPick,
+  firstPickerStep,
+  nextPickerStep,
+  type TodoPickerStep,
+} from '../lib/todo-picker';
+import {
   EMPTY_TODO,
   TITLE_MAX,
   todoSchema,
@@ -50,8 +56,9 @@ function nextFullHour(): Date {
 }
 
 /**
- * Add / edit a todo. The due date is picked in two steps (date, then time) and
- * stored as a local wall-clock string; see lib/local-date-time.
+ * Add / edit a todo. The due date is picked with one combined dialog on iOS and
+ * date-then-time on Android (lib/todo-picker), and stored as a local
+ * wall-clock string; see lib/local-date-time.
  */
 export const TodoFormSheet = forwardRef<BottomSheetRef, TodoFormSheetProps>(function TodoFormSheet(
   { todo, onDismiss },
@@ -65,8 +72,13 @@ export const TodoFormSheet = forwardRef<BottomSheetRef, TodoFormSheetProps>(func
   const create = useCreateTodo();
   const update = useUpdateTodo();
   const pending = create.isPending || update.isPending;
-  const [picker, setPicker] = useState<'date' | 'time' | null>(null);
+  const [picker, setPicker] = useState<TodoPickerStep | null>(null);
   const [draft, setDraft] = useState<Date>(nextFullHour);
+  // Refs mirror the picker state so onPick / onPickerClose stay referentially
+  // stable: DatePickerModal's handler sits in the Android picker's effect deps,
+  // and a fresh identity on every parent render would re-open the dialog.
+  const pickerRef = useRef<TodoPickerStep | null>(null);
+  const draftRef = useRef<Date>(draft);
   // Android closes its one-shot date dialog right after onChange; this
   // keeps that close from cancelling the advance to the time step.
   const advancing = useRef(false);
@@ -91,35 +103,53 @@ export const TodoFormSheet = forwardRef<BottomSheetRef, TodoFormSheetProps>(func
     if (ref && typeof ref === 'object') ref.current?.dismiss();
   };
 
-  const openPicker = (): void => {
-    setDraft(due ?? nextFullHour());
-    setPicker('date');
-  };
+  const { setValue } = form;
 
-  const onPick = (date: Date, type: PickerChangeType): void => {
-    if (type === 'dismissed') return;
-    if (picker === 'date') {
-      const next = new Date(draft);
-      next.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
+  const showPicker = useCallback((step: TodoPickerStep | null): void => {
+    pickerRef.current = step;
+    setPicker(step);
+  }, []);
+
+  const commit = useCallback(
+    (next: Date): void => {
+      draftRef.current = next;
       setDraft(next);
-      form.setValue('dueDate', formatLocalDateTime(next), { shouldDirty: true });
-      if (Platform.OS !== 'ios') advancing.current = true;
-      setPicker('time');
-      return;
-    }
-    const next = new Date(draft);
-    next.setHours(date.getHours(), date.getMinutes(), 0, 0);
-    setDraft(next);
-    form.setValue('dueDate', formatLocalDateTime(next), { shouldDirty: true });
+      setValue('dueDate', formatLocalDateTime(next), { shouldDirty: true });
+    },
+    [setValue],
+  );
+
+  const openPicker = (): void => {
+    const seed = due ?? nextFullHour();
+    draftRef.current = seed;
+    setDraft(seed);
+    showPicker(firstPickerStep(Platform.OS));
   };
 
-  const onPickerClose = (): void => {
+  const onPick = useCallback(
+    (date: Date, type: PickerChangeType): void => {
+      const step = pickerRef.current;
+      if (type === 'dismissed' || !step) return;
+      commit(applyPick(step, draftRef.current, date));
+      const next = nextPickerStep(step);
+      if (next) {
+        advancing.current = true;
+        showPicker(next);
+      }
+    },
+    [commit, showPicker],
+  );
+
+  const onPickerClose = useCallback((): void => {
     if (advancing.current) {
       advancing.current = false;
       return;
     }
-    setPicker(null);
-  };
+    // iOS 'datetime' only reports changes, so Done on the untouched seed
+    // (e.g. today, the next full hour) must still commit it.
+    if (pickerRef.current === 'datetime') commit(draftRef.current);
+    showPicker(null);
+  }, [commit, showPicker]);
 
   const save = form.handleSubmit((values) => {
     const input = {
@@ -172,7 +202,7 @@ export const TodoFormSheet = forwardRef<BottomSheetRef, TodoFormSheetProps>(func
       snapPoints={['85%']}
       footer={footer}
       onDismiss={() => {
-        setPicker(null);
+        showPicker(null);
         form.reset(EMPTY_TODO);
         onDismiss();
       }}
@@ -250,6 +280,8 @@ export const TodoFormSheet = forwardRef<BottomSheetRef, TodoFormSheetProps>(func
                 onPress={() => form.setValue('dueDate', null, { shouldDirty: true })}
               />
             </View>
+          ) : todo?.dueDate ? (
+            <Text style={[styles.hint, rtlText]}>{t('fm.todos.dueDateLocked')}</Text>
           ) : null}
         </View>
       </View>
@@ -278,6 +310,7 @@ const styles = StyleSheet.create((theme) => ({
   fields: { gap: theme.spacing[16] },
   area: { gap: theme.spacing[6] },
   clearRow: { alignItems: 'flex-start' },
+  hint: { fontSize: theme.type.body.sm.size, color: theme.colors.textMuted },
   footerRow: { flexDirection: 'row', gap: theme.spacing[12] },
   footerButton: { flex: 1 },
 }));

@@ -66,6 +66,9 @@ export const TodoRow = memo(function TodoRow({
           : due
             ? formatDueShort(due, locale)
             : '';
+  const priorityLabel = t(`fm.todos.priority.${todo.priority}`);
+  // The badges are colour-coded; the label carries the same facts as text.
+  const rowLabel = [todo.title, priorityLabel, dueLabel].filter(Boolean).join(', ');
   const DueIcon = status === 'overdue' ? Icons.Warning : status ? Icons.Clock : Icons.CalendarBlank;
   const dueTextColor =
     status === 'overdue'
@@ -94,7 +97,8 @@ export const TodoRow = memo(function TodoRow({
           scaleOnPress={1}
           style={styles.body}
           accessibilityRole="button"
-          accessibilityLabel={todo.title}
+          accessibilityLabel={rowLabel}
+          accessibilityHint={t('fm.todos.editHint')}
           testID={`todo-row-${todo.todoId}`}
         >
           <Text style={[styles.title, done && styles.titleDone, rtlText]} numberOfLines={2}>
@@ -106,11 +110,7 @@ export const TodoRow = memo(function TodoRow({
             </Text>
           ) : null}
           <View style={styles.badges}>
-            <Badge
-              size="sm"
-              tone={PRIORITY_TONE[todo.priority]}
-              label={t(`fm.todos.priority.${todo.priority}`)}
-            />
+            <Badge size="sm" tone={PRIORITY_TONE[todo.priority]} label={priorityLabel} />
             {dueLabel ? (
               <Badge
                 size="sm"
