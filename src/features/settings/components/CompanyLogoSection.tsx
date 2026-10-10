@@ -11,6 +11,8 @@ import {
   Icons,
   Skeleton,
   showApiErrorToast,
+  RTL_INLINE,
+  useIsRtl,
   useRtlTextStyle,
   type BottomSheetRef,
 } from '@/shared/ui';
@@ -28,6 +30,7 @@ export function CompanyLogoSection() {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
   const rtlText = useRtlTextStyle();
+  const isRtl = useIsRtl();
   const push = useToastStore((s) => s.push);
   const logo = useCompanyLogo();
   const upload = useUploadCompanyLogo();
@@ -37,14 +40,20 @@ export function CompanyLogoSection() {
   const logoUrl = logo.data ?? null;
 
   const pick = async (): Promise<void> => {
-    const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!perm.granted) {
-      push({ variant: 'error', title: t('errors.photoAccessDenied') });
+    let asset: ImagePicker.ImagePickerAsset | undefined;
+    try {
+      const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!perm.granted) {
+        push({ variant: 'error', title: t('errors.photoAccessDenied') });
+        return;
+      }
+      // No `quality` and no editing: either would re-encode the PNG as a JPEG.
+      const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'] });
+      asset = res.canceled ? undefined : res.assets[0];
+    } catch {
+      push({ variant: 'error', title: t('fm.settings.logoUploadError') });
       return;
     }
-    // No `quality` and no editing: either would re-encode the PNG as a JPEG.
-    const res = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'] });
-    const asset = res.canceled ? undefined : res.assets[0];
     if (!asset) return;
     const name = asset.fileName ?? asset.uri.split('/').pop() ?? null;
     const problem = validateLogo({ name, mimeType: asset.mimeType, size: asset.fileSize });
@@ -86,11 +95,13 @@ export function CompanyLogoSection() {
         </View>
       </View>
     );
-  } else if (logo.isError) {
+  } else if (logo.isError && logo.data === undefined) {
     body = (
       <View style={styles.errorRow} testID="settings-logo-error">
         <Icons.Warning size={18} color={theme.colors.error} />
-        <Text style={[styles.message, rtlText]}>{t('fm.settings.logoError')}</Text>
+        <Text style={[styles.message, isRtl ? RTL_INLINE : null]}>
+          {t('fm.settings.logoError')}
+        </Text>
         <Button
           label={t('common.retry')}
           variant="secondary"

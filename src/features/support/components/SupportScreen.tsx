@@ -12,6 +12,8 @@ import {
   Icons,
   Screen,
   SettingsRow,
+  RTL_INLINE,
+  useIsRtl,
   useRtlTextStyle,
 } from '@/shared/ui';
 import {
@@ -31,6 +33,7 @@ export function SupportScreen() {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
   const rtlText = useRtlTextStyle();
+  const isRtl = useIsRtl();
   const push = useToastStore((s) => s.push);
   const [openId, setOpenId] = useState<SupportFaqId | null>(null);
   const prefill = t('fm.support.contact.whatsappPrefill');
@@ -89,7 +92,7 @@ export function SupportScreen() {
                   style={styles.trigger}
                   testID={`support-faq-${id}`}
                 >
-                  <Text style={[styles.question, rtlText]}>
+                  <Text style={[styles.question, isRtl ? RTL_INLINE : null]}>
                     {t(`fm.support.faq.items.${id}.question`)}
                   </Text>
                   <View style={expanded ? styles.caretOpen : null}>

@@ -10,7 +10,8 @@ import {
   Icons,
   SettingsRow,
   Skeleton,
-  useRtlTextStyle,
+  RTL_INLINE,
+  useIsRtl,
   type BottomSheetRef,
 } from '@/shared/ui';
 import { resolveQrSelection } from '../lib/building-qr';
@@ -27,7 +28,7 @@ function shareCode(code: string): void {
 export function BuildingQrSection() {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
-  const rtlText = useRtlTextStyle();
+  const isRtl = useIsRtl();
   const filter = useProjectsBuildingsFilter();
   const projectSheet = useRef<BottomSheetRef>(null);
   const buildingSheet = useRef<BottomSheetRef>(null);
@@ -56,12 +57,14 @@ export function BuildingQrSection() {
         </View>
       </View>
     );
-  } else if (filter.isError) {
+  } else if (filter.isError && !filter.data) {
     body = (
       <View style={styles.stack} testID="settings-qr-error">
         <View style={styles.messageRow}>
           <Icons.Warning size={18} color={theme.colors.error} />
-          <Text style={[styles.message, rtlText]}>{t('fm.settings.buildingQrError')}</Text>
+          <Text style={[styles.message, isRtl ? RTL_INLINE : null]}>
+            {t('fm.settings.buildingQrError')}
+          </Text>
         </View>
         <Button
           label={t('common.retry')}
@@ -97,11 +100,13 @@ export function BuildingQrSection() {
               style={styles.center}
               accessible
               accessibilityRole="image"
-              accessibilityLabel={`${t('fm.settings.buildingQrTitle')}: ${building.buildingCode}`}
+              accessibilityLabel={t('fm.settings.buildingQrA11y', {
+                code: ltr(building.buildingCode),
+              })}
               testID="settings-qr-code"
             >
               {/* Library defaults (black on white + quiet zone) stay scannable in dark mode. */}
-              <QRCode value={building.buildingCode} size={QR_SIZE} quietZone={8} ecl="M" />
+              <QRCode value={building.buildingCode} size={QR_SIZE} quietZone={20} ecl="M" />
               <Text style={styles.code} selectable>
                 {building.buildingCode}
               </Text>
@@ -153,11 +158,11 @@ export function BuildingQrSection() {
 
 function EmptyLine({ label }: { label: string }) {
   const { theme } = useUnistyles();
-  const rtlText = useRtlTextStyle();
+  const isRtl = useIsRtl();
   return (
     <View style={styles.messageRow} testID="settings-qr-empty">
       <Icons.Buildings size={18} color={theme.colors.textMuted} />
-      <Text style={[styles.message, rtlText]}>{label}</Text>
+      <Text style={[styles.message, isRtl ? RTL_INLINE : null]}>{label}</Text>
     </View>
   );
 }

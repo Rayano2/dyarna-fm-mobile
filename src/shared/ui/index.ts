@@ -17,6 +17,7 @@ export { ToastHost } from './ToastHost';
 export { showApiErrorToast, type ApiErrorToastOptions } from './error-toast';
 export { HapticPressable, type HapticPressableProps } from './HapticPressable';
 export { BottomSheet, type BottomSheetProps, type BottomSheetRef } from './BottomSheet';
+export { OptionRow, type OptionRowProps } from './OptionRow';
 export { EmptyState, type EmptyStateProps } from './EmptyState';
 export { PagedList, type PagedListProps } from './PagedList';
 export {

@@ -1,15 +1,7 @@
 import { forwardRef } from 'react';
 import { Text, View } from 'react-native';
-import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import {
-  BottomSheet,
-  HapticPressable,
-  Icons,
-  RTL_INLINE,
-  useIsRtl,
-  useRtlTextStyle,
-  type BottomSheetRef,
-} from '@/shared/ui';
+import { StyleSheet } from 'react-native-unistyles';
+import { BottomSheet, OptionRow, useRtlTextStyle, type BottomSheetRef } from '@/shared/ui';
 
 export interface PickerOption {
   key: string;
@@ -29,8 +21,6 @@ export const PickerSheet = forwardRef<BottomSheetRef, PickerSheetProps>(function
   { title, options, selectedKey, onSelect },
   ref,
 ) {
-  const { theme } = useUnistyles();
-  const isRtl = useIsRtl();
   const rtlText = useRtlTextStyle();
   return (
     <BottomSheet ref={ref} snapPoints={['50%']} scrollable>
@@ -39,34 +29,14 @@ export const PickerSheet = forwardRef<BottomSheetRef, PickerSheetProps>(function
           {title}
         </Text>
         <View accessibilityRole="radiogroup" style={styles.list}>
-          {options.map((option) => {
-            const selected = option.key === selectedKey;
-            return (
-              <HapticPressable
-                key={option.key}
-                onPress={() => onSelect(option.key)}
-                scaleOnPress={1}
-                accessibilityRole="radio"
-                accessibilityState={{ checked: selected }}
-                accessibilityLabel={option.label}
-                style={[styles.option, selected && styles.optionSelected]}
-              >
-                <Text
-                  style={[
-                    styles.optionLabel,
-                    selected && styles.optionLabelSelected,
-                    isRtl ? RTL_INLINE : null,
-                  ]}
-                  numberOfLines={1}
-                >
-                  {option.label}
-                </Text>
-                {selected ? (
-                  <Icons.Check size={18} color={theme.colors.primary} weight="bold" />
-                ) : null}
-              </HapticPressable>
-            );
-          })}
+          {options.map((option) => (
+            <OptionRow
+              key={option.key}
+              label={option.label}
+              selected={option.key === selectedKey}
+              onPress={() => onSelect(option.key)}
+            />
+          ))}
         </View>
       </View>
     </BottomSheet>
@@ -87,25 +57,4 @@ const styles = StyleSheet.create((theme) => ({
     color: theme.colors.textPrimary,
   },
   list: { gap: theme.spacing[8] },
-  option: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: theme.spacing[12],
-    minHeight: 44,
-    paddingHorizontal: theme.spacing[12],
-    borderRadius: theme.radius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.borderSubtle,
-    backgroundColor: theme.colors.surface,
-  },
-  optionSelected: {
-    borderColor: theme.colors.primary,
-    backgroundColor: theme.colors.primaryFaint,
-  },
-  optionLabel: {
-    flex: 1,
-    fontSize: theme.type.body.md.size,
-    color: theme.colors.textPrimary,
-  },
-  optionLabelSelected: { fontWeight: '600' },
 }));

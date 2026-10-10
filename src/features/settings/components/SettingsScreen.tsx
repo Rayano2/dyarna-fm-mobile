@@ -6,7 +6,15 @@ import { ShellHeader } from '@/features/shell';
 import { useLocaleStore } from '@/shared/stores/localeStore';
 import { useThemeStore } from '@/shared/stores/themeStore';
 import type { SupportedLocale } from '@/shared/i18n';
-import { Avatar, Screen, SegmentedPill, SwitchRow, useRtlTextStyle } from '@/shared/ui';
+import {
+  Avatar,
+  RTL_INLINE,
+  Screen,
+  SegmentedPill,
+  SwitchRow,
+  useIsRtl,
+  useRtlTextStyle,
+} from '@/shared/ui';
 import { BuildingQrSection } from './BuildingQrSection';
 import { CompanyLogoSection } from './CompanyLogoSection';
 import { SettingsSection } from './SettingsSection';
@@ -58,6 +66,7 @@ function ProfileSection() {
 function AppearanceSection() {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
+  const isRtl = useIsRtl();
   const setMode = useThemeStore((s) => s.setMode);
   const locale = useLocaleStore((s) => s.locale);
   const setLocale = useLocaleStore((s) => s.setLocale);
@@ -72,7 +81,9 @@ function AppearanceSection() {
         }}
       />
       <View style={styles.languageRow}>
-        <Text style={styles.languageLabel}>{t('fm.settings.language')}</Text>
+        <Text style={[styles.languageLabel, isRtl ? RTL_INLINE : null]}>
+          {t('fm.settings.language')}
+        </Text>
         <SegmentedPill<SupportedLocale>
           options={[
             { value: 'en', label: t('language.en') },

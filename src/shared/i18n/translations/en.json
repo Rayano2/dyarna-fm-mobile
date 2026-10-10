@@ -1303,6 +1303,7 @@
       "title": "Settings",
       "profileTitle": "Profile",
       "buildingQrTitle": "Building QR code",
+      "buildingQrA11y": "Building QR code {{code}}",
       "project": "Project",
       "building": "Building",
       "buildingQrEmpty": "No buildings yet",
@@ -1353,7 +1354,7 @@
           },
           "buildingCodeAndJoining": {
             "question": "How do residents join my building?",
-            "answer": "Go to Settings and scroll to Building code. Choose the project, then the building, and the page shows that building's code along with a QR code for it; Download QR saves it as a PNG you can print or share. Once a resident uses that code to request to join, the request appears in Resident Requests for you to approve."
+            "answer": "Open Settings and go to Building QR code. Choose the project, then the building, to see that building's code and its QR code; tap Share code to send the code to residents. Once a resident uses that code to request to join, the request appears in Resident Requests for you to approve."
           },
           "bookingStuckPending": {
             "question": "Why is a resident's booking stuck on Pending?",
