@@ -1450,13 +1450,18 @@
         "RESOLVED": "تم الحل",
         "CLOSED": "مغلقة",
         "NOT_ACTIONABLE": "غير قابلة للتنفيذ",
-        "ESCALATED": "مُصعَّدة"
+        "ESCALATED": "مُصعَّدة",
+        "ON_HOLD": "معلّقة",
+        "CANCELLED": "ملغاة",
+        "BREACHED": "متجاوزة"
       },
       "priority": {
         "LOW": "منخفضة",
         "MEDIUM": "متوسطة",
         "HIGH": "عالية",
-        "URGENT": "عاجلة"
+        "URGENT": "عاجلة",
+        "CRITICAL": "حرجة",
+        "EMERGENCY": "طارئة"
       },
       "domain": {
         "MAINTENANCE": "صيانة",
@@ -1576,6 +1581,43 @@
         "filterButton_many": "تصفية، {{count}} عاملًا نشطًا",
         "filterButton_other": "تصفية، {{count}} عامل نشط"
       }
+    },
+    "dashboard": {
+      "greetingMorning": "صباح الخير",
+      "greetingAfternoon": "مساء الخير",
+      "greetingEvening": "مساء الخير",
+      "welcome": "مرحبًا، {{name}}",
+      "subtitle": "إليك ما يحتاج إلى انتباهك",
+      "kpi": {
+        "openTickets": "التذاكر المفتوحة",
+        "openTicketsDesc": "تذاكر الصيانة بانتظار الإجراء",
+        "pendingRequests": "طلبات ربط السكان المعلقة",
+        "pendingRequestsDesc": "سكان بانتظار الموافقة",
+        "activeProperties": "العقارات النشطة",
+        "activePropertiesDesc": "الوحدات النشطة حاليًا",
+        "myTasks": "مهامي",
+        "myTasksDesc": "مهام غير مكتملة",
+        "a11y": "{{label}}: {{count}}. اضغط للعرض.",
+        "unavailable": "غير متاح"
+      },
+      "recent": {
+        "title": "أحدث التذاكر",
+        "desc": "أحدث التذاكر التي تتطلب انتباهًا",
+        "viewAll": "عرض الكل",
+        "emptyTitle": "لا توجد تذاكر حديثة",
+        "emptyBody": "ستظهر التذاكر الجديدة هنا.",
+        "rowA11y": "التذكرة {{number}}، {{title}}، {{status}}"
+      },
+      "error": {
+        "title": "تعذّر تحميل لوحة التحكم",
+        "body": "تحقق من اتصالك وحاول مجددًا.",
+        "retry": "حاول مجددًا"
+      }
+    },
+    "notifications": {
+      "markReadError": "تعذّر وضع علامة مقروء",
+      "retry": "حاول مجددًا",
+      "loadMore": "جارٍ تحميل المزيد…"
     }
   }
 }

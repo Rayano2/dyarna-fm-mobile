@@ -147,6 +147,10 @@ export const queryKeys = {
      * their buildings. One cache entry, fetched by `useProjectsBuildingsFilter`.
      */
     projectsBuildingsFilter: ['bms', 'company-reps', 'projects-buildings-filter'] as const,
+    /** FM dashboard KPIs + top open tickets (`api/bms/company-reps/dashboardInfo`). */
+    dashboardInfo: ['bms', 'company-reps', 'dashboard-info'] as const,
+    /** Count of the rep's not-yet-completed todos, for the "My tasks" KPI. */
+    todosActive: ['bms', 'todos', 'active-count'] as const,
   },
 } as const;
 

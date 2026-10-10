@@ -28,6 +28,9 @@ export default [
       // parens on every commit (lint-staged runs eslint --fix then prettier),
       // so the rule's fix can never survive. Prettier owns ternary formatting.
       'unicorn/no-nested-ternary': 'off',
+      // Wants uppercase hex digits (0xFF); prettier lowercases them (0xff) on
+      // every commit, so the two can never agree. Prettier owns literal casing.
+      'unicorn/number-literal-case': 'off',
       'unicorn/prefer-module': 'off',
       'unicorn/filename-case': 'off',
       // eslint-plugin-import (pulled by expo config) can't parse import-attributes

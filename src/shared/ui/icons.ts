@@ -89,4 +89,8 @@ export {
   // one, which reads as a typography bug rather than a mirrored icon.
   Sparkle,
   Quotes,
+  // FM dashboard + notifications (T6).
+  Ticket,
+  UserPlus,
+  ListChecks,
 } from 'phosphor-react-native';

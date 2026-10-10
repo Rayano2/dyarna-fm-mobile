@@ -1450,13 +1450,18 @@
         "RESOLVED": "Resolved",
         "CLOSED": "Closed",
         "NOT_ACTIONABLE": "Not actionable",
-        "ESCALATED": "Escalated"
+        "ESCALATED": "Escalated",
+        "ON_HOLD": "On hold",
+        "CANCELLED": "Cancelled",
+        "BREACHED": "Breached"
       },
       "priority": {
         "LOW": "Low",
         "MEDIUM": "Medium",
         "HIGH": "High",
-        "URGENT": "Urgent"
+        "URGENT": "Urgent",
+        "CRITICAL": "Critical",
+        "EMERGENCY": "Emergency"
       },
       "domain": {
         "MAINTENANCE": "Maintenance",
@@ -1576,6 +1581,43 @@
         "filterButton_many": "Filter, {{count}} active",
         "filterButton_other": "Filter, {{count}} active"
       }
+    },
+    "dashboard": {
+      "greetingMorning": "Good morning",
+      "greetingAfternoon": "Good afternoon",
+      "greetingEvening": "Good evening",
+      "welcome": "Welcome, {{name}}",
+      "subtitle": "Here's what needs your attention",
+      "kpi": {
+        "openTickets": "Open tickets",
+        "openTicketsDesc": "Maintenance tickets awaiting action",
+        "pendingRequests": "Pending resident links",
+        "pendingRequestsDesc": "Residents waiting for approval",
+        "activeProperties": "Active properties",
+        "activePropertiesDesc": "Units currently active",
+        "myTasks": "My tasks",
+        "myTasksDesc": "Tasks not yet completed",
+        "a11y": "{{label}}: {{count}}. Tap to view.",
+        "unavailable": "unavailable"
+      },
+      "recent": {
+        "title": "Recent tickets",
+        "desc": "Latest tickets requiring attention",
+        "viewAll": "View all",
+        "emptyTitle": "No recent tickets",
+        "emptyBody": "New tickets will appear here.",
+        "rowA11y": "Ticket {{number}}, {{title}}, {{status}}"
+      },
+      "error": {
+        "title": "Couldn't load dashboard",
+        "body": "Check your connection and try again.",
+        "retry": "Try again"
+      }
+    },
+    "notifications": {
+      "markReadError": "Couldn't mark as read",
+      "retry": "Try again",
+      "loadMore": "Loading more…"
     }
   }
 }

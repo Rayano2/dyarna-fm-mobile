@@ -7,12 +7,13 @@ import { I18nextProvider } from 'react-i18next';
 import { QueryClientProvider } from '@tanstack/react-query';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
+import { AppState } from 'react-native';
 import { StyleSheet } from 'react-native-unistyles';
 
 import '@/shared/theme/unistyles';
 import { useAppFonts } from '@/shared/theme/fonts';
 import { i18n } from '@/shared/i18n';
-import { queryClient } from '@/shared/query';
+import { queryClient, wireAppFocus } from '@/shared/query';
 import { ErrorBoundary, ToastHost } from '@/shared/ui';
 import { useLocaleStore } from '@/shared/stores/localeStore';
 import { useThemeStore } from '@/shared/stores/themeStore';
@@ -25,6 +26,9 @@ import { useAuthStore, wireSessionToApi } from '@/features/auth';
 import '@/shared/api/clients';
 
 void SplashScreen.preventAutoHideAsync();
+
+// refetchOnWindowFocus (e.g. the bell's unread count) fires on app foreground.
+wireAppFocus(AppState);
 
 // Every API client reads the Bearer token from the session store, and a 401
 // logs out through it (the interceptor toasts once and redirects to login).
