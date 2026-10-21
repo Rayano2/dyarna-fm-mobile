@@ -17,6 +17,8 @@ export const ticketPaths = {
   companyDetail: (ticketNumber: string): string => `${TICKETS}/company/${enc(ticketNumber)}`,
   status: (ticketNumber: string): string => `${TICKETS}/${enc(ticketNumber)}/status`,
   assign: (ticketNumber: string): string => `${TICKETS}/${enc(ticketNumber)}/assign`,
+  assignableUsers: (ticketNumber: string): string =>
+    `${TICKETS}/${enc(ticketNumber)}/assignable-users`,
   comments: (ticketId: number): string => `${TICKETS}/${ticketId}/comments`,
   companyAttachments: (ticketId: number): string => `${TICKETS}/${ticketId}/attachments/company`,
 } as const;

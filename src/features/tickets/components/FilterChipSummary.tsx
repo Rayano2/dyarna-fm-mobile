@@ -68,6 +68,9 @@ export function FilterChipSummary({
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
+      // A horizontal ScrollView defaults to flexGrow: 1 and swallowed the
+      // list's vertical space (FM #110 item 3); see shared/ui/Chip.tsx.
+      style={styles.scroll}
       contentContainerStyle={styles.row}
       keyboardShouldPersistTaps="handled"
     >
@@ -92,6 +95,10 @@ export function FilterChipSummary({
 }
 
 const styles = StyleSheet.create((theme) => ({
+  scroll: {
+    flexGrow: 0,
+    flexShrink: 0,
+  },
   row: {
     flexDirection: 'row',
     alignItems: 'center',

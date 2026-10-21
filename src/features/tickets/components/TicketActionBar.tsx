@@ -10,9 +10,18 @@ import type { TicketActionKind } from '../lib/ticket-status';
 
 export interface TicketActionBarProps {
   action: TicketActionKind;
+  /** OPEN/IN_PROGRESS/ESCALATED (`canAssign`): offer the assignee picker. */
+  canAssign: boolean;
+  /** The ticket is already mine: OPEN shows Start progress instead of Assign to me. */
+  assignedToMe: boolean;
+  /** assignable-users has loaded and lists me (and I have a user id). */
+  canSelfAssign: boolean;
   assigning: boolean;
   starting: boolean;
-  onAssign: () => void;
+  /** One-tap self-assign. */
+  onAssignToMe: () => void;
+  /** Opens the AssigneePickerSheet. */
+  onPickAssignee: () => void;
   onStart: () => void;
   onResolve: (resolution: ResolutionStatus) => void;
 }
@@ -20,9 +29,13 @@ export interface TicketActionBarProps {
 /** Sticky bottom bar. Which buttons show is decided by `getTicketAction` (lib/ticket-status). */
 export function TicketActionBar({
   action,
+  canAssign,
+  assignedToMe,
+  canSelfAssign,
   assigning,
   starting,
-  onAssign,
+  onAssignToMe,
+  onPickAssignee,
   onStart,
   onResolve,
 }: TicketActionBarProps): React.JSX.Element | null {
@@ -38,27 +51,48 @@ export function TicketActionBar({
   let content: React.ReactNode;
   switch (action) {
     case 'assign': {
-      content = (
+      // OPEN, whoever holds it (owner rule, FM #110). The one-tap self action
+      // shows only once assignable-users has confirmed I am eligible; until
+      // then (and if I am not) the picker is the only way in (review B1).
+      const pickLabel = t(assignedToMe ? 'fm.tickets.reassign' : 'fm.tickets.assignToSomeoneElse');
+      content = canSelfAssign ? (
+        <View style={styles.choice}>
+          {assignedToMe ? (
+            <Button
+              label={t('fm.tickets.startProgress')}
+              fullWidth
+              loading={starting}
+              disabled={starting || assigning}
+              onPress={onStart}
+              testID="fm-ticket-start"
+            />
+          ) : (
+            <Button
+              label={t('fm.tickets.assignToMe')}
+              fullWidth
+              loading={assigning}
+              disabled={assigning || starting}
+              onPress={onAssignToMe}
+              testID="fm-ticket-assign"
+            />
+          )}
+          <Button
+            label={pickLabel}
+            variant="ghost"
+            fullWidth
+            disabled={assigning || starting}
+            onPress={onPickAssignee}
+            testID="fm-ticket-pick-assignee"
+          />
+        </View>
+      ) : (
         <Button
-          label={t('fm.tickets.assignToMe')}
+          label={pickLabel}
           fullWidth
           loading={assigning}
           disabled={assigning}
-          onPress={onAssign}
-          testID="fm-ticket-assign"
-        />
-      );
-      break;
-    }
-    case 'start': {
-      content = (
-        <Button
-          label={t('fm.tickets.startProgress')}
-          fullWidth
-          loading={starting}
-          disabled={starting}
-          onPress={onStart}
-          testID="fm-ticket-start"
+          onPress={onPickAssignee}
+          testID="fm-ticket-pick-assignee"
         />
       );
       break;
@@ -92,6 +126,28 @@ export function TicketActionBar({
             onPress={() => setChoosing(false)}
             testID="fm-ticket-action-cancel"
           />
+        </View>
+      ) : canAssign ? (
+        <View style={styles.row}>
+          <View style={styles.half}>
+            <Button
+              label={t('fm.tickets.reassign')}
+              variant="secondary"
+              fullWidth
+              disabled={assigning}
+              loading={assigning}
+              onPress={onPickAssignee}
+              testID="fm-ticket-reassign"
+            />
+          </View>
+          <View style={styles.half}>
+            <Button
+              label={t('fm.tickets.takeAction')}
+              fullWidth
+              onPress={() => setChoosing(true)}
+              testID="fm-ticket-take-action"
+            />
+          </View>
         </View>
       ) : (
         <Button

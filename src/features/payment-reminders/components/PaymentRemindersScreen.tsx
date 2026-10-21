@@ -3,6 +3,7 @@ import { AccessibilityInfo, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { filterResidentsBySearch, useResidents } from '@/features/residents';
+import { useTabBarClearance } from '@/features/shell';
 import { useProjectsBuildingsFilter } from '@/shared/hooks/useProjectsBuildingsFilter';
 import { ltr } from '@/shared/lib/bidi';
 import {
@@ -76,6 +77,7 @@ function sameFilter(a: ProjectBuildingFilter, b: ProjectBuildingFilter): boolean
 }
 
 export function PaymentRemindersScreen(): React.JSX.Element {
+  const tabBarClearance = useTabBarClearance();
   const { t } = useTranslation();
   const { theme } = useUnistyles();
   const rtlText = useRtlTextStyle();
@@ -322,7 +324,12 @@ export function PaymentRemindersScreen(): React.JSX.Element {
   const today = startOfLocalDay(new Date());
 
   return (
-    <View style={styles.screen} testID="fm-payment-reminders-screen">
+    // The tab bar stays visible on this route, so lift the whole scaffold
+    // (its pinned Send footer included) above it.
+    <View
+      style={[styles.screen, { paddingBottom: tabBarClearance }]}
+      testID="fm-payment-reminders-screen"
+    >
       <ComposeScaffold
         title={t('fm.paymentReminders.title')}
         backAccessibilityLabel={t('common.back')}

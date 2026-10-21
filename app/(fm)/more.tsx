@@ -1,10 +1,10 @@
 import { ScrollView } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, useUnistyles } from 'react-native-unistyles';
+import { useUnistyles } from 'react-native-unistyles';
 
 import { LogoutRow } from '@/features/auth';
-import { ShellHeader } from '@/features/shell';
+import { ShellHeader, useTabBarClearance } from '@/features/shell';
 import { Divider, Icons, Screen, SettingsRow } from '@/shared/ui';
 
 type RowIcon = React.ComponentType<{ size: number; color: string }>;
@@ -24,10 +24,11 @@ const ROWS: readonly { route: string; labelKey: string; Icon: RowIcon }[] = [
 export default function MoreScreen(): React.JSX.Element {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
+  const tabBarClearance = useTabBarClearance();
   return (
     <Screen edges={[]} keyboardAvoiding={false} testID="fm-more-screen">
       <ShellHeader title={t('fm.nav.more')} />
-      <ScrollView contentContainerStyle={styles.list}>
+      <ScrollView contentContainerStyle={{ paddingBottom: tabBarClearance }}>
         {ROWS.map(({ route, labelKey, Icon }) => (
           // SettingsRow's chevron is CaretRight, swapped for CaretLeft in RTL.
           <SettingsRow
@@ -44,8 +45,3 @@ export default function MoreScreen(): React.JSX.Element {
     </Screen>
   );
 }
-
-const styles = StyleSheet.create((theme) => ({
-  // Clears the absolutely positioned tab bar.
-  list: { paddingBottom: theme.spacing[96] },
-}));

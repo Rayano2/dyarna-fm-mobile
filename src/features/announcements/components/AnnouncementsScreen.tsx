@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import { ShellHeader } from '@/features/shell';
+import { ShellHeader, useTabBarClearance } from '@/features/shell';
 import {
   ActionSheet,
   ProjectBuildingScope,
@@ -33,6 +33,7 @@ import { AnnouncementComposeSheet } from './AnnouncementComposeSheet';
 const SKELETON_ROWS = [0, 1, 2, 3];
 
 export function AnnouncementsScreen() {
+  const tabBarClearance = useTabBarClearance();
   const { t } = useTranslation();
   const { theme } = useUnistyles();
   const push = useToastStore((s) => s.push);
@@ -145,7 +146,7 @@ export function AnnouncementsScreen() {
         )}
         loading={list.isLoading}
         skeleton={
-          <View style={styles.listContent}>
+          <View style={[styles.listContent, { paddingBottom: tabBarClearance }]}>
             {SKELETON_ROWS.map((i) => (
               <AnnouncementRowSkeleton key={i} />
             ))}
@@ -163,7 +164,7 @@ export function AnnouncementsScreen() {
         fetchNextPage={() => void list.fetchNextPage()}
         hasNextPage={list.hasNextPage}
         isFetchingNextPage={list.isFetchingNextPage}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={[styles.listContent, { paddingBottom: tabBarClearance }]}
       />
     );
 
@@ -192,10 +193,8 @@ const styles = StyleSheet.create((theme) => ({
     justifyContent: 'center',
   },
   center: { flex: 1, justifyContent: 'center' },
-  // Clears the absolutely positioned tab bar.
   listContent: {
     padding: theme.spacing[16],
-    paddingBottom: theme.spacing[96],
     gap: theme.spacing[12],
   },
 }));

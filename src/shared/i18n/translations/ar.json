@@ -163,8 +163,6 @@
   },
   "language": {
     "restarting": "تم تغيير اللغة — إعادة التشغيل…",
-    "restartTitle": "تم تحديث اللغة",
-    "restartBody": "يرجى إغلاق التطبيق وإعادة فتحه لإكمال تطبيق اتجاه العرض الجديد.",
     "toggle": "تبديل اللغة",
     "en": "EN",
     "ar": "AR"
@@ -1820,6 +1818,30 @@
         "body": "أسند هذه التذكرة لبدء العمل"
       },
       "assignToMe": "إسناد إليّ",
+      "assignToSomeoneElse": "إسناد إلى شخص آخر",
+      "reassign": "إعادة الإسناد",
+      "assignee": {
+        "title": "إسناد التذكرة",
+        "description": "اختر من يتولى {{number}}",
+        "meSuffix": "(أنا)",
+        "alreadyAssigned": "التذكرة مسندة إلى هذا الشخص بالفعل",
+        "nameUnavailable": "الاسم غير متاح",
+        "current": "المسؤول الحالي",
+        "confirm": "إسناد",
+        "empty": "لا يوجد أشخاص آخرون يمكن إسناد هذه التذكرة إليهم",
+        "loadFailed": "تعذّر تحميل الأشخاص الذين يمكنك الإسناد إليهم",
+        "rowA11y": "{{name}}، {{role}}",
+        "rowA11yCurrent": "{{name}}، {{role}}، المسؤول الحالي",
+        "role": {
+          "COMPANY_REP": "موظف الشركة",
+          "PRESIDENT": "رئيس المبنى"
+        },
+        "errors": {
+          "statusInvalid": "لا يمكن إسناد هذه التذكرة في حالتها الحالية",
+          "notEligible": "لا يمكن إسناد هذه التذكرة إلى هذا الشخص",
+          "forbidden": "ليس لديك صلاحية إسناد التذاكر"
+        }
+      },
       "startProgress": "بدء التنفيذ",
       "takeAction": "اتخاذ إجراء",
       "markResolved": "تم الحل",
@@ -1844,6 +1866,7 @@
       },
       "toast": {
         "assigned": "تم إسناد التذكرة إليك",
+        "reassigned": "تم إسناد التذكرة",
         "assignFailed": "تعذّر إسناد التذكرة",
         "statusUpdated": "تم تحديث التذكرة",
         "statusFailed": "تعذّر تحديث التذكرة"
@@ -1975,6 +1998,7 @@
       "capacityValue_many": "تتسع لـ {{count}} شخصًا",
       "capacityValue_other": "تتسع لـ {{count}} شخص",
       "requiresApproval": "يتطلب موافقة",
+      "approvalAlways": "جميع الحجوزات تحتاج إلى موافقتك",
       "approvalAuto": "موافقة تلقائية",
       "limitAdvance": "تحديد الحجز المسبق",
       "advanceDays": "عدد الأيام",

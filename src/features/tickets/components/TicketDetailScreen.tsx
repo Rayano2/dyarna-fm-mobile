@@ -17,12 +17,15 @@ import {
   type BottomSheetRef,
 } from '@/shared/ui';
 import type { ResolutionStatus } from '../api/update-status';
+import { assignErrorKind } from '../api/assign-ticket';
+import { useAssignableUsers } from '../hooks/useAssignableUsers';
 import { useAssignTicket } from '../hooks/useAssignTicket';
 import { useTicket } from '../hooks/useTicket';
 import { useTicketComments } from '../hooks/useTicketComments';
 import { useResolveTicket, useUpdateTicketStatus } from '../hooks/useUpdateTicketStatus';
 import { ltr } from '../lib/ltr';
-import { getTicketAction, needsAssignment } from '../lib/ticket-status';
+import { isSelfAssignable } from '../lib/assignee-rows';
+import { canAssign, getTicketAction, isAssignedTo, needsAssignment } from '../lib/ticket-status';
 import type { FmTicketDetail } from '../types';
 import { AttachmentsGallery } from './detail/AttachmentsGallery';
 import { CommentsSection } from './detail/CommentsSection';
@@ -30,6 +33,7 @@ import { DetailsBlock } from './detail/DetailsBlock';
 import { LoadingSkeleton } from './detail/LoadingSkeleton';
 import { TicketTimeline } from './detail/TicketTimeline';
 import { PriorityBadge } from './PriorityBadge';
+import { AssigneePickerSheet } from './AssigneePickerSheet';
 import { ResolveTicketSheet } from './ResolveTicketSheet';
 import { SlaChip, useSlaTickerWhileFocused } from './SlaChip';
 import { StatusBadge } from './StatusBadge';
@@ -118,10 +122,12 @@ function LoadedTicket({
   const { t } = useTranslation();
   const { theme } = useUnistyles();
   const userId = useAuthStore((s) => s.user?.id ?? null);
+  const userName = useAuthStore((s) => s.user?.name ?? null);
   const comments = useTicketComments(ticket.ticketId);
   const assign = useAssignTicket(ticket.tktNumber);
   const start = useUpdateTicketStatus(ticket.tktNumber);
   const resolveSheet = useRef<BottomSheetRef>(null);
+  const assigneeSheet = useRef<BottomSheetRef>(null);
   const [resolution, setResolution] = useState<ResolutionStatus>('RESOLVED');
   const resolve = useResolveTicket(ticket.tktNumber, () => {
     // The hook already cleared the draft. Leaving the screen unmounts the
@@ -129,7 +135,12 @@ function LoadedTicket({
     router.back();
   });
 
-  const action = getTicketAction(ticket, userId);
+  const action = getTicketAction(ticket);
+  const assignable = canAssign(ticket);
+  // Fetched with the detail so the bar knows whether self-assign is allowed;
+  // the picker reads the same cache entry.
+  const assignees = useAssignableUsers(ticket.tktNumber, assignable);
+  const selfAssignable = isSelfAssignable(assignees.data, userId);
   const thread = comments.data ?? ticket.comments;
 
   return (
@@ -206,14 +217,42 @@ function LoadedTicket({
 
       <TicketActionBar
         action={action}
+        canAssign={assignable}
+        canSelfAssign={selfAssignable}
+        assignedToMe={isAssignedTo(ticket, userId)}
         assigning={assign.isPending}
         starting={start.isPending}
-        onAssign={() => assign.mutate()}
+        onAssignToMe={() => {
+          // Unreachable without an id: canSelfAssign requires one.
+          if (userId) assign.mutate(userId);
+        }}
+        onPickAssignee={() => assigneeSheet.current?.present()}
         onStart={() => start.mutate('IN_PROGRESS')}
         onResolve={(next) => {
           setResolution(next);
           resolveSheet.current?.present();
         }}
+      />
+
+      <AssigneePickerSheet
+        ref={assigneeSheet}
+        ticketNumber={ticket.tktNumber}
+        myId={userId}
+        myName={userName}
+        currentAssigneeId={ticket.assignedToId}
+        submitting={assign.isPending}
+        onAssign={(next) =>
+          assign.mutate(next, {
+            onSuccess: () => assigneeSheet.current?.dismiss(),
+            onError: (error) => {
+              // The ticket is gone or no longer assignable: nothing left to pick.
+              const kind = assignErrorKind(error);
+              if (kind === 'statusInvalid' || kind === 'notFound') {
+                assigneeSheet.current?.dismiss();
+              }
+            },
+          })
+        }
       />
 
       <ResolveTicketSheet

@@ -1,8 +1,7 @@
 import { create } from 'zustand';
-import { Alert } from 'react-native';
 import * as Localization from 'expo-localization';
 import { secureStorage } from '@/shared/lib/storage';
-import { changeI18nLocale, i18n, initI18n, type SupportedLocale } from '../i18n';
+import { changeI18nLocale, initI18n, type SupportedLocale } from '../i18n';
 import { applyRTLIfNeeded, isRTLLocale, reloadForRTL } from '../i18n/rtl';
 
 const STORAGE_KEY = 'dyarna.locale';
@@ -48,15 +47,6 @@ async function reloadOnceForHydrate(locale: SupportedLocale): Promise<boolean> {
   return reloadForRTL();
 }
 
-/** Blocking acknowledgement: the strings have flipped but the native layout
- *  direction only applies on the next launch. One button — nothing to cancel.
- *  Shown in the newly selected language, which is already live in i18n. */
-function promptRelaunch(): void {
-  Alert.alert(i18n.t('language.restartTitle'), i18n.t('language.restartBody'), [
-    { text: i18n.t('common.done') },
-  ]);
-}
-
 export const useLocaleStore = create<LocaleState>((set, get) => ({
   locale: 'en',
   hydrated: false,
@@ -66,17 +56,16 @@ export const useLocaleStore = create<LocaleState>((set, get) => ({
     await initI18n(resolved);
 
     // A fresh install on an Arabic-locale device starts with the native RTL
-    // flag still false, so applyRTLIfNeeded() sets it but the whole first
-    // session would render Arabic text in an LTR layout (#34). Reloading is
-    // cheap here: RootLayout gates on `hydrated`, so nothing has painted yet.
-    // Deliberately NOT setting `hydrated` when a reload is under way — the
-    // splash stays up until the runtime restarts, instead of mounting a tree
-    // that is about to be torn down.
+    // flag still false. The layout itself no longer depends on it: RootLayout
+    // sets `direction` from `locale`, so setting it below boots the tree RTL
+    // in every build (FM #110 item 2). forceRTL() is still applied so native
+    // pieces (RN <Modal> roots, system controls) match from the next launch,
+    // and where a reload IS available (dev clients) we still take it once,
+    // before first paint — RootLayout gates on `hydrated`, so nothing has
+    // painted yet and the splash stays up until the runtime restarts.
     const rtlChanged = await applyRTLIfNeeded(resolved);
     if (rtlChanged && (await reloadOnceForHydrate(resolved))) return;
 
-    // Either the direction already matched, or no reload was available: boot
-    // with the correct strings; the direction follows on the next launch.
     set({ locale: resolved, hydrated: true });
   },
   setLocale: async (locale) => {
@@ -98,11 +87,12 @@ export const useLocaleStore = create<LocaleState>((set, get) => ({
       // above cannot happen: there is no teardown for the re-renders to race.
       // Returning early here instead is what broke release builds — nothing
       // changed at all, i18n.language stayed 'en' and the toggle snapped back
-      // (#34). Apply the locale in-process so the strings and the toggle
-      // follow the user's choice, then tell them the layout needs a relaunch.
+      // (#34). Apply the locale in-process: the strings follow via i18n and
+      // the layout via RootLayout's JS `direction`, so there is nothing left
+      // to ask the user to relaunch for (FM #110 item 2). Only native pieces
+      // outside the React root catch up on the next launch.
       await changeI18nLocale(locale);
       set({ locale });
-      promptRelaunch();
       return;
     }
 

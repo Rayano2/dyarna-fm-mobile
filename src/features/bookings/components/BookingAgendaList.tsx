@@ -2,6 +2,7 @@ import { memo, useMemo } from 'react';
 import { ActivityIndicator, SectionList, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
+import { useTabBarClearance } from '@/features/shell';
 import { useLocaleStore } from '@/shared/stores/localeStore';
 import { HapticPressable, Skeleton, useRtlTextStyle } from '@/shared/ui';
 import type { Booking } from '../api/bookings-api';
@@ -85,6 +86,7 @@ export function BookingAgendaList({
   empty,
   header,
 }: BookingAgendaListProps) {
+  const tabBarClearance = useTabBarClearance();
   const { t } = useTranslation();
   const locale = useLocaleStore((s) => s.locale);
   const rtlText = useRtlTextStyle();
@@ -109,7 +111,7 @@ export function BookingAgendaList({
       ListHeaderComponent={header ?? null}
       ListEmptyComponent={empty}
       ListFooterComponent={isFetchingNextPage ? <ActivityIndicator style={styles.footer} /> : null}
-      contentContainerStyle={styles.content}
+      contentContainerStyle={[styles.content, { paddingBottom: tabBarClearance }]}
     />
   );
 }
@@ -125,8 +127,7 @@ export function BookingRowSkeleton() {
 }
 
 const styles = StyleSheet.create((theme) => ({
-  // Clears the absolutely positioned tab bar.
-  content: { padding: theme.spacing[16], paddingBottom: theme.spacing[96], gap: theme.spacing[8] },
+  content: { padding: theme.spacing[16], gap: theme.spacing[8] },
   dayHeader: {
     fontSize: theme.type.label.lg.size,
     lineHeight: theme.type.label.lg.lineHeight,

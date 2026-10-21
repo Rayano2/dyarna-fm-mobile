@@ -8,13 +8,19 @@ export const TERMINAL_STATUSES: ReadonlySet<string> = new Set([
 ]);
 
 /** Statuses where the FM is working the ticket and can resolve it. */
-const ACTIONABLE_STATUSES: ReadonlySet<string> = new Set(['IN_PROGRESS', 'ASSIGNED', 'ESCALATED']);
+const ACTIONABLE_STATUSES: ReadonlySet<string> = new Set(['IN_PROGRESS', 'ESCALATED']);
 
-/** The web's status set plus NOT_ACTIONABLE and ESCALATED, in filter order. */
+/**
+ * Statuses bms-tms accepts on `PATCH {n}/assign` (anything else is
+ * `TMS_400_01`). The owner's rule (FM #110): the FM may assign or reassign
+ * these whoever holds them now.
+ */
+const ASSIGNABLE_STATUSES: ReadonlySet<string> = new Set(['OPEN', 'IN_PROGRESS', 'ESCALATED']);
+
+/** bms-tms ticket statuses, in filter order. There is no ASSIGNED status in BMS. */
 export const STATUS_FILTERS: readonly TicketStatusFilter[] = [
   'ALL',
   'OPEN',
-  'ASSIGNED',
   'IN_PROGRESS',
   'RESOLVED',
   'CLOSED',
@@ -24,7 +30,7 @@ export const STATUS_FILTERS: readonly TicketStatusFilter[] = [
 
 export const PRIORITY_CODES = ['LOW', 'MEDIUM', 'HIGH', 'URGENT'] as const;
 
-export type TicketActionKind = 'assign' | 'start' | 'takeAction' | 'terminal' | 'none';
+export type TicketActionKind = 'assign' | 'takeAction' | 'terminal' | 'none';
 
 export function isTerminalStatus(statusCode: string): boolean {
   return TERMINAL_STATUSES.has(statusCode.toUpperCase());
@@ -43,26 +49,26 @@ export function isAssignedTo(
 }
 
 /**
- * Which action bar a ticket gets (the web's rules):
- * - OPEN, unassigned            -> assign ("Assign to me")
- * - OPEN, assigned to me        -> start ("Start progress")
- * - OPEN, assigned to another   -> none (no bar)
- * - IN_PROGRESS/ASSIGNED/ESCALATED -> takeAction (Resolved / Not actionable)
- * - RESOLVED/CLOSED/NOT_ACTIONABLE -> terminal (read-only message)
- * - anything else               -> none
+ * Which action bar a ticket gets (owner's rules, FM #110):
+ * - OPEN, whoever holds it          -> assign (one-tap "Assign to me", or
+ *                                      "Start progress" when it is already
+ *                                      mine, plus the assignee picker)
+ * - IN_PROGRESS/ESCALATED           -> takeAction (Resolved / Not actionable);
+ *                                      `canAssign` adds Reassign
+ * - RESOLVED/CLOSED/NOT_ACTIONABLE  -> terminal (read-only message)
+ * - anything else                   -> none
  */
-export function getTicketAction(
-  ticket: Pick<FmTicket, 'statusCode' | 'assignedTo' | 'assignedToId'>,
-  userId: string | null,
-): TicketActionKind {
+export function getTicketAction(ticket: Pick<FmTicket, 'statusCode'>): TicketActionKind {
   const status = ticket.statusCode.toUpperCase();
   if (TERMINAL_STATUSES.has(status)) return 'terminal';
+  if (status === 'OPEN') return 'assign';
   if (ACTIONABLE_STATUSES.has(status)) return 'takeAction';
-  if (status === 'OPEN') {
-    if (isUnassigned(ticket)) return 'assign';
-    return isAssignedTo(ticket, userId) ? 'start' : 'none';
-  }
   return 'none';
+}
+
+/** Whether the assign / reassign picker is offered: OPEN, IN_PROGRESS, ESCALATED. */
+export function canAssign(ticket: Pick<FmTicket, 'statusCode'>): boolean {
+  return ASSIGNABLE_STATUSES.has(ticket.statusCode.toUpperCase());
 }
 
 /** The amber "assignment needed" notice: OPEN and nobody on it. */

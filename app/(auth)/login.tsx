@@ -22,6 +22,7 @@ import {
   HapticPressable,
   Icons,
   Input,
+  LanguageToggle,
   Logo,
   Screen,
   RTL_INLINE,
@@ -110,6 +111,7 @@ export default function LoginScreen(): React.JSX.Element {
 
   return (
     <Screen scrollable testID="fm-login-screen" contentStyle={styles.content}>
+      <LanguageToggle testID="login-language" style={styles.languageToggle} />
       <View style={styles.logoSlot}>
         <Logo size={96} />
       </View>
@@ -248,6 +250,9 @@ const styles = StyleSheet.create((theme) => ({
     paddingHorizontal: theme.spacing[24],
     paddingVertical: theme.spacing[32],
   },
+  // Top-end: flex-end follows the root direction, so it sits right in EN and
+  // left in AR.
+  languageToggle: { alignSelf: 'flex-end', marginBottom: theme.spacing[16] },
   logoSlot: { alignItems: 'center', marginBottom: theme.spacing[24] },
   title: {
     fontSize: theme.type.display.lg.size,

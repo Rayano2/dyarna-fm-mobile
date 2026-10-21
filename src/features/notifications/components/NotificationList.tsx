@@ -23,7 +23,13 @@ const SKELETON_ROWS = [0, 1, 2, 3, 4, 5];
  * The inbox body: a "Mark all read" + unread-count row, then the paged list.
  * Ported from dyarna-rn; FM routes and a toast when marking one row fails.
  */
-export function NotificationList(): React.JSX.Element {
+export interface NotificationListProps {
+  /** Bottom padding that clears the tab bar: pass `useTabBarClearance()`.
+   *  A prop, not a direct import, because shell already imports this feature. */
+  bottomClearance: number;
+}
+
+export function NotificationList({ bottomClearance }: NotificationListProps): React.JSX.Element {
   const { t } = useTranslation();
   const { theme } = useUnistyles();
   const push = useToastStore((s) => s.push);
@@ -165,7 +171,7 @@ export function NotificationList(): React.JSX.Element {
         empty={empty}
         refreshing={isRefetching}
         onRefresh={refetch}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={[styles.listContent, { paddingBottom: bottomClearance }]}
         fetchNextPage={fetchNextPage}
         hasNextPage={hasNextPage}
         isFetchingNextPage={isFetchingNextPage}
@@ -194,8 +200,6 @@ const styles = StyleSheet.create((theme) => ({
   listContent: {
     paddingHorizontal: theme.spacing[16],
     paddingTop: theme.spacing[4],
-    // Clears the absolutely positioned tab bar.
-    paddingBottom: theme.spacing[96],
     gap: theme.spacing[12],
   },
   skeletonList: {

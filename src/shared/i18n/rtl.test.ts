@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { DevSettings } from 'react-native';
 import * as Updates from 'expo-updates';
-import { reloadForRTL } from './rtl';
+import { layoutDirectionFor, reloadForRTL } from './rtl';
 
 const updatesState = vi.hoisted(() => ({ enabled: false }));
 
@@ -60,5 +60,14 @@ describe('reloadForRTL', () => {
 
     await expect(reloadForRTL()).resolves.toBe(true);
     expect(DevSettings.reload).toHaveBeenCalledWith('RTL direction changed');
+  });
+});
+
+describe('layoutDirectionFor', () => {
+  // FM #110 item 2: the root (and every Modal root) gets this as its Yoga
+  // `direction`, so Arabic lays out RTL without the reload forceRTL needs.
+  it('is rtl for Arabic and ltr for English', () => {
+    expect(layoutDirectionFor('ar')).toBe('rtl');
+    expect(layoutDirectionFor('en')).toBe('ltr');
   });
 });

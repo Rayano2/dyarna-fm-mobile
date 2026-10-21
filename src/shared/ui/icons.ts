@@ -93,4 +93,7 @@ export {
   Ticket,
   UserPlus,
   ListChecks,
+  // Radio marks for single-choice pickers (assignee sheet).
+  CircleIcon as Circle,
+  RadioButton,
 } from 'phosphor-react-native';

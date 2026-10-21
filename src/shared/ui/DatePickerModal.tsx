@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { Modal, Platform, Pressable, Text } from 'react-native';
 import DateTimePicker, { type DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { StyleSheet } from 'react-native-unistyles';
+import { useLayoutDirection } from '@/shared/hooks/useLayoutDirection';
 import { HapticPressable } from './HapticPressable';
 import { resolvePickerMode } from './date-picker-mode';
 
@@ -49,6 +50,7 @@ export function DatePickerModal({
   doneLabel,
   variant = 'centered',
 }: DatePickerModalProps) {
+  const direction = useLayoutDirection();
   // Memoized: this identity sits in the Android picker's effect dep array, so a
   // fresh arrow each render re-fires DateTimePickerAndroid.open() on a dialog
   // that is already showing.
@@ -70,7 +72,12 @@ export function DatePickerModal({
   const isSheet = variant === 'sheet';
   return (
     <Modal visible transparent animationType="fade" onRequestClose={onClose}>
-      <Pressable style={isSheet ? styles.backdropSheet : styles.backdropCentered} onPress={onClose}>
+      {/* Same `direction` as the app root: a Modal is its own native root and
+          does not inherit it. */}
+      <Pressable
+        style={[isSheet ? styles.backdropSheet : styles.backdropCentered, { direction }]}
+        onPress={onClose}
+      >
         {/* Inner pressable swallows taps so the user can interact with the
             picker without dismissing the modal. */}
         <Pressable

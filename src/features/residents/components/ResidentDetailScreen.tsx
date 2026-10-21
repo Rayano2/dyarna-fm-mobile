@@ -3,7 +3,7 @@ import { Linking, ScrollView, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { router, useLocalSearchParams } from 'expo-router';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import { ShellHeader } from '@/features/shell';
+import { ShellHeader, useTabBarClearance } from '@/features/shell';
 import { useQueryErrorToast } from '@/shared/hooks/useQueryErrorToast';
 import { formatRelativeTime } from '@/shared/lib/format-relative-time';
 import { safeToLocaleDateString } from '@/shared/lib/safe-intl';
@@ -59,6 +59,7 @@ function Field({ label, value, ltr = false }: FieldProps): React.JSX.Element {
 }
 
 export function ResidentDetailScreen(): React.JSX.Element {
+  const tabBarClearance = useTabBarClearance();
   const { t, i18n } = useTranslation();
   const { theme } = useUnistyles();
   const rtlText = useRtlTextStyle();
@@ -223,7 +224,7 @@ export function ResidentDetailScreen(): React.JSX.Element {
     <Screen edges={[]} keyboardAvoiding={false} testID="fm-resident-detail-screen">
       <ShellHeader title={d?.fullName || t('fm.residents.title')} showBack showBell={false} />
       <View style={styles.flex}>{renderBody()}</View>
-      <View style={styles.footer}>{renderFooter()}</View>
+      <View style={[styles.footer, { paddingBottom: tabBarClearance }]}>{renderFooter()}</View>
       <OffboardSheet ref={sheet} target={target} onOffboarded={() => router.back()} />
     </Screen>
   );
@@ -265,7 +266,6 @@ const styles = StyleSheet.create((theme) => ({
   footer: {
     paddingHorizontal: theme.spacing[16],
     paddingTop: theme.spacing[12],
-    paddingBottom: theme.spacing[96],
     borderTopWidth: 1,
     borderTopColor: theme.colors.borderHairline,
     backgroundColor: theme.colors.bg,

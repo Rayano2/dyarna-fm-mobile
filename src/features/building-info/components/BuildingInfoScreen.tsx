@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { FlatList, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import { ShellHeader } from '@/features/shell';
+import { ShellHeader, useTabBarClearance } from '@/features/shell';
 import {
   ActionSheet,
   ProjectBuildingScope,
@@ -37,6 +37,7 @@ const FILTERS: BuildingInfoFilter[] = ['all', 'published', 'unpublished', 'expir
 const SKELETON_ROWS = [0, 1, 2, 3, 4];
 
 export function BuildingInfoScreen() {
+  const tabBarClearance = useTabBarClearance();
   const { t } = useTranslation();
   const { theme } = useUnistyles();
   const push = useToastStore((s) => s.push);
@@ -186,7 +187,7 @@ export function BuildingInfoScreen() {
   let body: React.ReactNode;
   if (list.isLoading) {
     body = (
-      <View style={styles.listContent}>
+      <View style={[styles.listContent, { paddingBottom: tabBarClearance }]}>
         {SKELETON_ROWS.map((i) => (
           <BuildingInfoRowSkeleton key={i} />
         ))}
@@ -219,7 +220,7 @@ export function BuildingInfoScreen() {
         keyboardShouldPersistTaps="handled"
         refreshing={list.isRefetching}
         onRefresh={() => void list.refetch()}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={[styles.listContent, { paddingBottom: tabBarClearance }]}
         ListEmptyComponent={
           filtered || buildingId ? (
             <EmptyState
@@ -273,10 +274,8 @@ const styles = StyleSheet.create((theme) => ({
   },
   center: { flex: 1, justifyContent: 'center' },
   controls: { gap: theme.spacing[8], marginBottom: theme.spacing[4] },
-  // Clears the absolutely positioned tab bar.
   listContent: {
     padding: theme.spacing[16],
-    paddingBottom: theme.spacing[96],
     gap: theme.spacing[12],
   },
 }));

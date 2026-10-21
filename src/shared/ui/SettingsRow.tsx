@@ -62,11 +62,7 @@ export function SettingsRow({
       ) : (
         <>
           {value ? (
-            <Text
-              style={[styles.value, isRTL ? styles.valueRtl : null]}
-              numberOfLines={1}
-              ellipsizeMode="tail"
-            >
+            <Text style={styles.value} numberOfLines={1} ellipsizeMode="tail">
               {value}
             </Text>
           ) : null}
@@ -117,13 +113,10 @@ const styles = StyleSheet.create((theme) => ({
     color: theme.colors.textMuted,
     flexShrink: 1,
     maxWidth: '50%',
+    // 'right' acts as END under the RTL root (RN swaps left/right text
+    // alignment by layout direction), so the value hugs the outer edge in
+    // both directions. A separate RTL 'left' override would flip it inward.
     textAlign: 'right',
-  },
-  // In RTL the value sits visually on the left side of the row, so the
-  // hardcoded right-align would pull it inward. Flip to left-align so the
-  // value still hugs the outer edge.
-  valueRtl: {
-    textAlign: 'left',
   },
   trailingSlot: {
     flexShrink: 0,

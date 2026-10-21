@@ -118,7 +118,9 @@ export function toFacilityPayload(values: FacilityFormValues, projectId: string)
     capacity: values.capacity,
     projectId: Number(projectId),
     buildingId: values.buildingId === null ? null : Number(values.buildingId),
-    requiresApproval: values.requiresApproval,
+    // Every booking needs approval: Community forces it server-side (FM #110),
+    // so the form no longer offers a choice and always sends true.
+    requiresApproval: true,
     advanceBookingDays: values.advanceBookingDays,
     maxDurationHours: values.maxDurationHours,
   };

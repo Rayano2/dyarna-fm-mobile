@@ -72,6 +72,12 @@ describe('facility form (zod)', () => {
     });
   });
 
+  it('always sends requiresApproval: true, even for a legacy auto-approve facility', () => {
+    // Community forces approval on every booking (FM #110); the form has no switch.
+    const values = facilityFormSchema.parse({ ...valid, requiresApproval: false });
+    expect(toFacilityPayload(values, '7').requiresApproval).toBe(true);
+  });
+
   it('rejects 0 and 366 days while the limit is on', () => {
     for (const days of ['0', '366', '', 'abc']) {
       const r = facilityFormSchema.safeParse({ ...valid, advanceBookingDays: days });

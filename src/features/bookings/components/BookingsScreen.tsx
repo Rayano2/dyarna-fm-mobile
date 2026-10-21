@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import { ShellHeader } from '@/features/shell';
+import { ShellHeader, useTabBarClearance } from '@/features/shell';
 import { ProjectBuildingScope, ScopeGate, useScope } from '@/features/scope';
 import { useLocaleStore } from '@/shared/stores/localeStore';
 import { useToastStore } from '@/shared/stores/toastStore';
@@ -65,7 +65,11 @@ export function BookingsScreen() {
   const push = useToastStore((s) => s.push);
   const params = useLocalSearchParams<{ status?: string }>();
   const scope = useScope();
-  const { projectId, buildingId } = scope;
+  // No buildingId on the list queries, matching the web: facilities with a
+  // NULL building_id were excluded whenever a shared building scope was
+  // persisted, so filters returned nothing (FM #110 item 6).
+  const { projectId } = scope;
+  const tabBarClearance = useTabBarClearance();
 
   const [view, setView] = useState<View_>('agenda');
   const [status, setStatus] = useState<StatusFilter>(DEFAULT_STATUS);
@@ -89,7 +93,6 @@ export function BookingsScreen() {
     projectId && view === 'agenda'
       ? {
           projectId,
-          buildingId,
           status: statusParam,
           from: range.from ? fromParam(range.from) : undefined,
           to: range.to ? toParam(range.to) : undefined,
@@ -100,7 +103,7 @@ export function BookingsScreen() {
   const days = useMemo(() => weekDays(anchor, firstDay), [anchor, firstDay]);
   const weekQuery: BookingQuery | undefined =
     projectId && view === 'week'
-      ? { projectId, buildingId, status: statusParam, ...weekFetchRange(anchor, firstDay) }
+      ? { projectId, status: statusParam, ...weekFetchRange(anchor, firstDay) }
       : undefined;
 
   const agenda = useBookingsAgenda(agendaQuery);
@@ -166,12 +169,11 @@ export function BookingsScreen() {
   const clearFilters = (): void => {
     setStatus('ALL');
     setRange({ from: null, to: null });
-    scope.setBuilding(null);
     setSelectedDay(null);
   };
 
-  const isDefaultQueue = status === DEFAULT_STATUS && !hasRange && !buildingId;
-  const isUnfiltered = status === 'ALL' && !hasRange && !buildingId;
+  const isDefaultQueue = status === DEFAULT_STATUS && !hasRange;
+  const isUnfiltered = status === 'ALL' && !hasRange;
   const empty = isDefaultQueue ? (
     <EmptyState title={t('fm.bookings.queueClear')} body={t('fm.bookings.queueClearBody')} />
   ) : isUnfiltered ? (
@@ -267,7 +269,7 @@ export function BookingsScreen() {
   let body: React.ReactNode;
   if (active.isLoading) {
     body = (
-      <View style={styles.padded}>
+      <View style={[styles.padded, { paddingBottom: tabBarClearance }]}>
         {header}
         <View style={styles.skeletons}>
           {SKELETON_ROWS.map((i) => (
@@ -278,7 +280,7 @@ export function BookingsScreen() {
     );
   } else if (active.isError && bookings.length === 0) {
     body = (
-      <View style={[styles.fill, styles.padded]}>
+      <View style={[styles.fill, styles.padded, { paddingBottom: tabBarClearance }]}>
         {header}
         <EmptyState
           title={t('common.error')}
@@ -311,7 +313,9 @@ export function BookingsScreen() {
   return (
     <Screen edges={[]} keyboardAvoiding={false} testID="fm-bookings-screen">
       <ShellHeader title={t('fm.bookings.title')} />
-      <ProjectBuildingScope scope={scope} trailing={filterButton} />
+      {/* Project only: bookings are not filtered by building (matching the web),
+          so a building picker here would suggest a filter that does nothing. */}
+      <ProjectBuildingScope scope={scope} showBuilding={false} trailing={filterButton} />
       <ScopeGate scope={scope}>{body}</ScopeGate>
 
       <BookingDetailSheet
