@@ -62,6 +62,10 @@ export const queryKeys = {
     presidentRecentTickets: ['tms', 'tickets', 'president', 'recent'] as const,
     ticketDetail: (ticketNumber: string | undefined) =>
       ['tms', 'tickets', 'detail', ticketNumber] as const,
+    /** People the FM may assign a ticket to. Under the `tickets` prefix, so a
+     *  ticket-wide invalidation refreshes it too. */
+    ticketAssignable: (ticketNumber: string | undefined) =>
+      ['tms', 'tickets', ticketNumber, 'assignable'] as const,
     ticketRating: (ticketNumber: string | undefined) =>
       ['tms', 'tickets', 'rating', ticketNumber] as const,
     ticketCategories: ['tms', 'ticket-categories'] as const,

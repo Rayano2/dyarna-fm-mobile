@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getTicketAction, needsAssignment } from './ticket-status';
+import { canAssign, getTicketAction, needsAssignment } from './ticket-status';
 
 const ME = 'user-me';
 const OTHER = 'user-other';
@@ -9,41 +9,49 @@ function ticket(statusCode: string, assignedToId: string | null = null) {
 }
 
 describe('getTicketAction (action-bar visibility)', () => {
-  it('OPEN and unassigned -> Assign to me', () => {
-    expect(getTicketAction(ticket('OPEN'), ME)).toBe('assign');
+  it('OPEN and unassigned -> assign', () => {
+    expect(getTicketAction(ticket('OPEN'))).toBe('assign');
   });
 
-  it('OPEN and assigned to me -> Start progress', () => {
-    expect(getTicketAction(ticket('OPEN', ME), ME)).toBe('start');
+  it('OPEN and assigned to someone else -> assign (owner rule, FM #110)', () => {
+    // Was 'none' before: the FM could not take over a colleague's OPEN ticket.
+    expect(getTicketAction(ticket('OPEN', OTHER))).toBe('assign');
+    const nameOnly = { statusCode: 'OPEN', assignedTo: 'Ali', assignedToId: null };
+    expect(getTicketAction(nameOnly)).toBe('assign');
   });
 
-  it('OPEN and assigned to someone else -> no bar', () => {
-    expect(getTicketAction(ticket('OPEN', OTHER), ME)).toBe('none');
-  });
-
-  it('OPEN with only an assignee name (no id) counts as assigned, not mine', () => {
-    expect(getTicketAction({ statusCode: 'OPEN', assignedTo: 'Ali', assignedToId: null }, ME)).toBe(
-      'none',
-    );
+  it('OPEN and assigned to me -> assign (the bar offers Start progress)', () => {
+    expect(getTicketAction(ticket('OPEN', ME))).toBe('assign');
   });
 
   it.each(['IN_PROGRESS', 'ASSIGNED', 'ESCALATED'])('%s -> Take action', (status) => {
-    expect(getTicketAction(ticket(status, OTHER), ME)).toBe('takeAction');
-    expect(getTicketAction(ticket(status), ME)).toBe('takeAction');
+    expect(getTicketAction(ticket(status, OTHER))).toBe('takeAction');
+    expect(getTicketAction(ticket(status))).toBe('takeAction');
   });
 
   it.each(['RESOLVED', 'CLOSED', 'NOT_ACTIONABLE'])('%s -> read-only message', (status) => {
-    expect(getTicketAction(ticket(status, ME), ME)).toBe('terminal');
+    expect(getTicketAction(ticket(status, ME))).toBe('terminal');
   });
 
   it('is case-insensitive and hides the bar for unknown statuses', () => {
-    expect(getTicketAction(ticket('resolved'), ME)).toBe('terminal');
-    expect(getTicketAction(ticket('SOMETHING_NEW'), ME)).toBe('none');
+    expect(getTicketAction(ticket('resolved'))).toBe('terminal');
+    expect(getTicketAction(ticket('open', OTHER))).toBe('assign');
+    expect(getTicketAction(ticket('SOMETHING_NEW'))).toBe('none');
+  });
+});
+
+describe('canAssign (assign / reassign picker)', () => {
+  it.each(['OPEN', 'IN_PROGRESS', 'ESCALATED', 'escalated'])('%s -> yes, whoever holds it', (s) => {
+    expect(canAssign(ticket(s, OTHER))).toBe(true);
+    expect(canAssign(ticket(s))).toBe(true);
   });
 
-  it('without a signed-in user id an assigned OPEN ticket gets no bar', () => {
-    expect(getTicketAction(ticket('OPEN', ME), null)).toBe('none');
-  });
+  it.each(['RESOLVED', 'CLOSED', 'NOT_ACTIONABLE', 'ASSIGNED', 'SOMETHING_NEW'])(
+    '%s -> no (bms-tms answers TMS_400_01)',
+    (s) => {
+      expect(canAssign(ticket(s, ME))).toBe(false);
+    },
+  );
 });
 
 describe('needsAssignment (amber notice)', () => {

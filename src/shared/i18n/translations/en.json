@@ -1818,6 +1818,29 @@
         "body": "Assign this ticket to start work"
       },
       "assignToMe": "Assign to me",
+      "assignToSomeoneElse": "Assign to someone else",
+      "reassign": "Reassign",
+      "assignee": {
+        "title": "Assign ticket",
+        "description": "Choose who handles {{number}}",
+        "me": "Me",
+        "nameUnavailable": "Name unavailable",
+        "current": "Current assignee",
+        "confirm": "Assign",
+        "empty": "No one else can be assigned this ticket",
+        "loadFailed": "Couldn't load the people you can assign",
+        "rowA11y": "{{name}}, {{role}}",
+        "rowA11yCurrent": "{{name}}, {{role}}, current assignee",
+        "role": {
+          "COMPANY_REP": "Company staff",
+          "PRESIDENT": "President"
+        },
+        "errors": {
+          "statusInvalid": "This ticket can't be assigned in its current status",
+          "notEligible": "That person can't be assigned this ticket",
+          "forbidden": "You don't have permission to assign tickets"
+        }
+      },
       "startProgress": "Start progress",
       "takeAction": "Take action",
       "markResolved": "Mark as resolved",
@@ -1842,6 +1865,7 @@
       },
       "toast": {
         "assigned": "Ticket assigned to you",
+        "reassigned": "Ticket assigned",
         "assignFailed": "Couldn't assign the ticket",
         "statusUpdated": "Ticket updated",
         "statusFailed": "Couldn't update the ticket"
@@ -1973,6 +1997,7 @@
       "capacityValue_many": "Capacity {{count}} people",
       "capacityValue_other": "Capacity {{count}} people",
       "requiresApproval": "Requires approval",
+      "approvalAlways": "Every booking needs your approval",
       "approvalAuto": "Auto-approved",
       "limitAdvance": "Limit advance booking",
       "advanceDays": "Days ahead",

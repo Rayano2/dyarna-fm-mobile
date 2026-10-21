@@ -22,7 +22,7 @@ import { useTicket } from '../hooks/useTicket';
 import { useTicketComments } from '../hooks/useTicketComments';
 import { useResolveTicket, useUpdateTicketStatus } from '../hooks/useUpdateTicketStatus';
 import { ltr } from '../lib/ltr';
-import { getTicketAction, needsAssignment } from '../lib/ticket-status';
+import { canAssign, getTicketAction, isAssignedTo, needsAssignment } from '../lib/ticket-status';
 import type { FmTicketDetail } from '../types';
 import { AttachmentsGallery } from './detail/AttachmentsGallery';
 import { CommentsSection } from './detail/CommentsSection';
@@ -30,6 +30,7 @@ import { DetailsBlock } from './detail/DetailsBlock';
 import { LoadingSkeleton } from './detail/LoadingSkeleton';
 import { TicketTimeline } from './detail/TicketTimeline';
 import { PriorityBadge } from './PriorityBadge';
+import { AssigneePickerSheet } from './AssigneePickerSheet';
 import { ResolveTicketSheet } from './ResolveTicketSheet';
 import { SlaChip, useSlaTickerWhileFocused } from './SlaChip';
 import { StatusBadge } from './StatusBadge';
@@ -122,6 +123,7 @@ function LoadedTicket({
   const assign = useAssignTicket(ticket.tktNumber);
   const start = useUpdateTicketStatus(ticket.tktNumber);
   const resolveSheet = useRef<BottomSheetRef>(null);
+  const assigneeSheet = useRef<BottomSheetRef>(null);
   const [resolution, setResolution] = useState<ResolutionStatus>('RESOLVED');
   const resolve = useResolveTicket(ticket.tktNumber, () => {
     // The hook already cleared the draft. Leaving the screen unmounts the
@@ -129,7 +131,7 @@ function LoadedTicket({
     router.back();
   });
 
-  const action = getTicketAction(ticket, userId);
+  const action = getTicketAction(ticket);
   const thread = comments.data ?? ticket.comments;
 
   return (
@@ -206,14 +208,30 @@ function LoadedTicket({
 
       <TicketActionBar
         action={action}
+        canAssign={canAssign(ticket)}
+        assignedToMe={isAssignedTo(ticket, userId)}
         assigning={assign.isPending}
         starting={start.isPending}
-        onAssign={() => assign.mutate()}
+        onAssignToMe={() => {
+          if (userId) assign.mutate(userId);
+        }}
+        onPickAssignee={() => assigneeSheet.current?.present()}
         onStart={() => start.mutate('IN_PROGRESS')}
         onResolve={(next) => {
           setResolution(next);
           resolveSheet.current?.present();
         }}
+      />
+
+      <AssigneePickerSheet
+        ref={assigneeSheet}
+        ticketNumber={ticket.tktNumber}
+        myId={userId}
+        currentAssigneeId={ticket.assignedToId}
+        submitting={assign.isPending}
+        onAssign={(next) =>
+          assign.mutate(next, { onSuccess: () => assigneeSheet.current?.dismiss() })
+        }
       />
 
       <ResolveTicketSheet

@@ -2,7 +2,7 @@ import { forwardRef, useEffect } from 'react';
 import { Text, View } from 'react-native';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet } from 'react-native-unistyles';
+import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { FieldLabel, zodFormResolver } from '@/features/scope';
 import type { FilterBuilding } from '@/shared/api/project-buildings-filter';
 import { useToastStore } from '@/shared/stores/toastStore';
@@ -12,6 +12,7 @@ import {
   Chip,
   ChipRow,
   FormTextArea,
+  Icons,
   Input,
   SwitchRow,
   showApiErrorToast,
@@ -50,6 +51,7 @@ export const FacilityFormSheet = forwardRef<BottomSheetRef, FacilityFormSheetPro
   function FacilityFormSheet({ projectId, buildings, editing, defaultBuildingId, openCount }, ref) {
     const { t } = useTranslation();
     const rtlText = useRtlTextStyle();
+    const { theme } = useUnistyles();
     const push = useToastStore((s) => s.push);
     const save = useSaveFacility();
     const form = useForm<FacilityFormInput, unknown, FacilityFormValues>({
@@ -222,17 +224,16 @@ export const FacilityFormSheet = forwardRef<BottomSheetRef, FacilityFormSheetPro
             )}
           />
 
-          <Controller
-            control={form.control}
-            name="requiresApproval"
-            render={({ field }) => (
-              <SwitchRow
-                label={t('fm.facilities.requiresApproval')}
-                value={field.value}
-                onValueChange={field.onChange}
-              />
-            )}
-          />
+          {/* Read-only: Community requires approval on every booking (FM #110). */}
+          <View
+            style={styles.infoRow}
+            accessible
+            accessibilityRole="text"
+            testID="facility-approval-info"
+          >
+            <Icons.Info size={18} color={theme.colors.textSecondary} weight="regular" />
+            <Text style={[styles.infoText, rtlText]}>{t('fm.facilities.approvalAlways')}</Text>
+          </View>
 
           <Controller
             control={form.control}
@@ -296,5 +297,16 @@ const styles = StyleSheet.create((theme) => ({
   },
   fields: { gap: theme.spacing[16] },
   group: { gap: theme.spacing[8] },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: theme.spacing[8],
+    minHeight: 44,
+  },
+  infoText: {
+    flex: 1,
+    fontSize: theme.type.body.md.size,
+    color: theme.colors.textSecondary,
+  },
   error: { fontSize: theme.type.body.sm.size, color: theme.colors.error },
 }));
