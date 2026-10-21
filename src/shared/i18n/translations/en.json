@@ -1823,7 +1823,8 @@
       "assignee": {
         "title": "Assign ticket",
         "description": "Choose who handles {{number}}",
-        "me": "Me",
+        "meSuffix": "(Me)",
+        "alreadyAssigned": "Already assigned to this person",
         "nameUnavailable": "Name unavailable",
         "current": "Current assignee",
         "confirm": "Assign",

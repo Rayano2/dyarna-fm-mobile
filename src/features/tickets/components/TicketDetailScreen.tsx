@@ -17,11 +17,14 @@ import {
   type BottomSheetRef,
 } from '@/shared/ui';
 import type { ResolutionStatus } from '../api/update-status';
+import { assignErrorKind } from '../api/assign-ticket';
+import { useAssignableUsers } from '../hooks/useAssignableUsers';
 import { useAssignTicket } from '../hooks/useAssignTicket';
 import { useTicket } from '../hooks/useTicket';
 import { useTicketComments } from '../hooks/useTicketComments';
 import { useResolveTicket, useUpdateTicketStatus } from '../hooks/useUpdateTicketStatus';
 import { ltr } from '../lib/ltr';
+import { isSelfAssignable } from '../lib/assignee-rows';
 import { canAssign, getTicketAction, isAssignedTo, needsAssignment } from '../lib/ticket-status';
 import type { FmTicketDetail } from '../types';
 import { AttachmentsGallery } from './detail/AttachmentsGallery';
@@ -119,6 +122,7 @@ function LoadedTicket({
   const { t } = useTranslation();
   const { theme } = useUnistyles();
   const userId = useAuthStore((s) => s.user?.id ?? null);
+  const userName = useAuthStore((s) => s.user?.name ?? null);
   const comments = useTicketComments(ticket.ticketId);
   const assign = useAssignTicket(ticket.tktNumber);
   const start = useUpdateTicketStatus(ticket.tktNumber);
@@ -132,6 +136,11 @@ function LoadedTicket({
   });
 
   const action = getTicketAction(ticket);
+  const assignable = canAssign(ticket);
+  // Fetched with the detail so the bar knows whether self-assign is allowed;
+  // the picker reads the same cache entry.
+  const assignees = useAssignableUsers(ticket.tktNumber, assignable);
+  const selfAssignable = isSelfAssignable(assignees.data, userId);
   const thread = comments.data ?? ticket.comments;
 
   return (
@@ -208,11 +217,13 @@ function LoadedTicket({
 
       <TicketActionBar
         action={action}
-        canAssign={canAssign(ticket)}
+        canAssign={assignable}
+        canSelfAssign={selfAssignable}
         assignedToMe={isAssignedTo(ticket, userId)}
         assigning={assign.isPending}
         starting={start.isPending}
         onAssignToMe={() => {
+          // Unreachable without an id: canSelfAssign requires one.
           if (userId) assign.mutate(userId);
         }}
         onPickAssignee={() => assigneeSheet.current?.present()}
@@ -227,10 +238,20 @@ function LoadedTicket({
         ref={assigneeSheet}
         ticketNumber={ticket.tktNumber}
         myId={userId}
+        myName={userName}
         currentAssigneeId={ticket.assignedToId}
         submitting={assign.isPending}
         onAssign={(next) =>
-          assign.mutate(next, { onSuccess: () => assigneeSheet.current?.dismiss() })
+          assign.mutate(next, {
+            onSuccess: () => assigneeSheet.current?.dismiss(),
+            onError: (error) => {
+              // The ticket is gone or no longer assignable: nothing left to pick.
+              const kind = assignErrorKind(error);
+              if (kind === 'statusInvalid' || kind === 'notFound') {
+                assigneeSheet.current?.dismiss();
+              }
+            },
+          })
         }
       />
 

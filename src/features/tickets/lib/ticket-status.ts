@@ -8,7 +8,7 @@ export const TERMINAL_STATUSES: ReadonlySet<string> = new Set([
 ]);
 
 /** Statuses where the FM is working the ticket and can resolve it. */
-const ACTIONABLE_STATUSES: ReadonlySet<string> = new Set(['IN_PROGRESS', 'ASSIGNED', 'ESCALATED']);
+const ACTIONABLE_STATUSES: ReadonlySet<string> = new Set(['IN_PROGRESS', 'ESCALATED']);
 
 /**
  * Statuses bms-tms accepts on `PATCH {n}/assign` (anything else is
@@ -17,11 +17,10 @@ const ACTIONABLE_STATUSES: ReadonlySet<string> = new Set(['IN_PROGRESS', 'ASSIGN
  */
 const ASSIGNABLE_STATUSES: ReadonlySet<string> = new Set(['OPEN', 'IN_PROGRESS', 'ESCALATED']);
 
-/** The web's status set plus NOT_ACTIONABLE and ESCALATED, in filter order. */
+/** bms-tms ticket statuses, in filter order. There is no ASSIGNED status in BMS. */
 export const STATUS_FILTERS: readonly TicketStatusFilter[] = [
   'ALL',
   'OPEN',
-  'ASSIGNED',
   'IN_PROGRESS',
   'RESOLVED',
   'CLOSED',
@@ -54,7 +53,7 @@ export function isAssignedTo(
  * - OPEN, whoever holds it          -> assign (one-tap "Assign to me", or
  *                                      "Start progress" when it is already
  *                                      mine, plus the assignee picker)
- * - IN_PROGRESS/ASSIGNED/ESCALATED  -> takeAction (Resolved / Not actionable);
+ * - IN_PROGRESS/ESCALATED           -> takeAction (Resolved / Not actionable);
  *                                      `canAssign` adds Reassign
  * - RESOLVED/CLOSED/NOT_ACTIONABLE  -> terminal (read-only message)
  * - anything else                   -> none

@@ -25,10 +25,10 @@ export function useAssignTicket(ticketNumber: string) {
 
   const refresh = async (): Promise<void> => {
     await Promise.all([
-      queryClient.invalidateQueries({ queryKey: queryKeys.tms.ticketDetail(ticketNumber) }),
-      queryClient.invalidateQueries({ queryKey: queryKeys.tms.ticketAssignable(ticketNumber) }),
-      // Prefix: every list (and the rest of the ticket caches).
+      // Prefix: detail, every list and the assignable users of this ticket.
       queryClient.invalidateQueries({ queryKey: queryKeys.tms.tickets }),
+      // Dashboard KPIs + top open tickets move with an assignment.
+      queryClient.invalidateQueries({ queryKey: queryKeys.bms.dashboardInfo }),
     ]);
   };
 

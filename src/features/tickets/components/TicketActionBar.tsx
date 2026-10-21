@@ -14,6 +14,8 @@ export interface TicketActionBarProps {
   canAssign: boolean;
   /** The ticket is already mine: OPEN shows Start progress instead of Assign to me. */
   assignedToMe: boolean;
+  /** assignable-users has loaded and lists me (and I have a user id). */
+  canSelfAssign: boolean;
   assigning: boolean;
   starting: boolean;
   /** One-tap self-assign. */
@@ -29,6 +31,7 @@ export function TicketActionBar({
   action,
   canAssign,
   assignedToMe,
+  canSelfAssign,
   assigning,
   starting,
   onAssignToMe,
@@ -48,9 +51,11 @@ export function TicketActionBar({
   let content: React.ReactNode;
   switch (action) {
     case 'assign': {
-      // OPEN, whoever holds it (owner rule, FM #110). Self stays one tap; when
-      // it is already mine that tap starts progress, as before.
-      content = (
+      // OPEN, whoever holds it (owner rule, FM #110). The one-tap self action
+      // shows only once assignable-users has confirmed I am eligible; until
+      // then (and if I am not) the picker is the only way in (review B1).
+      const pickLabel = t(assignedToMe ? 'fm.tickets.reassign' : 'fm.tickets.assignToSomeoneElse');
+      content = canSelfAssign ? (
         <View style={styles.choice}>
           {assignedToMe ? (
             <Button
@@ -72,7 +77,7 @@ export function TicketActionBar({
             />
           )}
           <Button
-            label={t(assignedToMe ? 'fm.tickets.reassign' : 'fm.tickets.assignToSomeoneElse')}
+            label={pickLabel}
             variant="ghost"
             fullWidth
             disabled={assigning || starting}
@@ -80,6 +85,15 @@ export function TicketActionBar({
             testID="fm-ticket-pick-assignee"
           />
         </View>
+      ) : (
+        <Button
+          label={pickLabel}
+          fullWidth
+          loading={assigning}
+          disabled={assigning}
+          onPress={onPickAssignee}
+          testID="fm-ticket-pick-assignee"
+        />
       );
       break;
     }

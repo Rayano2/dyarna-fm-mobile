@@ -1823,7 +1823,8 @@
       "assignee": {
         "title": "إسناد التذكرة",
         "description": "اختر من يتولى {{number}}",
-        "me": "أنا",
+        "meSuffix": "(أنا)",
+        "alreadyAssigned": "التذكرة مسندة إلى هذا الشخص بالفعل",
         "nameUnavailable": "الاسم غير متاح",
         "current": "المسؤول الحالي",
         "confirm": "إسناد",

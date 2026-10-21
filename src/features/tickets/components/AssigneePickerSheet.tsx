@@ -21,8 +21,10 @@ import { buildAssigneeRows, type AssigneeRow } from '../lib/assignee-rows';
 
 export interface AssigneePickerSheetProps {
   ticketNumber: string;
-  /** Signed-in FM (JWT `sub`), pinned first as "Me". */
+  /** Signed-in FM (JWT `sub`); pinned first as "(Me)" only if the server lists them. */
   myId: string | null;
+  /** The FM's display name, used when the server can't resolve their own. */
+  myName: string | null;
   /** From the ticket detail; backs up the server's `isCurrentAssignee`. */
   currentAssigneeId: string | null;
   submitting: boolean;
@@ -36,7 +38,7 @@ export interface AssigneePickerSheetProps {
  */
 export const AssigneePickerSheet = forwardRef<BottomSheetRef, AssigneePickerSheetProps>(
   function AssigneePickerSheet(
-    { ticketNumber, myId, currentAssigneeId, submitting, onAssign },
+    { ticketNumber, myId, myName, currentAssigneeId, submitting, onAssign },
     ref,
   ) {
     const { t } = useTranslation();
@@ -46,8 +48,8 @@ export const AssigneePickerSheet = forwardRef<BottomSheetRef, AssigneePickerShee
     const users = useAssignableUsers(ticketNumber, open);
 
     const rows = useMemo(
-      () => buildAssigneeRows(users.data ?? [], myId, currentAssigneeId),
-      [users.data, myId, currentAssigneeId],
+      () => buildAssigneeRows(users.data ?? [], myId, currentAssigneeId, myName),
+      [users.data, myId, currentAssigneeId, myName],
     );
     // A refetch can drop the chosen person; the selection must not outlive it.
     const selected = rows.find((r) => r.userId === selectedId) ?? null;
@@ -58,28 +60,40 @@ export const AssigneePickerSheet = forwardRef<BottomSheetRef, AssigneePickerShee
     };
 
     const footer = (
-      <View style={styles.footer}>
-        <View style={styles.footerButton}>
-          <Button
-            label={t('common.cancel')}
-            variant="ghost"
-            fullWidth
-            disabled={submitting}
-            onPress={dismiss}
-            testID="assignee-picker-cancel"
-          />
-        </View>
-        <View style={styles.footerButton}>
-          <Button
-            label={t('fm.tickets.assignee.confirm')}
-            fullWidth
-            loading={submitting}
-            disabled={!canConfirm}
-            onPress={() => {
-              if (selected) onAssign(selected.userId);
-            }}
-            testID="assignee-picker-confirm"
-          />
+      <View style={styles.footerWrap}>
+        {selected?.isCurrent ? (
+          // Why Assign is disabled: picking the current assignee changes nothing.
+          <Text
+            style={[styles.hint, rtlText]}
+            accessibilityLiveRegion="polite"
+            testID="assignee-picker-current-hint"
+          >
+            {t('fm.tickets.assignee.alreadyAssigned')}
+          </Text>
+        ) : null}
+        <View style={styles.footer}>
+          <View style={styles.footerButton}>
+            <Button
+              label={t('common.cancel')}
+              variant="ghost"
+              fullWidth
+              disabled={submitting}
+              onPress={dismiss}
+              testID="assignee-picker-cancel"
+            />
+          </View>
+          <View style={styles.footerButton}>
+            <Button
+              label={t('fm.tickets.assignee.confirm')}
+              fullWidth
+              loading={submitting}
+              disabled={!canConfirm}
+              onPress={() => {
+                if (selected) onAssign(selected.userId);
+              }}
+              testID="assignee-picker-confirm"
+            />
+          </View>
         </View>
       </View>
     );
@@ -95,8 +109,8 @@ export const AssigneePickerSheet = forwardRef<BottomSheetRef, AssigneePickerShee
     );
 
     const renderBody = (): React.ReactNode => {
-      const me = rows.find((r) => r.isMe);
-      const others = rows.filter((r) => !r.isMe);
+      // Rows (Me included) appear only once the list has loaded: whether I am
+      // assignable is the server's call (review B1).
       let rest: React.ReactNode;
       if (users.isLoading) {
         rest = (
@@ -124,14 +138,14 @@ export const AssigneePickerSheet = forwardRef<BottomSheetRef, AssigneePickerShee
             />
           </View>
         );
-      } else if (others.length === 0) {
+      } else if (rows.length === 0) {
         rest = (
           <View testID="assignee-picker-empty">
             <EmptyState title={t('fm.tickets.assignee.empty')} />
           </View>
         );
       } else {
-        rest = others.map((row) => renderRow(row));
+        rest = rows.map((row) => renderRow(row));
       }
       return (
         <View
@@ -139,7 +153,6 @@ export const AssigneePickerSheet = forwardRef<BottomSheetRef, AssigneePickerShee
           accessibilityRole="radiogroup"
           accessibilityLabel={t('fm.tickets.assignee.title')}
         >
-          {me ? renderRow(me) : null}
           {rest}
         </View>
       );
@@ -184,11 +197,11 @@ function AssigneeOption({ row, selected, disabled, onPress }: AssigneeOptionProp
   const { t } = useTranslation();
   const { theme } = useUnistyles();
   const isRtl = useIsRtl();
-  const name = row.isMe
-    ? t('fm.tickets.assignee.me')
-    : (row.fullName ?? t('fm.tickets.assignee.nameUnavailable'));
+  const baseName = row.fullName ?? t('fm.tickets.assignee.nameUnavailable');
+  const name = row.isMe ? `${baseName} ${t('fm.tickets.assignee.meSuffix')}` : baseName;
   const role = t(`fm.tickets.assignee.role.${row.role}`);
-  const avatarName = row.fullName ?? (row.isMe ? name : null);
+  // Real initials; an unnamed person gets the blank avatar, not initials of the fallback.
+  const avatarName = row.fullName;
   const a11yKey = row.isCurrent
     ? 'fm.tickets.assignee.rowA11yCurrent'
     : 'fm.tickets.assignee.rowA11y';
@@ -203,13 +216,12 @@ function AssigneeOption({ row, selected, disabled, onPress }: AssigneeOptionProp
       style={[styles.option, selected && styles.optionSelected, disabled && styles.optionDisabled]}
       testID={row.isMe ? 'assignee-option-me' : `assignee-option-${row.userId}`}
     >
-      {/* No initials from the fallback label: an unnamed person gets the blank avatar. */}
       <Avatar {...(avatarName ? { name: avatarName } : {})} size={36} />
       <View style={styles.optionText}>
         <Text
           style={[
             styles.optionName,
-            !row.isMe && row.fullName === null && styles.optionNameMissing,
+            row.fullName === null && styles.optionNameMissing,
             isRtl ? RTL_INLINE : null,
           ]}
           numberOfLines={1}
@@ -232,6 +244,14 @@ function AssigneeOption({ row, selected, disabled, onPress }: AssigneeOptionProp
           <Icons.CheckCircle size={22} color={theme.colors.primary} weight="fill" />
         </View>
       ) : null}
+      {/* Selection is a radio mark, not colour alone (review W5). */}
+      <View testID={`assignee-radio-${row.userId}${selected ? '-selected' : ''}`}>
+        {selected ? (
+          <Icons.RadioButton size={22} color={theme.colors.primary} weight="fill" />
+        ) : (
+          <Icons.Circle size={22} color={theme.colors.textMuted} weight="regular" />
+        )}
+      </View>
     </HapticPressable>
   );
 }
@@ -278,6 +298,7 @@ const styles = StyleSheet.create((theme) => ({
   optionNameMissing: { color: theme.colors.textMuted, fontStyle: 'italic' },
   optionMeta: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing[8] },
   currentText: { fontSize: theme.type.body.sm.size, color: theme.colors.textSecondary },
+  footerWrap: { gap: theme.spacing[8] },
   footer: { flexDirection: 'row', gap: theme.spacing[12] },
   footerButton: { flex: 1 },
 }));

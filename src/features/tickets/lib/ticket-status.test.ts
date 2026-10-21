@@ -24,7 +24,7 @@ describe('getTicketAction (action-bar visibility)', () => {
     expect(getTicketAction(ticket('OPEN', ME))).toBe('assign');
   });
 
-  it.each(['IN_PROGRESS', 'ASSIGNED', 'ESCALATED'])('%s -> Take action', (status) => {
+  it.each(['IN_PROGRESS', 'ESCALATED'])('%s -> Take action', (status) => {
     expect(getTicketAction(ticket(status, OTHER))).toBe('takeAction');
     expect(getTicketAction(ticket(status))).toBe('takeAction');
   });
@@ -46,7 +46,7 @@ describe('canAssign (assign / reassign picker)', () => {
     expect(canAssign(ticket(s))).toBe(true);
   });
 
-  it.each(['RESOLVED', 'CLOSED', 'NOT_ACTIONABLE', 'ASSIGNED', 'SOMETHING_NEW'])(
+  it.each(['RESOLVED', 'CLOSED', 'NOT_ACTIONABLE', 'SOMETHING_NEW'])(
     '%s -> no (bms-tms answers TMS_400_01)',
     (s) => {
       expect(canAssign(ticket(s, ME))).toBe(false);
