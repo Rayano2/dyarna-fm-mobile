@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { router } from 'expo-router';
 import { StyleSheet } from 'react-native-unistyles';
-import { ShellHeader, useOptionalTabBarHide } from '@/features/shell';
+import { ShellHeader, useOptionalTabBarHide, useTabBarClearance } from '@/features/shell';
 import { useProjectsBuildingsFilter } from '@/shared/hooks/useProjectsBuildingsFilter';
 import { useQueryErrorToast } from '@/shared/hooks/useQueryErrorToast';
 import {
@@ -37,6 +37,7 @@ function ResidentsSkeleton(): React.JSX.Element {
 }
 
 export function ResidentsScreen(): React.JSX.Element {
+  const tabBarClearance = useTabBarClearance();
   const { t } = useTranslation();
   const rtlText = useRtlTextStyle();
   const tabBar = useOptionalTabBarHide();
@@ -114,7 +115,7 @@ export function ResidentsScreen(): React.JSX.Element {
         empty={empty}
         refreshing={query.isRefetching && !query.isFetchingNextPage}
         onRefresh={() => void query.refetch()}
-        contentContainerStyle={styles.list}
+        contentContainerStyle={[styles.list, { paddingBottom: tabBarClearance }]}
         scrollHandler={tabBar?.scrollHandler}
         fetchNextPage={() => void query.fetchNextPage()}
         hasNextPage={query.hasNextPage}
@@ -144,7 +145,6 @@ const styles = StyleSheet.create((theme) => ({
   count: { fontSize: theme.type.body.sm.size, color: theme.colors.textSecondary },
   list: {
     paddingHorizontal: theme.spacing[16],
-    paddingBottom: theme.spacing[96],
     gap: theme.spacing[8],
   },
   skeletons: { paddingHorizontal: theme.spacing[16], gap: theme.spacing[8] },

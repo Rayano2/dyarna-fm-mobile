@@ -3,7 +3,7 @@ import { Text, View, type ListRenderItem } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
-import { ShellHeader, useOptionalTabBarHide } from '@/features/shell';
+import { ShellHeader, useOptionalTabBarHide, useTabBarClearance } from '@/features/shell';
 import { useProjectsBuildingsFilter } from '@/shared/hooks/useProjectsBuildingsFilter';
 import { useQueryErrorToast } from '@/shared/hooks/useQueryErrorToast';
 import { Button, EmptyState, PagedList, Screen, type BottomSheetRef } from '@/shared/ui';
@@ -32,6 +32,7 @@ export function ticketDetailHref(ticketNumber: string): string {
 }
 
 export function TicketsListScreen(): React.JSX.Element {
+  const tabBarClearance = useTabBarClearance();
   const { t } = useTranslation();
   const tabBar = useOptionalTabBarHide();
   useSlaTickerWhileFocused();
@@ -111,13 +112,13 @@ export function TicketsListScreen(): React.JSX.Element {
 
   const skeleton = useMemo(
     () => (
-      <View style={styles.listContent}>
+      <View style={[styles.listContent, { paddingBottom: tabBarClearance }]}>
         {SKELETON_ROWS.map((i) => (
           <TicketRowSkeleton key={i} />
         ))}
       </View>
     ),
-    [],
+    [tabBarClearance],
   );
 
   return (
@@ -152,7 +153,7 @@ export function TicketsListScreen(): React.JSX.Element {
           empty={empty}
           refreshing={list.isRefetching && !list.isFetchingNextPage}
           onRefresh={() => void list.refetch()}
-          contentContainerStyle={styles.listContent}
+          contentContainerStyle={[styles.listContent, { paddingBottom: tabBarClearance }]}
           scrollHandler={tabBar?.scrollHandler}
           // A failed page waits for the inline retry instead of re-firing on every scroll.
           fetchNextPage={list.isFetchNextPageError ? undefined : () => void fetchNextPage()}
@@ -183,8 +184,6 @@ const styles = StyleSheet.create((theme) => ({
     gap: theme.spacing[12],
     paddingHorizontal: theme.spacing[16],
     paddingTop: theme.spacing[4],
-    // Clears the absolutely positioned tab bar.
-    paddingBottom: theme.spacing[96],
   },
   footer: {
     alignItems: 'center',

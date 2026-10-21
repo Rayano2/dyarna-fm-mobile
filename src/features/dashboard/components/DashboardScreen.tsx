@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useQueryClient } from '@tanstack/react-query';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { useAuthStore } from '@/features/auth';
-import { ShellHeader } from '@/features/shell';
+import { ShellHeader, useTabBarClearance } from '@/features/shell';
 import { queryKeys } from '@/shared/api/query-keys';
 import { useQueryErrorToast } from '@/shared/hooks/useQueryErrorToast';
 import { FM_TICKETS } from '@/shared/lib/fm-routes';
@@ -19,6 +19,7 @@ import { RecentTicketRow } from './RecentTicketRow';
 const ROW_SKELETONS = [0, 1, 2];
 
 export function DashboardScreen(): React.JSX.Element {
+  const tabBarClearance = useTabBarClearance();
   const { t } = useTranslation();
   const { theme } = useUnistyles();
   const queryClient = useQueryClient();
@@ -50,7 +51,7 @@ export function DashboardScreen(): React.JSX.Element {
     <Screen edges={[]} keyboardAvoiding={false} testID="fm-index-screen">
       <ShellHeader title={t('fm.nav.dashboard')} subtitle={greeting} />
       <ScrollView
-        contentContainerStyle={styles.content}
+        contentContainerStyle={[styles.content, { paddingBottom: tabBarClearance }]}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={() => void onRefresh()} />
         }
@@ -140,7 +141,6 @@ export function DashboardScreen(): React.JSX.Element {
 const styles = StyleSheet.create((theme) => ({
   content: {
     paddingHorizontal: theme.spacing[16],
-    paddingBottom: theme.spacing[96],
     gap: theme.spacing[16],
   },
   welcome: {

@@ -2,15 +2,13 @@ import { ScrollView, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { LogoutRow, useAuthStore } from '@/features/auth';
-import { ShellHeader } from '@/features/shell';
-import { useLocaleStore } from '@/shared/stores/localeStore';
+import { ShellHeader, useTabBarClearance } from '@/features/shell';
 import { useThemeStore } from '@/shared/stores/themeStore';
-import type { SupportedLocale } from '@/shared/i18n';
 import {
   Avatar,
+  LanguageToggle,
   RTL_INLINE,
   Screen,
-  SegmentedPill,
   SwitchRow,
   useIsRtl,
   useRtlTextStyle,
@@ -20,12 +18,13 @@ import { CompanyLogoSection } from './CompanyLogoSection';
 import { SettingsSection } from './SettingsSection';
 
 export function SettingsScreen() {
+  const tabBarClearance = useTabBarClearance();
   const { t } = useTranslation();
   return (
     // ShellHeader owns the top inset and the absolute TabBar the bottom one.
     <Screen edges={[]} keyboardAvoiding={false} testID="fm-settings-screen">
       <ShellHeader title={t('fm.settings.title')} showBack />
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView contentContainerStyle={[styles.content, { paddingBottom: tabBarClearance }]}>
         <ProfileSection />
         <BuildingQrSection />
         <CompanyLogoSection />
@@ -68,8 +67,6 @@ function AppearanceSection() {
   const { theme } = useUnistyles();
   const isRtl = useIsRtl();
   const setMode = useThemeStore((s) => s.setMode);
-  const locale = useLocaleStore((s) => s.locale);
-  const setLocale = useLocaleStore((s) => s.setLocale);
   return (
     <SettingsSection title={t('fm.settings.appearanceTitle')} testID="settings-appearance">
       <SwitchRow
@@ -84,27 +81,15 @@ function AppearanceSection() {
         <Text style={[styles.languageLabel, isRtl ? RTL_INLINE : null]}>
           {t('fm.settings.language')}
         </Text>
-        <SegmentedPill<SupportedLocale>
-          options={[
-            { value: 'en', label: t('language.en') },
-            { value: 'ar', label: t('language.ar') },
-          ]}
-          value={locale}
-          onChange={(next) => {
-            if (next !== locale) void setLocale(next);
-          }}
-          testID="settings-language"
-        />
+        <LanguageToggle testID="settings-language" />
       </View>
     </SettingsSection>
   );
 }
 
 const styles = StyleSheet.create((theme) => ({
-  // paddingBottom clears the absolutely positioned tab bar.
   content: {
     padding: theme.spacing[16],
-    paddingBottom: theme.spacing[96],
     gap: theme.spacing[16],
   },
   profile: { flexDirection: 'row', alignItems: 'center', gap: theme.spacing[12] },

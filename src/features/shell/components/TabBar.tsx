@@ -5,6 +5,7 @@ import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { HapticPressable } from '@/shared/ui';
 import { useTabBarHide } from '../context/tab-bar-hide';
+import { TAB_BAR_BORDER_TOP, TAB_MIN_HEIGHT, tabBarBottomPadding } from '../lib/tab-bar-metrics';
 
 // Derived from expo-router's Tabs so the app needs no direct
 // @react-navigation/bottom-tabs dependency for one type.
@@ -48,7 +49,7 @@ export function TabBar({ state, descriptors, navigation, overflowTab }: TabBarPr
 
   return (
     <Animated.View
-      style={[styles.wrapper, animatedStyle, { paddingBottom: Math.max(insets.bottom, 8) }]}
+      style={[styles.wrapper, animatedStyle, { paddingBottom: tabBarBottomPadding(insets.bottom) }]}
       accessibilityRole="tablist"
     >
       {state.routes.map((route) => {
@@ -104,13 +105,14 @@ const styles = StyleSheet.create((theme) => ({
     bottom: 0,
     flexDirection: 'row',
     backgroundColor: theme.colors.bg,
-    borderTopWidth: 1,
+    borderTopWidth: TAB_BAR_BORDER_TOP,
     borderTopColor: theme.colors.borderHairline,
+    // Keep in sync with useTabBarClearance (it passes this same token).
     paddingTop: theme.spacing[8],
   },
   tab: {
     flex: 1,
-    minHeight: 44,
+    minHeight: TAB_MIN_HEIGHT,
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: theme.spacing[8],

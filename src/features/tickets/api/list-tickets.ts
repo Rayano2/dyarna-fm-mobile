@@ -10,18 +10,23 @@ export const TICKETS_PAGE_SIZE = 15;
  * (`TicketController.getAllTickets` -> `jwtUtil.getUserIdFromJwtToken()`), so
  * no `companyId` is sent: the endpoint has no such parameter.
  */
+/**
+ * A plain record, never a `URLSearchParams`: React Native's URLSearchParams
+ * polyfill can't be copy-constructed, so ky silently dropped every param when
+ * handed an instance (FM #110 item 4 -- filters were ignored on device).
+ */
 export function buildListSearchParams(
   filters: TicketListFilters,
   page: number,
   size: number = TICKETS_PAGE_SIZE,
-): URLSearchParams {
-  const params = new URLSearchParams({ page: String(page), size: String(size) });
-  if (filters.status !== 'ALL') params.set('status', filters.status);
-  params.set('sort', `${filters.sortField},${filters.sortDir}`);
+): Record<string, string | number> {
+  const params: Record<string, string | number> = { page, size };
+  if (filters.status !== 'ALL') params.status = filters.status;
+  params.sort = `${filters.sortField},${filters.sortDir}`;
   const ticketNo = filters.ticketNo.trim();
-  if (ticketNo) params.set('ticketNo', ticketNo);
-  if (filters.projectId !== null) params.set('projectId', String(filters.projectId));
-  if (filters.buildingCode) params.set('buildingCode', filters.buildingCode);
+  if (ticketNo) params.ticketNo = ticketNo;
+  if (filters.projectId !== null) params.projectId = filters.projectId;
+  if (filters.buildingCode) params.buildingCode = filters.buildingCode;
   return params;
 }
 

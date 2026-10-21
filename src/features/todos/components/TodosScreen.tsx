@@ -2,7 +2,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 import { RefreshControl, ScrollView, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import { ShellHeader } from '@/features/shell';
+import { ShellHeader, useTabBarClearance } from '@/features/shell';
 import { useQueryErrorToast } from '@/shared/hooks/useQueryErrorToast';
 import {
   Button,
@@ -34,6 +34,7 @@ function TodosSkeleton(): React.JSX.Element {
 }
 
 export function TodosScreen(): React.JSX.Element {
+  const tabBarClearance = useTabBarClearance();
   const { t } = useTranslation();
   const { theme } = useUnistyles();
   const rtlText = useRtlTextStyle();
@@ -154,7 +155,7 @@ export function TodosScreen(): React.JSX.Element {
         />
       </View>
       <ScrollView
-        contentContainerStyle={styles.scroll}
+        contentContainerStyle={[styles.scroll, { paddingBottom: tabBarClearance }]}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={() => void onRefresh()} />
         }
@@ -173,7 +174,7 @@ const styles = StyleSheet.create((theme) => ({
     paddingBottom: theme.spacing[12],
     gap: theme.spacing[12],
   },
-  scroll: { paddingBottom: theme.spacing[96], flexGrow: 1 },
+  scroll: { flexGrow: 1 },
   list: { paddingHorizontal: theme.spacing[16], gap: theme.spacing[12] },
   urgent: {
     gap: theme.spacing[8],

@@ -163,8 +163,6 @@
   },
   "language": {
     "restarting": "Language updated — restarting…",
-    "restartTitle": "Language updated",
-    "restartBody": "Please close and reopen the app to finish applying the new layout direction.",
     "toggle": "Switch language",
     "en": "EN",
     "ar": "AR"

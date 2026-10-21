@@ -3,7 +3,7 @@ import { FlatList, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import { ShellHeader } from '@/features/shell';
+import { ShellHeader, useTabBarClearance } from '@/features/shell';
 import { ProjectBuildingScope, ScopeGate, confirmAction, useScope } from '@/features/scope';
 import { useToastStore } from '@/shared/stores/toastStore';
 import {
@@ -25,6 +25,7 @@ import { FacilityFormSheet } from './FacilityFormSheet';
 const SKELETON_ROWS = [0, 1, 2, 3, 4];
 
 export function FacilitiesScreen() {
+  const tabBarClearance = useTabBarClearance();
   const { t } = useTranslation();
   const { theme } = useUnistyles();
   const rtlText = useRtlTextStyle();
@@ -118,7 +119,7 @@ export function FacilitiesScreen() {
   let body: React.ReactNode;
   if (list.isLoading) {
     body = (
-      <View style={styles.listContent}>
+      <View style={[styles.listContent, { paddingBottom: tabBarClearance }]}>
         {SKELETON_ROWS.map((i) => (
           <FacilityRowSkeleton key={i} />
         ))}
@@ -149,7 +150,7 @@ export function FacilitiesScreen() {
         )}
         refreshing={list.isRefetching}
         onRefresh={() => void list.refetch()}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={[styles.listContent, { paddingBottom: tabBarClearance }]}
         ListEmptyComponent={
           buildingId ? (
             <EmptyState
@@ -212,10 +213,8 @@ const styles = StyleSheet.create((theme) => ({
     justifyContent: 'center',
   },
   center: { flex: 1, justifyContent: 'center' },
-  // Clears the absolutely positioned tab bar.
   listContent: {
     padding: theme.spacing[16],
-    paddingBottom: theme.spacing[96],
     gap: theme.spacing[12],
   },
   result: { gap: theme.spacing[8], alignItems: 'flex-start' },

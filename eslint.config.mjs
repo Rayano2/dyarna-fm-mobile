@@ -41,8 +41,13 @@ export default [
       'no-restricted-syntax': [
         'error',
         {
-          selector: "Literal[value=/^#(?:[0-9a-fA-F]{3}){1,2}$/]",
+          selector: 'Literal[value=/^#(?:[0-9a-fA-F]{3}){1,2}$/]',
           message: 'Raw hex colors not allowed in components — use theme tokens.',
+        },
+        {
+          selector: "NewExpression[callee.name='URLSearchParams']",
+          message:
+            "Don't build ky searchParams with new URLSearchParams: React Native's polyfill can't be copy-constructed, so ky drops every param on device (FM #110: ticket filters ignored, status PATCH sent no status). Pass a plain Record<string, string | number> instead.",
         },
       ],
       // Feature boundary: only the barrel (src/features/<name>/index.ts) is

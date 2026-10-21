@@ -55,17 +55,20 @@ describe('setLocale', () => {
     expect(stored['dyarna.locale']).toBe('ar');
   });
 
-  it('applies the locale in-process and prompts when no reload is available', async () => {
+  it('applies the locale in-process, with no relaunch prompt, when no reload is available', async () => {
     // #34: release builds have no reload, so returning early left the app
-    // fully in English and snapped the toggle back.
+    // fully in English and snapped the toggle back. FM #110 item 2: RootLayout
+    // now flips the layout from `locale` in JS, so the old "close and reopen"
+    // alert has nothing left to ask for.
     vi.mocked(applyRTLIfNeeded).mockResolvedValue(true);
     vi.mocked(reloadForRTL).mockResolvedValue(false);
 
     await useLocaleStore.getState().setLocale('ar');
 
+    expect(applyRTLIfNeeded).toHaveBeenCalledWith('ar');
     expect(changeI18nLocale).toHaveBeenCalledWith('ar');
     expect(useLocaleStore.getState().locale).toBe('ar');
-    expect(Alert.alert).toHaveBeenCalledTimes(1);
+    expect(Alert.alert).not.toHaveBeenCalled();
   });
 
   it('swaps in-process without a prompt when the direction does not change', async () => {
@@ -93,13 +96,18 @@ describe('hydrate', () => {
     expect(stored['dyarna.locale.rtlReloadFor']).toBe('rtl');
   });
 
-  it('boots anyway when no reload is available', async () => {
+  it('boots a fresh Arabic device as ar (RTL root) when no reload is available', async () => {
+    // Release builds: no reload, native isRTL still false. The store must
+    // still hydrate with locale 'ar' — RootLayout derives `direction: 'rtl'`
+    // from it — and forceRTL is still requested for the next launch.
     vi.mocked(applyRTLIfNeeded).mockResolvedValue(true);
     vi.mocked(reloadForRTL).mockResolvedValue(false);
 
     await useLocaleStore.getState().hydrate();
 
+    expect(applyRTLIfNeeded).toHaveBeenCalledWith('ar');
     expect(useLocaleStore.getState()).toMatchObject({ locale: 'ar', hydrated: true });
+    expect(Alert.alert).not.toHaveBeenCalled();
   });
 
   it('never reloads twice for the same direction', async () => {

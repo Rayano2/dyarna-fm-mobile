@@ -43,6 +43,7 @@ export default function RootLayout(): React.JSX.Element | null {
   const hydrateLocale = useLocaleStore((s) => s.hydrate);
   const hydrateTheme = useThemeStore((s) => s.hydrate);
   const localeHydrated = useLocaleStore((s) => s.hydrated);
+  const locale = useLocaleStore((s) => s.locale);
   const themeHydrated = useThemeStore((s) => s.hydrated);
   const hydrateSession = useAuthStore((s) => s.hydrate);
   const sessionReady = useAuthStore((s) => s.status !== 'booting');
@@ -64,7 +65,13 @@ export default function RootLayout(): React.JSX.Element | null {
   if (!ready) return null;
 
   return (
-    <GestureHandlerRootView style={styles.root}>
+    // The layout direction is set here in JS, not only via I18nManager.forceRTL:
+    // forceRTL needs a reload and release builds have none (no expo-updates),
+    // so Arabic used to stay LTR until the user relaunched (FM #110 item 2).
+    // Yoga inherits `direction`, so the whole tree (rows, start/end, text
+    // alignment) flips in place. RN <Modal>s render in their own native root
+    // and do NOT inherit it.
+    <GestureHandlerRootView style={[styles.root, { direction: locale === 'ar' ? 'rtl' : 'ltr' }]}>
       <ErrorBoundary>
         <SafeAreaProvider>
           <QueryClientProvider client={queryClient}>

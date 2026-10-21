@@ -12,6 +12,7 @@ export { SettingsRow, type SettingsRowProps } from './SettingsRow';
 export { Logo } from './Logo';
 export { Loader } from './Loader';
 export { SegmentedPill, type SegmentedPillProps, type SegmentedOption } from './SegmentedPill';
+export { LanguageToggle, type LanguageToggleProps } from './LanguageToggle';
 export { Toast } from './Toast';
 export { ToastHost } from './ToastHost';
 export { showApiErrorToast, type ApiErrorToastOptions } from './error-toast';

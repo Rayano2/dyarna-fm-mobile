@@ -2,6 +2,7 @@ import { View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet } from 'react-native-unistyles';
 import { EmptyState, Screen } from '@/shared/ui';
+import { useTabBarClearance } from '../hooks/useTabBarClearance';
 import { ShellHeader } from './ShellHeader';
 
 export interface PlaceholderScreenProps {
@@ -24,6 +25,7 @@ export function PlaceholderScreen({
   testID,
 }: PlaceholderScreenProps): React.JSX.Element {
   const { t } = useTranslation();
+  const tabBarClearance = useTabBarClearance();
   return (
     // ShellHeader owns the top inset and the absolute TabBar the bottom one.
     <Screen edges={[]} keyboardAvoiding={false} {...(testID ? { testID } : {})}>
@@ -31,13 +33,11 @@ export function PlaceholderScreen({
       <View style={styles.body}>
         <EmptyState title={t('fm.placeholder.title')} body={t('fm.placeholder.body')} />
       </View>
-      {footer ? <View style={styles.footer}>{footer}</View> : null}
+      {footer ? <View style={{ paddingBottom: tabBarClearance }}>{footer}</View> : null}
     </Screen>
   );
 }
 
-const styles = StyleSheet.create((theme) => ({
+const styles = StyleSheet.create(() => ({
   body: { flex: 1, justifyContent: 'center' },
-  // Clears the absolutely positioned tab bar.
-  footer: { paddingBottom: theme.spacing[96] },
 }));

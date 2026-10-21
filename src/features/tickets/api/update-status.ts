@@ -13,9 +13,11 @@ export async function updateTicketStatus(
   status: string,
   repairCost?: number | null,
 ): Promise<void> {
-  const searchParams = new URLSearchParams({ status });
+  // Plain record: RN's URLSearchParams polyfill can't be copy-constructed by
+  // ky, so an instance sent no `status` at all (FM #110 item 8).
+  const searchParams: Record<string, string | number> = { status };
   if (repairCost !== null && repairCost !== undefined) {
-    searchParams.set('repairCost', String(repairCost));
+    searchParams.repairCost = repairCost;
   }
   await tmsClient.patch(ticketPaths.status(ticketNumber), { searchParams });
 }

@@ -3,7 +3,7 @@ import { RefreshControl, ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useLocalSearchParams } from 'expo-router';
 import { StyleSheet } from 'react-native-unistyles';
-import { ShellHeader } from '@/features/shell';
+import { ShellHeader, useTabBarClearance } from '@/features/shell';
 import { useQueryErrorToast } from '@/shared/hooks/useQueryErrorToast';
 import { Chip, ChipRow, EmptyState, Screen, Skeleton, type BottomSheetRef } from '@/shared/ui';
 import type { PropertyBuilding } from '../api/mappers';
@@ -19,6 +19,7 @@ const UNIT_FILTERS: readonly { value: UnitFilter; labelKey: string }[] = [
 ];
 
 export function ProjectDetailScreen(): React.JSX.Element {
+  const tabBarClearance = useTabBarClearance();
   const { t } = useTranslation();
   const params = useLocalSearchParams<{ projectId?: string }>();
   const query = usePropertiesList();
@@ -51,7 +52,7 @@ export function ProjectDetailScreen(): React.JSX.Element {
   const renderBody = (): React.ReactNode => {
     if (query.isLoading) {
       return (
-        <View style={styles.content}>
+        <View style={[styles.content, { paddingBottom: tabBarClearance }]}>
           {[0, 1, 2].map((i) => (
             <Skeleton key={i} height={140} radius={16} />
           ))}
@@ -69,7 +70,7 @@ export function ProjectDetailScreen(): React.JSX.Element {
     if (!project) return <EmptyState title={t('fm.properties.projectNotFound')} />;
     return (
       <ScrollView
-        contentContainerStyle={styles.content}
+        contentContainerStyle={[styles.content, { paddingBottom: tabBarClearance }]}
         refreshControl={
           <RefreshControl refreshing={query.isRefetching} onRefresh={() => void query.refetch()} />
         }
@@ -124,7 +125,6 @@ export function ProjectDetailScreen(): React.JSX.Element {
 const styles = StyleSheet.create((theme) => ({
   content: {
     paddingHorizontal: theme.spacing[16],
-    paddingBottom: theme.spacing[96],
     gap: theme.spacing[16],
   },
 }));

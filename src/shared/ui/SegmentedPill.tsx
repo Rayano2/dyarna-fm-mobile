@@ -16,6 +16,8 @@ export interface SegmentedPillProps<T extends string> {
    *  takes an equal share of the width. Default keeps the legacy compact
    *  flex-start sizing used by older callers. */
   fullWidth?: boolean;
+  /** Read after each segment's label, e.g. "EN, selected — Switch language". */
+  accessibilityHint?: string;
 }
 
 export function SegmentedPill<T extends string>({
@@ -24,6 +26,7 @@ export function SegmentedPill<T extends string>({
   onChange,
   testID,
   fullWidth,
+  accessibilityHint,
 }: SegmentedPillProps<T>) {
   return (
     <View style={[styles.container, fullWidth && styles.containerFull]} testID={testID}>
@@ -40,6 +43,7 @@ export function SegmentedPill<T extends string>({
             ]}
             accessibilityRole="button"
             accessibilityState={{ selected: isSelected }}
+            accessibilityHint={accessibilityHint}
             testID={testID ? `${testID}-${opt.value}` : undefined}
           >
             <Text style={[styles.label, isSelected && styles.labelSelected]}>{opt.label}</Text>

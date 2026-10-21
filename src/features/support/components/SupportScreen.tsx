@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Linking, ScrollView, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import { ShellHeader } from '@/features/shell';
+import { ShellHeader, useTabBarClearance } from '@/features/shell';
 import { ltr } from '@/shared/lib/bidi';
 import { useToastStore } from '@/shared/stores/toastStore';
 import {
@@ -30,6 +30,7 @@ const CHANNEL_ICONS: Record<SupportChannelId, typeof Icons.Envelope> = {
 };
 
 export function SupportScreen() {
+  const tabBarClearance = useTabBarClearance();
   const { t } = useTranslation();
   const { theme } = useUnistyles();
   const rtlText = useRtlTextStyle();
@@ -51,7 +52,7 @@ export function SupportScreen() {
     // ShellHeader owns the top inset and the absolute TabBar the bottom one.
     <Screen edges={[]} keyboardAvoiding={false} testID="fm-support-screen">
       <ShellHeader title={t('fm.support.title')} showBack />
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView contentContainerStyle={[styles.content, { paddingBottom: tabBarClearance }]}>
         {channels.length > 0 ? (
           <Card style={styles.card} testID="support-contact">
             <Text style={[styles.sectionTitle, rtlText]} accessibilityRole="header">
@@ -114,10 +115,8 @@ export function SupportScreen() {
 }
 
 const styles = StyleSheet.create((theme) => ({
-  // paddingBottom clears the absolutely positioned tab bar.
   content: {
     padding: theme.spacing[16],
-    paddingBottom: theme.spacing[96],
     gap: theme.spacing[16],
   },
   card: { gap: theme.spacing[8] },
