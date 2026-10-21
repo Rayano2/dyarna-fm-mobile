@@ -23,6 +23,7 @@ import Animated, {
   type SharedValue,
 } from 'react-native-reanimated';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
+import { useLayoutDirection } from '@/shared/hooks/useLayoutDirection';
 import type { ImageErrorEventData, ImageLoadEventData } from 'expo-image';
 import { CachedImage } from './CachedImage';
 import { HapticPressable } from './HapticPressable';
@@ -98,6 +99,7 @@ function ImageViewerContent({
   onRetry,
 }: Omit<ImageViewerProps, 'visible'>) {
   const { t } = useTranslation();
+  const direction = useLayoutDirection();
   const { theme } = useUnistyles();
   const insets = useSafeAreaInsets();
   const { width, height } = useWindowDimensions();
@@ -150,7 +152,9 @@ function ImageViewerContent({
       {/* A Modal is a separate native window on Android, outside the app-root
           GestureHandlerRootView (app/_layout.tsx) — context crosses that boundary,
           native touch interception does not. Without this every gesture below is inert. */}
-      <GestureHandlerRootView style={styles.gestureRoot}>
+      {/* Same `direction` as the app root: a Modal is its own native root and
+          does not inherit it. */}
+      <GestureHandlerRootView style={[styles.gestureRoot, { direction }]}>
         <View
           style={styles.root}
           accessibilityViewIsModal
@@ -159,7 +163,9 @@ function ImageViewerContent({
         >
           <Animated.View style={[styles.scrim, scrimStyle]} pointerEvents="none" />
 
-          <Animated.View style={[styles.pager, pagerStyle]}>
+          {/* The pager stays LTR: pageIndexFromOffset assumes page 0 at offset 0,
+              which an RTL horizontal list would invert. Only the chrome mirrors. */}
+          <Animated.View style={[styles.pager, styles.pagerLtr, pagerStyle]}>
             <FlatList
               data={images}
               keyExtractor={(uri, i) => `${uri}-${i}`}
@@ -514,6 +520,7 @@ function ZoomableImage({
 const styles = StyleSheet.create((theme) => ({
   root: { flex: 1 },
   gestureRoot: { flex: 1 },
+  pagerLtr: { direction: 'ltr' },
   scrim: {
     ...RNStyleSheet.absoluteFillObject,
     backgroundColor: theme.colors.scrim,

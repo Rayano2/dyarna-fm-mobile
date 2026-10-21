@@ -15,6 +15,7 @@ import { useAppFonts } from '@/shared/theme/fonts';
 import { i18n } from '@/shared/i18n';
 import { queryClient, wireAppFocus } from '@/shared/query';
 import { ErrorBoundary, ToastHost } from '@/shared/ui';
+import { useLayoutDirection } from '@/shared/hooks/useLayoutDirection';
 import { useLocaleStore } from '@/shared/stores/localeStore';
 import { useThemeStore } from '@/shared/stores/themeStore';
 import { useToastStore } from '@/shared/stores/toastStore';
@@ -43,7 +44,7 @@ export default function RootLayout(): React.JSX.Element | null {
   const hydrateLocale = useLocaleStore((s) => s.hydrate);
   const hydrateTheme = useThemeStore((s) => s.hydrate);
   const localeHydrated = useLocaleStore((s) => s.hydrated);
-  const locale = useLocaleStore((s) => s.locale);
+  const direction = useLayoutDirection();
   const themeHydrated = useThemeStore((s) => s.hydrated);
   const hydrateSession = useAuthStore((s) => s.hydrate);
   const sessionReady = useAuthStore((s) => s.status !== 'booting');
@@ -71,7 +72,7 @@ export default function RootLayout(): React.JSX.Element | null {
     // Yoga inherits `direction`, so the whole tree (rows, start/end, text
     // alignment) flips in place. RN <Modal>s render in their own native root
     // and do NOT inherit it.
-    <GestureHandlerRootView style={[styles.root, { direction: locale === 'ar' ? 'rtl' : 'ltr' }]}>
+    <GestureHandlerRootView style={[styles.root, { direction }]}>
       <ErrorBoundary>
         <SafeAreaProvider>
           <QueryClientProvider client={queryClient}>

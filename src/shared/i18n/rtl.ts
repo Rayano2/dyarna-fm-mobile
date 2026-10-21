@@ -6,6 +6,17 @@ export function isRTLLocale(locale: SupportedLocale): boolean {
   return locale === 'ar';
 }
 
+export type LayoutDirection = 'rtl' | 'ltr';
+
+/**
+ * The Yoga `direction` for a locale. Applied in JS on the app root and on
+ * every RN <Modal> root (a Modal is a separate native root and does not
+ * inherit it), so layout flips without the reload forceRTL needs (FM #110).
+ */
+export function layoutDirectionFor(locale: SupportedLocale): LayoutDirection {
+  return isRTLLocale(locale) ? 'rtl' : 'ltr';
+}
+
 export function isRTLActive(): boolean {
   return I18nManager.isRTL;
 }

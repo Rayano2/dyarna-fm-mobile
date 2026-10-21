@@ -169,7 +169,6 @@ export function BookingsScreen() {
   const clearFilters = (): void => {
     setStatus('ALL');
     setRange({ from: null, to: null });
-    scope.setBuilding(null);
     setSelectedDay(null);
   };
 
@@ -314,7 +313,9 @@ export function BookingsScreen() {
   return (
     <Screen edges={[]} keyboardAvoiding={false} testID="fm-bookings-screen">
       <ShellHeader title={t('fm.bookings.title')} />
-      <ProjectBuildingScope scope={scope} trailing={filterButton} />
+      {/* Project only: bookings are not filtered by building (matching the web),
+          so a building picker here would suggest a filter that does nothing. */}
+      <ProjectBuildingScope scope={scope} showBuilding={false} trailing={filterButton} />
       <ScopeGate scope={scope}>{body}</ScopeGate>
 
       <BookingDetailSheet
