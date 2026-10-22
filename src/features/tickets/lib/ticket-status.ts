@@ -117,3 +117,27 @@ export function getActionButtons(
   }
   return { primary: null, secondary: null };
 }
+
+/**
+ * "Assign to me" would take the ticket from someone else: OPEN, held, and not
+ * by me. Asks for confirmation first (W6); unassigned stays one tap.
+ */
+export function needsTakeOverConfirm(
+  ticket: Pick<FmTicket, 'statusCode' | 'assignedTo' | 'assignedToId'>,
+  myId: string | null,
+): boolean {
+  return getActionButtons(ticket, myId).primary === 'assignToMe' && !isUnassigned(ticket);
+}
+
+/**
+ * The current assignee's name for the take-over copy. `assignedTo` may carry
+ * a name or just the id; an id is no use to the FM, so that returns null and
+ * the copy falls back to "another team member".
+ */
+export function assigneeDisplayName(
+  ticket: Pick<FmTicket, 'assignedTo' | 'assignedToId'>,
+): string | null {
+  const name = ticket.assignedTo?.trim();
+  if (!name || name === ticket.assignedToId) return null;
+  return name;
+}

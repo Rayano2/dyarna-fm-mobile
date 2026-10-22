@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { canAssign, getActionButtons, getTicketAction, needsAssignment } from './ticket-status';
+import {
+  assigneeDisplayName,
+  canAssign,
+  getActionButtons,
+  getTicketAction,
+  needsAssignment,
+  needsTakeOverConfirm,
+} from './ticket-status';
 
 const ME = 'user-me';
 const OTHER = 'user-other';
@@ -111,5 +118,35 @@ describe('getActionButtons (FM web flow, FM #110 retest)', () => {
 
   it.each(['RESOLVED', 'CLOSED', 'NOT_ACTIONABLE', 'SOMETHING_NEW'])('%s -> no buttons', (s) => {
     expect(getActionButtons(ticket(s, ME), ME)).toEqual({ primary: null, secondary: null });
+  });
+});
+
+describe('needsTakeOverConfirm (W6)', () => {
+  it('asks before taking an OPEN ticket someone else holds', () => {
+    expect(needsTakeOverConfirm(ticket('OPEN', OTHER), ME)).toBe(true);
+    expect(
+      needsTakeOverConfirm({ statusCode: 'OPEN', assignedTo: 'Ali', assignedToId: null }, ME),
+    ).toBe(true);
+  });
+
+  it('keeps one-tap assign for unassigned, and never asks when mine or not OPEN', () => {
+    expect(needsTakeOverConfirm(ticket('OPEN'), ME)).toBe(false);
+    expect(needsTakeOverConfirm(ticket('OPEN', ME), ME)).toBe(false);
+    expect(needsTakeOverConfirm(ticket('IN_PROGRESS', OTHER), ME)).toBe(false);
+    expect(needsTakeOverConfirm(ticket('RESOLVED', OTHER), ME)).toBe(false);
+  });
+});
+
+describe('assigneeDisplayName', () => {
+  it('is the name when the server sends one', () => {
+    expect(assigneeDisplayName({ assignedTo: 'Ali Hassan', assignedToId: OTHER })).toBe(
+      'Ali Hassan',
+    );
+  });
+
+  it('is null (fallback copy) for an id-only, blank or missing assignee', () => {
+    expect(assigneeDisplayName({ assignedTo: OTHER, assignedToId: OTHER })).toBeNull();
+    expect(assigneeDisplayName({ assignedTo: '  ', assignedToId: OTHER })).toBeNull();
+    expect(assigneeDisplayName({ assignedTo: null, assignedToId: OTHER })).toBeNull();
   });
 });

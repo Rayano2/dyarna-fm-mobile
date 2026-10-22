@@ -23,7 +23,13 @@ import { useTicket } from '../hooks/useTicket';
 import { useTicketComments } from '../hooks/useTicketComments';
 import { useResolveTicket, useUpdateTicketStatus } from '../hooks/useUpdateTicketStatus';
 import { ltr } from '../lib/ltr';
-import { getActionButtons, getTicketAction, needsAssignment } from '../lib/ticket-status';
+import {
+  assigneeDisplayName,
+  getActionButtons,
+  getTicketAction,
+  needsAssignment,
+  needsTakeOverConfirm,
+} from '../lib/ticket-status';
 import type { FmTicketDetail } from '../types';
 import { AttachmentsGallery } from './detail/AttachmentsGallery';
 import { CommentsSection } from './detail/CommentsSection';
@@ -35,6 +41,7 @@ import { AssigneePickerSheet } from './AssigneePickerSheet';
 import { ResolveTicketSheet } from './ResolveTicketSheet';
 import { SlaChip, useSlaTickerWhileFocused } from './SlaChip';
 import { StatusBadge } from './StatusBadge';
+import { TakeOverSheet } from './TakeOverSheet';
 import { TicketActionBar } from './TicketActionBar';
 
 /** Far enough to slide the tab bar fully off-screen (its own hide offset is 80). */
@@ -126,6 +133,7 @@ function LoadedTicket({
   const start = useUpdateTicketStatus(ticket.tktNumber);
   const resolveSheet = useRef<BottomSheetRef>(null);
   const assigneeSheet = useRef<BottomSheetRef>(null);
+  const takeOverSheet = useRef<BottomSheetRef>(null);
   const [resolution, setResolution] = useState<ResolutionStatus>('RESOLVED');
   const resolve = useResolveTicket(ticket.tktNumber, () => {
     // The hook already cleared the draft. Leaving the screen unmounts the
@@ -222,6 +230,11 @@ function LoadedTicket({
         assigning={assign.isPending}
         starting={start.isPending}
         onAssignToMe={() => {
+          // Taking a colleague's ticket asks first; unassigned is one tap.
+          if (needsTakeOverConfirm(ticket, userId)) {
+            takeOverSheet.current?.present();
+            return;
+          }
           // PATCH /assign?userId=<me>; a failure toasts from useAssignTicket.
           // The signed-in FM always has an id; guard for the type only.
           if (userId) assign.mutate(userId);
@@ -231,6 +244,18 @@ function LoadedTicket({
         onResolve={(next) => {
           setResolution(next);
           resolveSheet.current?.present();
+        }}
+      />
+
+      <TakeOverSheet
+        ref={takeOverSheet}
+        assigneeName={assigneeDisplayName(ticket)}
+        submitting={assign.isPending}
+        onConfirm={() => {
+          if (!userId) return;
+          // Closes either way: on error the toast from useAssignTicket explains,
+          // and the refetched ticket shows who holds it now.
+          assign.mutate(userId, { onSettled: () => takeOverSheet.current?.dismiss() });
         }}
       />
 

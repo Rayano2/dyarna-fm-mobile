@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import {
+  clearanceDelta,
   isAtScrollEnd,
   isTabBarHidden,
   tabBarBottomPadding,
   tabBarClearance,
   tabBarHeight,
+  tabBarScrollAction,
 } from './tab-bar-metrics';
 
 describe('tab bar metrics', () => {
@@ -45,5 +47,45 @@ describe('tab bar clearance (FM #110 retest)', () => {
     expect(isAtScrollEnd(1000, 1800, 800)).toBe(true);
     expect(isAtScrollEnd(1020, 1800, 800)).toBe(true);
     expect(isAtScrollEnd(990, 1800, 800)).toBe(false);
+  });
+});
+
+describe('tabBarScrollAction (W2: no hide/show flicker on short lists)', () => {
+  const delta = clearanceDelta(24, 8); // 8 + 44 + 1 + 24 - 24 = 53
+  const VIEW = 800;
+  const at = (y: number, diff: number, contentHeight: number) =>
+    tabBarScrollAction({ y, diff, contentHeight, viewportHeight: VIEW, delta });
+
+  it('is the clearance shrink when the bar hides', () => {
+    expect(delta).toBe(53);
+    expect(tabBarClearance(24, 8, 16, false) - tabBarClearance(24, 8, 16, true)).toBe(delta);
+  });
+
+  it('hides on a scroll down on a long list', () => {
+    expect(at(300, 20, 3000)).toBe('hide');
+  });
+
+  it('does not hide near the top', () => {
+    expect(at(40, 20, 3000)).toBeNull();
+  });
+
+  it('never hides a list that can scroll by only MIN + delta or less (the flicker case)', () => {
+    // Range 100 <= 50 + 53: hiding would shrink it under 50 and clamp to the top.
+    expect(at(80, 20, VIEW + 100)).toBeNull();
+    expect(at(80, 20, VIEW + 50 + 53)).toBeNull();
+    expect(at(80, 20, VIEW + 50 + 54)).toBe('hide');
+  });
+
+  it('shows at the top and on a real scroll up', () => {
+    expect(at(0, -20, 3000)).toBe('show');
+    expect(at(-10, -5, VIEW + 20)).toBe('show');
+    expect(at(500, -20, 3000)).toBe('show');
+  });
+
+  it('ignores wiggles and the end-of-list clamp', () => {
+    expect(at(500, 2, 3000)).toBeNull();
+    expect(at(500, -3, 3000)).toBeNull();
+    // Offset pinned at max (3000 - 800) after the content shrank.
+    expect(at(2200, -53, 3000)).toBeNull();
   });
 });

@@ -1882,6 +1882,11 @@
         "filterButton_few": "تصفية، {{count}} عوامل نشطة",
         "filterButton_many": "تصفية، {{count}} عاملًا نشطًا",
         "filterButton_other": "تصفية، {{count}} عامل نشط"
+      },
+      "takeOver": {
+        "title": "تولّي هذه التذكرة؟",
+        "body": "مسندة حاليًا إلى {{name}}.",
+        "bodyUnknown": "مسندة حاليًا إلى عضو آخر في الفريق."
       }
     },
     "dashboard": {
@@ -2107,7 +2112,6 @@
       "showAll": "عرض الكل",
       "truncated": "عرض أول {{count}} حجز من هذا الأسبوع",
       "weekRange": "{{from}} – {{to}}",
-      "today": "اليوم",
       "weekdayShort": {
         "0": "أح",
         "1": "إث",
@@ -2116,7 +2120,9 @@
         "4": "خم",
         "5": "جم",
         "6": "سب"
-      }
+      },
+      "todayDayA11y": "{{day}}، اليوم",
+      "dayLoadingA11y": "{{day}}، جارٍ التحميل"
     },
     "buildingInfo": {
       "title": "معلومات المبنى",

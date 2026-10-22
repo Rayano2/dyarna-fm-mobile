@@ -7,17 +7,14 @@ import {
   withTiming,
   type SharedValue,
 } from 'react-native-reanimated';
-import { isAtScrollEnd, isTabBarHidden } from '../lib/tab-bar-metrics';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useUnistyles } from 'react-native-unistyles';
+import { clearanceDelta, isTabBarHidden, tabBarScrollAction } from '../lib/tab-bar-metrics';
 
 // How many vertical pixels the bar slides down to be fully off-screen. Set
 // at the height of the bar + safe-area; eyeballed at 80 which covers an
 // iPhone home indicator + 60-px-ish bar height without a measurement loop.
 const HIDDEN_OFFSET = 80;
-
-// Don't hide on tiny scroll wiggles or while still near the top of the list
-// (the user is "settling" the feed at this point, not committing to scroll).
-const MIN_SCROLL_TO_HIDE = 50;
-const SCROLL_DELTA_THRESHOLD = 4;
 
 interface TabBarHideValue {
   translateY: SharedValue<number>;
@@ -33,6 +30,9 @@ export function TabBarHideProvider({ children }: { children: ReactNode }) {
   const translateY = useSharedValue(0);
   const lastScrollY = useSharedValue(0);
   const [hidden, setHidden] = useState(false);
+  const { theme } = useUnistyles();
+  const insets = useSafeAreaInsets();
+  const delta = clearanceDelta(insets.bottom, theme.spacing[8]);
 
   // JS state flips once per transition (not per frame). Reads translateY, so
   // it also follows screens that move the bar directly (ticket detail).
@@ -49,21 +49,16 @@ export function TabBarHideProvider({ children }: { children: ReactNode }) {
       const diff = y - lastScrollY.value;
       lastScrollY.value = y;
 
-      // At the very top of the list, always show — protects against the
-      // bar staying hidden after pull-to-refresh.
-      if (y <= 0) {
-        translateY.value = withTiming(0, { duration: 180 });
-        return;
-      }
-      if (Math.abs(diff) < SCROLL_DELTA_THRESHOLD) return;
-      // Pinned at the end: the list clamped after the clearance shrank (or
-      // bounced). Not a scroll-up, so it must not re-show the bar.
-      if (diff < 0 && isAtScrollEnd(y, event.contentSize.height, event.layoutMeasurement.height)) {
-        return;
-      }
-      if (diff > 0 && y > MIN_SCROLL_TO_HIDE) {
+      const action = tabBarScrollAction({
+        y,
+        diff,
+        contentHeight: event.contentSize.height,
+        viewportHeight: event.layoutMeasurement.height,
+        delta,
+      });
+      if (action === 'hide') {
         translateY.value = withTiming(HIDDEN_OFFSET, { duration: 180 });
-      } else if (diff < 0) {
+      } else if (action === 'show') {
         translateY.value = withTiming(0, { duration: 180 });
       }
     },

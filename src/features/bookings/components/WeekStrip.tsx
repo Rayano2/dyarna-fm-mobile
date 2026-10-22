@@ -4,8 +4,7 @@ import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { useLocaleStore } from '@/shared/stores/localeStore';
 import { HapticPressable, Icons, useIsRtl } from '@/shared/ui';
 import { dayKey } from '../lib/booking-dates';
-import { formatDayHeader } from '../lib/format-booking-time';
-import { formatDayCount, formatWeekRange, weekdayShortKey } from '../lib/week-strip';
+import { dayA11yLabel, formatDayCount, formatWeekRange, weekdayShortKey } from '../lib/week-strip';
 
 /** Caps Dynamic Type inside the fixed-width cells so seven still fit a row. */
 const MAX_FONT_SCALE = 1.2;
@@ -77,14 +76,13 @@ export function WeekStrip({
           const isToday = key === todayKey;
           // dayKey is zero-padded YYYY-MM-DD, so string order is date order.
           const isPast = key < todayKey;
-          const dayLabel = t('fm.bookings.dayA11y', { day: formatDayHeader(day, locale), count });
           return (
             <HapticPressable
               key={key}
               onPress={() => onSelect(selected ? null : key)}
               disabled={loading}
               accessibilityRole="button"
-              accessibilityLabel={isToday ? `${dayLabel}, ${t('fm.bookings.today')}` : dayLabel}
+              accessibilityLabel={dayA11yLabel(day, locale, { count, isToday, loading }, t)}
               accessibilityState={{ selected, disabled: loading }}
               style={[
                 styles.day,

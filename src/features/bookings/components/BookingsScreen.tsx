@@ -14,6 +14,7 @@ import {
   EmptyState,
   HapticPressable,
   Icons,
+  RTL_INLINE,
   Screen,
   SegmentedPill,
   showApiErrorToast,
@@ -254,7 +255,9 @@ export function BookingsScreen() {
           ) : null}
           {status === 'ALL' ? null : (
             <View style={styles.notice} accessibilityLiveRegion="polite">
-              <Text style={[styles.noticeText, rtlText]}>
+              {/* RTL_INLINE, not rtlText: RTL_TEXT's alignSelf:'flex-start' pinned
+                  the text to the top of the row in Arabic (device retest). */}
+              <Text style={[styles.noticeText, rtlText ? RTL_INLINE : null]} numberOfLines={2}>
                 {t('fm.bookings.statusFilterNotice', { status: bookingStatusLabel(status, t) })}
               </Text>
               {/* Never shrinks: the copy gives way, so the button stays on one line. */}

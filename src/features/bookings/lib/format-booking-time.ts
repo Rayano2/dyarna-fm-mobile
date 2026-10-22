@@ -42,7 +42,17 @@ export function formatDate(date: Date, locale: 'en' | 'ar'): string {
   });
 }
 
-/** Week-strip range ends, e.g. "Oct 19". */
+/**
+ * Arabic with the Gregorian calendar and Latin digits: plain `ar-SA` defaults
+ * to the Umm al-Qura calendar and Arabic-Indic digits, which disagreed with
+ * the week-strip cells' `getDate()` numbers (device retest W1).
+ */
+const AR_GREGORIAN_LATN = 'ar-SA-u-ca-gregory-nu-latn';
+
+/** Week-strip range ends, e.g. "Oct 19" / "19 أكتوبر". */
 export function formatMonthDay(date: Date, locale: 'en' | 'ar'): string {
-  return safeToLocaleDateString(date, tag(locale), { month: 'short', day: 'numeric' });
+  return safeToLocaleDateString(date, locale === 'ar' ? AR_GREGORIAN_LATN : tag(locale), {
+    month: 'short',
+    day: 'numeric',
+  });
 }

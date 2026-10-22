@@ -1,5 +1,5 @@
 import type { TFunction } from 'i18next';
-import { formatMonthDay } from './format-booking-time';
+import { formatDayHeader, formatMonthDay } from './format-booking-time';
 
 /** Badges cap here; anything above shows as "99+". */
 export const MAX_DAY_COUNT = 99;
@@ -27,4 +27,23 @@ export function formatWeekRange(days: readonly Date[], locale: 'en' | 'ar', t: T
 /** Count badge text: the number up to 99, then "99+". */
 export function formatDayCount(count: number): string {
   return count > MAX_DAY_COUNT ? `${MAX_DAY_COUNT}+` : String(count);
+}
+
+/**
+ * A day cell's screen-reader label, built from whole i18n keys (no string
+ * concatenation, so each locale owns its punctuation): "today" goes inside the
+ * day part, and while the week loads a loading label replaces the count,
+ * which is not known yet.
+ */
+export function dayA11yLabel(
+  day: Date,
+  locale: 'en' | 'ar',
+  { count, isToday, loading }: { count: number; isToday: boolean; loading: boolean },
+  t: TFunction,
+): string {
+  const header = formatDayHeader(day, locale);
+  const dayPart = isToday ? t('fm.bookings.todayDayA11y', { day: header }) : header;
+  return loading
+    ? t('fm.bookings.dayLoadingA11y', { day: dayPart })
+    : t('fm.bookings.dayA11y', { day: dayPart, count });
 }
