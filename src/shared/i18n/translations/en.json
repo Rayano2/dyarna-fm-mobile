@@ -2104,8 +2104,19 @@
       "emptyFilter": "No bookings match",
       "empty": "No bookings yet",
       "statusFilterNotice": "Showing {{status}} only",
-      "showAll": "Show all statuses",
-      "truncated": "Showing the first {{count}} bookings of this week"
+      "showAll": "Show all",
+      "truncated": "Showing the first {{count}} bookings of this week",
+      "weekRange": "{{from}} – {{to}}",
+      "today": "Today",
+      "weekdayShort": {
+        "0": "Su",
+        "1": "Mo",
+        "2": "Tu",
+        "3": "We",
+        "4": "Th",
+        "5": "Fr",
+        "6": "Sa"
+      }
     },
     "buildingInfo": {
       "title": "Building info",

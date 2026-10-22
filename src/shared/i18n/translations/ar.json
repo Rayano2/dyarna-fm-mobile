@@ -2104,8 +2104,19 @@
       "emptyFilter": "لا حجوزات مطابقة",
       "empty": "لا حجوزات بعد",
       "statusFilterNotice": "عرض {{status}} فقط",
-      "showAll": "عرض كل الحالات",
-      "truncated": "عرض أول {{count}} حجز من هذا الأسبوع"
+      "showAll": "عرض الكل",
+      "truncated": "عرض أول {{count}} حجز من هذا الأسبوع",
+      "weekRange": "{{from}} – {{to}}",
+      "today": "اليوم",
+      "weekdayShort": {
+        "0": "أح",
+        "1": "إث",
+        "2": "ثل",
+        "3": "أر",
+        "4": "خم",
+        "5": "جم",
+        "6": "سب"
+      }
     },
     "buildingInfo": {
       "title": "معلومات المبنى",

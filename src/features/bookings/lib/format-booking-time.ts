@@ -42,6 +42,7 @@ export function formatDate(date: Date, locale: 'en' | 'ar'): string {
   });
 }
 
-export function formatWeekday(date: Date, locale: 'en' | 'ar'): string {
-  return safeToLocaleDateString(date, tag(locale), { weekday: 'short' });
+/** Week-strip range ends, e.g. "Oct 19". */
+export function formatMonthDay(date: Date, locale: 'en' | 'ar'): string {
+  return safeToLocaleDateString(date, tag(locale), { month: 'short', day: 'numeric' });
 }

@@ -217,13 +217,16 @@ export function BookingsScreen() {
         }}
         fullWidth
       />
-      <ChipRow>
+      {/* One horizontal scroll, bled out of the 16 gutter so chips scroll edge to edge. */}
+      <ChipRow style={styles.chipRow} contentStyle={styles.chipRowContent}>
         {STATUS_FILTERS.map((s) => (
           <Chip
             key={s}
             label={s === 'ALL' ? t('fm.bookings.status.all') : bookingStatusLabel(s, t)}
             selected={status === s}
             onPress={() => setStatus(s)}
+            numberOfLines={1}
+            scaleOnPress={1}
           />
         ))}
       </ChipRow>
@@ -234,6 +237,7 @@ export function BookingsScreen() {
             counts={counts}
             selectedKey={selectedDay}
             onSelect={setSelectedDay}
+            loading={week.isLoading}
             onPrev={() => {
               setAnchor((a) => addDays(a, -7));
               setSelectedDay(null);
@@ -249,16 +253,19 @@ export function BookingsScreen() {
             </Text>
           ) : null}
           {status === 'ALL' ? null : (
-            <View style={styles.notice}>
+            <View style={styles.notice} accessibilityLiveRegion="polite">
               <Text style={[styles.noticeText, rtlText]}>
                 {t('fm.bookings.statusFilterNotice', { status: bookingStatusLabel(status, t) })}
               </Text>
-              <Button
-                label={t('fm.bookings.showAll')}
-                variant="ghost"
-                size="sm"
-                onPress={() => setStatus('ALL')}
-              />
+              {/* Never shrinks: the copy gives way, so the button stays on one line. */}
+              <View style={styles.noticeAction}>
+                <Button
+                  label={t('fm.bookings.showAll')}
+                  variant="ghost"
+                  size="sm"
+                  onPress={() => setStatus('ALL')}
+                />
+              </View>
             </View>
           )}
         </>
@@ -352,14 +359,23 @@ const styles = StyleSheet.create((theme) => ({
   controls: { gap: theme.spacing[8], paddingBottom: theme.spacing[8] },
   padded: { paddingHorizontal: theme.spacing[16] },
   skeletons: { gap: theme.spacing[8] },
+  chipRow: { marginHorizontal: -theme.spacing[16] },
+  chipRowContent: { paddingHorizontal: theme.spacing[16] },
   notice: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     gap: theme.spacing[8],
-    paddingHorizontal: theme.spacing[12],
+    paddingVertical: theme.spacing[8],
+    paddingStart: theme.spacing[12],
+    paddingEnd: theme.spacing[4],
     borderRadius: theme.radius.md,
     backgroundColor: theme.colors.infoSubtle,
   },
-  noticeText: { flex: 1, fontSize: theme.type.body.sm.size, color: theme.colors.textPrimary },
+  noticeText: {
+    flex: 1,
+    flexShrink: 1,
+    fontSize: theme.type.body.sm.size,
+    color: theme.colors.textPrimary,
+  },
+  noticeAction: { flexShrink: 0 },
 }));
