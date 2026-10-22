@@ -51,6 +51,7 @@ export function DashboardScreen(): React.JSX.Element {
     <Screen edges={[]} keyboardAvoiding={false} testID="fm-index-screen">
       <ShellHeader title={t('fm.nav.dashboard')} subtitle={greeting} />
       <ScrollView
+        style={styles.fill}
         contentContainerStyle={[styles.content, { paddingBottom: tabBarClearance }]}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={() => void onRefresh()} />
@@ -139,6 +140,7 @@ export function DashboardScreen(): React.JSX.Element {
 }
 
 const styles = StyleSheet.create((theme) => ({
+  fill: { flex: 1 },
   content: {
     paddingHorizontal: theme.spacing[16],
     gap: theme.spacing[16],

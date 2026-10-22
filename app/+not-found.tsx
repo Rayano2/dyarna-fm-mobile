@@ -22,6 +22,6 @@ export default function NotFoundScreen(): React.JSX.Element {
   );
 }
 
-const styles = StyleSheet.create(() => ({
-  body: { flex: 1, justifyContent: 'center' },
+const styles = StyleSheet.create((theme) => ({
+  body: { flex: 1, justifyContent: 'center', paddingHorizontal: theme.spacing[24] },
 }));

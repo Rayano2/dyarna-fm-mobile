@@ -94,6 +94,7 @@ export function BookingAgendaList({
 
   return (
     <SectionList
+      style={styles.list}
       sections={sections}
       keyExtractor={(b) => b.id}
       renderItem={({ item }) => (
@@ -127,6 +128,7 @@ export function BookingRowSkeleton() {
 }
 
 const styles = StyleSheet.create((theme) => ({
+  list: { flex: 1 },
   content: { padding: theme.spacing[16], gap: theme.spacing[8] },
   dayHeader: {
     fontSize: theme.type.label.lg.size,

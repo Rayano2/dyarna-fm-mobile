@@ -205,6 +205,7 @@ export function BuildingInfoScreen() {
   } else {
     body = (
       <FlatList
+        style={styles.fill}
         data={items}
         keyExtractor={(i) => i.id}
         renderItem={({ item }) => (
@@ -264,6 +265,7 @@ export function BuildingInfoScreen() {
 }
 
 const styles = StyleSheet.create((theme) => ({
+  fill: { flex: 1 },
   add: {
     width: 44,
     height: 44,

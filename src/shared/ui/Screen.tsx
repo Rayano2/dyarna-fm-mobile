@@ -41,12 +41,15 @@ export function Screen({
   const inner = scrollable ? (
     <ScrollView
       keyboardShouldPersistTaps="handled"
-      contentContainerStyle={[styles.content, contentStyle]}
+      contentContainerStyle={[styles.scrollContent, contentStyle]}
       showsVerticalScrollIndicator={false}
     >
       {children}
     </ScrollView>
   ) : (
+    // Bounded to the screen (flex + minHeight 0) so a ScrollView/list child
+    // scrolls inside it instead of growing to its content height and pushing
+    // its end, and any sibling under it, below the screen (FM #110 retest).
     <View style={[styles.content, contentStyle]}>{children}</View>
   );
 
@@ -74,8 +77,13 @@ const styles = StyleSheet.create((theme) => ({
     flex: 1,
     backgroundColor: theme.colors.bg,
   },
+  // No horizontal padding: every screen sets its own gutter, and a shared one
+  // here doubled it (FM #110 retest).
   content: {
+    flex: 1,
+    minHeight: 0,
+  },
+  scrollContent: {
     flexGrow: 1,
-    paddingHorizontal: theme.spacing[24],
   },
 }));

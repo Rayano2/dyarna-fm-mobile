@@ -6,16 +6,12 @@ import { useTranslation } from 'react-i18next';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { Button, Icons } from '@/shared/ui';
 import type { ResolutionStatus } from '../api/update-status';
-import type { TicketActionKind } from '../lib/ticket-status';
+import type { TicketActionButtons, TicketActionKind } from '../lib/ticket-status';
 
 export interface TicketActionBarProps {
   action: TicketActionKind;
-  /** OPEN/IN_PROGRESS/ESCALATED (`canAssign`): offer the assignee picker. */
-  canAssign: boolean;
-  /** The ticket is already mine: OPEN shows Start progress instead of Assign to me. */
-  assignedToMe: boolean;
-  /** assignable-users has loaded and lists me (and I have a user id). */
-  canSelfAssign: boolean;
+  /** From `getActionButtons`: which primary / secondary buttons show. */
+  buttons: TicketActionButtons;
   assigning: boolean;
   starting: boolean;
   /** One-tap self-assign. */
@@ -26,12 +22,10 @@ export interface TicketActionBarProps {
   onResolve: (resolution: ResolutionStatus) => void;
 }
 
-/** Sticky bottom bar. Which buttons show is decided by `getTicketAction` (lib/ticket-status). */
+/** Sticky bottom bar. Which buttons show is decided by `getActionButtons` (lib/ticket-status). */
 export function TicketActionBar({
   action,
-  canAssign,
-  assignedToMe,
-  canSelfAssign,
+  buttons,
   assigning,
   starting,
   onAssignToMe,
@@ -51,13 +45,15 @@ export function TicketActionBar({
   let content: React.ReactNode;
   switch (action) {
     case 'assign': {
-      // OPEN, whoever holds it (owner rule, FM #110). The one-tap self action
-      // shows only once assignable-users has confirmed I am eligible; until
-      // then (and if I am not) the picker is the only way in (review B1).
-      const pickLabel = t(assignedToMe ? 'fm.tickets.reassign' : 'fm.tickets.assignToSomeoneElse');
-      content = canSelfAssign ? (
+      // OPEN (FM web flow): one-tap "Assign to me" — or "Start progress" once
+      // it is mine — always, never gated on assignable-users; the picker is
+      // the secondary ghost action and fetches that list only when opened.
+      const pickLabel = t(
+        buttons.secondary === 'reassign' ? 'fm.tickets.reassign' : 'fm.tickets.assignToSomeoneElse',
+      );
+      content = (
         <View style={styles.choice}>
-          {assignedToMe ? (
+          {buttons.primary === 'startProgress' ? (
             <Button
               label={t('fm.tickets.startProgress')}
               fullWidth
@@ -76,24 +72,17 @@ export function TicketActionBar({
               testID="fm-ticket-assign"
             />
           )}
-          <Button
-            label={pickLabel}
-            variant="ghost"
-            fullWidth
-            disabled={assigning || starting}
-            onPress={onPickAssignee}
-            testID="fm-ticket-pick-assignee"
-          />
+          {buttons.secondary ? (
+            <Button
+              label={pickLabel}
+              variant="ghost"
+              fullWidth
+              disabled={assigning || starting}
+              onPress={onPickAssignee}
+              testID="fm-ticket-pick-assignee"
+            />
+          ) : null}
         </View>
-      ) : (
-        <Button
-          label={pickLabel}
-          fullWidth
-          loading={assigning}
-          disabled={assigning}
-          onPress={onPickAssignee}
-          testID="fm-ticket-pick-assignee"
-        />
       );
       break;
     }
@@ -127,7 +116,7 @@ export function TicketActionBar({
             testID="fm-ticket-action-cancel"
           />
         </View>
-      ) : canAssign ? (
+      ) : buttons.secondary ? (
         <View style={styles.row}>
           <View style={styles.half}>
             <Button

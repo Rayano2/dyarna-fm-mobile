@@ -52,7 +52,10 @@ export function SupportScreen() {
     // ShellHeader owns the top inset and the absolute TabBar the bottom one.
     <Screen edges={[]} keyboardAvoiding={false} testID="fm-support-screen">
       <ShellHeader title={t('fm.support.title')} showBack />
-      <ScrollView contentContainerStyle={[styles.content, { paddingBottom: tabBarClearance }]}>
+      <ScrollView
+        style={styles.fill}
+        contentContainerStyle={[styles.content, { paddingBottom: tabBarClearance }]}
+      >
         {channels.length > 0 ? (
           <Card style={styles.card} testID="support-contact">
             <Text style={[styles.sectionTitle, rtlText]} accessibilityRole="header">
@@ -115,6 +118,7 @@ export function SupportScreen() {
 }
 
 const styles = StyleSheet.create((theme) => ({
+  fill: { flex: 1 },
   content: {
     padding: theme.spacing[16],
     gap: theme.spacing[16],

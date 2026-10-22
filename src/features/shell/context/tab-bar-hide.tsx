@@ -1,10 +1,13 @@
-import { createContext, useContext, useMemo, type ReactNode } from 'react';
+import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
 import {
+  runOnJS,
+  useAnimatedReaction,
   useAnimatedScrollHandler,
   useSharedValue,
   withTiming,
   type SharedValue,
 } from 'react-native-reanimated';
+import { isAtScrollEnd, isTabBarHidden } from '../lib/tab-bar-metrics';
 
 // How many vertical pixels the bar slides down to be fully off-screen. Set
 // at the height of the bar + safe-area; eyeballed at 80 which covers an
@@ -22,10 +25,23 @@ interface TabBarHideValue {
 }
 
 const TabBarHideContext = createContext<TabBarHideValue | null>(null);
+// Separate from the shared values so a hide/show flip re-renders only the
+// screens reading the clearance, not the bar or every scroll-handler host.
+const TabBarHiddenContext = createContext(false);
 
 export function TabBarHideProvider({ children }: { children: ReactNode }) {
   const translateY = useSharedValue(0);
   const lastScrollY = useSharedValue(0);
+  const [hidden, setHidden] = useState(false);
+
+  // JS state flips once per transition (not per frame). Reads translateY, so
+  // it also follows screens that move the bar directly (ticket detail).
+  useAnimatedReaction(
+    () => isTabBarHidden(translateY.value, HIDDEN_OFFSET),
+    (next, prev) => {
+      if (next !== prev) runOnJS(setHidden)(next);
+    },
+  );
 
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
@@ -40,6 +56,11 @@ export function TabBarHideProvider({ children }: { children: ReactNode }) {
         return;
       }
       if (Math.abs(diff) < SCROLL_DELTA_THRESHOLD) return;
+      // Pinned at the end: the list clamped after the clearance shrank (or
+      // bounced). Not a scroll-up, so it must not re-show the bar.
+      if (diff < 0 && isAtScrollEnd(y, event.contentSize.height, event.layoutMeasurement.height)) {
+        return;
+      }
       if (diff > 0 && y > MIN_SCROLL_TO_HIDE) {
         translateY.value = withTiming(HIDDEN_OFFSET, { duration: 180 });
       } else if (diff < 0) {
@@ -49,7 +70,11 @@ export function TabBarHideProvider({ children }: { children: ReactNode }) {
   });
 
   const value = useMemo(() => ({ translateY, scrollHandler }), [translateY, scrollHandler]);
-  return <TabBarHideContext.Provider value={value}>{children}</TabBarHideContext.Provider>;
+  return (
+    <TabBarHideContext.Provider value={value}>
+      <TabBarHiddenContext.Provider value={hidden}>{children}</TabBarHiddenContext.Provider>
+    </TabBarHideContext.Provider>
+  );
 }
 
 export function useTabBarHide(): TabBarHideValue {
@@ -67,4 +92,9 @@ export function useTabBarHide(): TabBarHideValue {
  */
 export function useOptionalTabBarHide(): TabBarHideValue | null {
   return useContext(TabBarHideContext);
+}
+
+/** Whether the bar is fully slid away; false outside a provider (no bar). */
+export function useTabBarHidden(): boolean {
+  return useContext(TabBarHiddenContext);
 }
