@@ -101,6 +101,8 @@ export function PagedList<T>({
 
   return (
     <AnimatedFlatList
+      // Fills the bounded Screen body so the list scrolls inside it.
+      style={styles.list}
       data={data}
       keyExtractor={keyExtractor}
       renderItem={renderItem}
@@ -122,6 +124,7 @@ export function PagedList<T>({
 }
 
 const styles = StyleSheet.create((theme) => ({
+  list: { flex: 1 },
   // flexGrow so the EmptyState centers vertically in the viewport even
   // though the list has no rows to size the content container.
   emptyContent: {

@@ -28,7 +28,7 @@ export default function MoreScreen(): React.JSX.Element {
   return (
     <Screen edges={[]} keyboardAvoiding={false} testID="fm-more-screen">
       <ShellHeader title={t('fm.nav.more')} />
-      <ScrollView contentContainerStyle={{ paddingBottom: tabBarClearance }}>
+      <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: tabBarClearance }}>
         {ROWS.map(({ route, labelKey, Icon }) => (
           // SettingsRow's chevron is CaretRight, swapped for CaretLeft in RTL.
           <SettingsRow

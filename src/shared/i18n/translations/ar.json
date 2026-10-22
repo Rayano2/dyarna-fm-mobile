@@ -1882,6 +1882,11 @@
         "filterButton_few": "تصفية، {{count}} عوامل نشطة",
         "filterButton_many": "تصفية، {{count}} عاملًا نشطًا",
         "filterButton_other": "تصفية، {{count}} عامل نشط"
+      },
+      "takeOver": {
+        "title": "تولّي هذه التذكرة؟",
+        "body": "مسندة حاليًا إلى {{name}}.",
+        "bodyUnknown": "مسندة حاليًا إلى عضو آخر في الفريق."
       }
     },
     "dashboard": {
@@ -2104,8 +2109,20 @@
       "emptyFilter": "لا حجوزات مطابقة",
       "empty": "لا حجوزات بعد",
       "statusFilterNotice": "عرض {{status}} فقط",
-      "showAll": "عرض كل الحالات",
-      "truncated": "عرض أول {{count}} حجز من هذا الأسبوع"
+      "showAll": "عرض الكل",
+      "truncated": "عرض أول {{count}} حجز من هذا الأسبوع",
+      "weekRange": "{{from}} – {{to}}",
+      "weekdayShort": {
+        "0": "أح",
+        "1": "إث",
+        "2": "ثل",
+        "3": "أر",
+        "4": "خم",
+        "5": "جم",
+        "6": "سب"
+      },
+      "todayDayA11y": "{{day}}، اليوم",
+      "dayLoadingA11y": "{{day}}، جارٍ التحميل"
     },
     "buildingInfo": {
       "title": "معلومات المبنى",

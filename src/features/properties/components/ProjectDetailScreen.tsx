@@ -70,6 +70,7 @@ export function ProjectDetailScreen(): React.JSX.Element {
     if (!project) return <EmptyState title={t('fm.properties.projectNotFound')} />;
     return (
       <ScrollView
+        style={styles.fill}
         contentContainerStyle={[styles.content, { paddingBottom: tabBarClearance }]}
         refreshControl={
           <RefreshControl refreshing={query.isRefetching} onRefresh={() => void query.refetch()} />
@@ -123,6 +124,7 @@ export function ProjectDetailScreen(): React.JSX.Element {
 }
 
 const styles = StyleSheet.create((theme) => ({
+  fill: { flex: 1 },
   content: {
     paddingHorizontal: theme.spacing[16],
     gap: theme.spacing[16],

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { AssignableUser } from '../api/get-assignable-users';
-import { buildAssigneeRows, isSelfAssignable } from './assignee-rows';
+import { buildAssigneeRows } from './assignee-rows';
 
 const user = (userId: string, over: Partial<AssignableUser> = {}): AssignableUser => ({
   userId,
@@ -44,14 +44,5 @@ describe('buildAssigneeRows', () => {
   it('marks the current assignee from the server flag or the ticket', () => {
     const rows = buildAssigneeRows([user('a', { isCurrentAssignee: true }), user('b')], 'me', 'b');
     expect(rows.filter((r) => r.isCurrent).map((r) => r.userId)).toEqual(['a', 'b']);
-  });
-});
-
-describe('isSelfAssignable', () => {
-  it('only when the loaded list contains my id', () => {
-    expect(isSelfAssignable([user('me')], 'me')).toBe(true);
-    expect(isSelfAssignable([user('a')], 'me')).toBe(false);
-    expect(isSelfAssignable(undefined, 'me')).toBe(false);
-    expect(isSelfAssignable([user('me')], null)).toBe(false);
   });
 });

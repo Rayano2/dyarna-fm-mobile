@@ -24,7 +24,10 @@ export function SettingsScreen() {
     // ShellHeader owns the top inset and the absolute TabBar the bottom one.
     <Screen edges={[]} keyboardAvoiding={false} testID="fm-settings-screen">
       <ShellHeader title={t('fm.settings.title')} showBack />
-      <ScrollView contentContainerStyle={[styles.content, { paddingBottom: tabBarClearance }]}>
+      <ScrollView
+        style={styles.fill}
+        contentContainerStyle={[styles.content, { paddingBottom: tabBarClearance }]}
+      >
         <ProfileSection />
         <BuildingQrSection />
         <CompanyLogoSection />
@@ -88,6 +91,7 @@ function AppearanceSection() {
 }
 
 const styles = StyleSheet.create((theme) => ({
+  fill: { flex: 1 },
   content: {
     padding: theme.spacing[16],
     gap: theme.spacing[16],

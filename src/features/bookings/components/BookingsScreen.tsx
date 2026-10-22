@@ -14,6 +14,7 @@ import {
   EmptyState,
   HapticPressable,
   Icons,
+  RTL_INLINE,
   Screen,
   SegmentedPill,
   showApiErrorToast,
@@ -21,12 +22,10 @@ import {
   type BottomSheetRef,
 } from '@/shared/ui';
 import {
-  BOOKING_STATUSES,
   SERVER_MAX_PAGE_SIZE,
   WEEK_MAX_PAGES,
   type Booking,
   type BookingQuery,
-  type BookingStatus,
 } from '../api/bookings-api';
 import { useBookingsAgenda, useBookingsWeek, useDecideBooking } from '../hooks/useBookings';
 import { countByDay } from '../lib/agenda';
@@ -40,22 +39,22 @@ import {
   weekStartDay,
 } from '../lib/booking-dates';
 import { bookingStatusLabel } from '../lib/booking-meta';
+import {
+  DEFAULT_STATUS_FILTER,
+  STATUS_FILTERS,
+  isStatusFilter,
+  showsStatusNotice,
+  type StatusFilter,
+} from '../lib/status-filter';
 import { BookingAgendaList, BookingRowSkeleton } from './BookingAgendaList';
 import { BookingDetailSheet } from './BookingDetailSheet';
 import { BookingFilterSheet, type DateRange } from './BookingFilterSheet';
 import { RejectReasonSheet } from './RejectReasonSheet';
 import { WeekStrip } from './WeekStrip';
 
-type StatusFilter = BookingStatus | 'ALL';
 type View_ = 'agenda' | 'week';
 
-const DEFAULT_STATUS: StatusFilter = 'PENDING';
 const SKELETON_ROWS = [0, 1, 2, 3, 4];
-const STATUS_FILTERS: StatusFilter[] = [...BOOKING_STATUSES, 'ALL'];
-
-function isStatusFilter(value: unknown): value is StatusFilter {
-  return typeof value === 'string' && (STATUS_FILTERS as string[]).includes(value);
-}
 
 export function BookingsScreen() {
   const { t } = useTranslation();
@@ -72,7 +71,7 @@ export function BookingsScreen() {
   const tabBarClearance = useTabBarClearance();
 
   const [view, setView] = useState<View_>('agenda');
-  const [status, setStatus] = useState<StatusFilter>(DEFAULT_STATUS);
+  const [status, setStatus] = useState<StatusFilter>(DEFAULT_STATUS_FILTER);
   const [range, setRange] = useState<DateRange>({ from: null, to: null });
   const [anchor, setAnchor] = useState(() => new Date());
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
@@ -167,14 +166,15 @@ export function BookingsScreen() {
 
   const hasRange = !!range.from || !!range.to;
   const clearFilters = (): void => {
-    setStatus('ALL');
+    setStatus(DEFAULT_STATUS_FILTER);
     setRange({ from: null, to: null });
     setSelectedDay(null);
   };
 
-  const isDefaultQueue = status === DEFAULT_STATUS && !hasRange;
+  // Pending picked with no range: the approval queue is empty, not "no match".
+  const isPendingQueue = status === 'PENDING' && !hasRange;
   const isUnfiltered = status === 'ALL' && !hasRange;
-  const empty = isDefaultQueue ? (
+  const empty = isPendingQueue ? (
     <EmptyState title={t('fm.bookings.queueClear')} body={t('fm.bookings.queueClearBody')} />
   ) : isUnfiltered ? (
     <EmptyState title={t('fm.bookings.empty')} />
@@ -217,13 +217,16 @@ export function BookingsScreen() {
         }}
         fullWidth
       />
-      <ChipRow>
+      {/* One horizontal scroll, bled out of the 16 gutter so chips scroll edge to edge. */}
+      <ChipRow style={styles.chipRow} contentStyle={styles.chipRowContent}>
         {STATUS_FILTERS.map((s) => (
           <Chip
             key={s}
             label={s === 'ALL' ? t('fm.bookings.status.all') : bookingStatusLabel(s, t)}
             selected={status === s}
             onPress={() => setStatus(s)}
+            numberOfLines={1}
+            scaleOnPress={1}
           />
         ))}
       </ChipRow>
@@ -234,6 +237,7 @@ export function BookingsScreen() {
             counts={counts}
             selectedKey={selectedDay}
             onSelect={setSelectedDay}
+            loading={week.isLoading}
             onPrev={() => {
               setAnchor((a) => addDays(a, -7));
               setSelectedDay(null);
@@ -248,19 +252,24 @@ export function BookingsScreen() {
               {t('fm.bookings.truncated', { count: SERVER_MAX_PAGE_SIZE * WEEK_MAX_PAGES })}
             </Text>
           ) : null}
-          {status === 'ALL' ? null : (
-            <View style={styles.notice}>
-              <Text style={[styles.noticeText, rtlText]}>
+          {showsStatusNotice(status) ? (
+            <View style={styles.notice} accessibilityLiveRegion="polite">
+              {/* RTL_INLINE, not rtlText: RTL_TEXT's alignSelf:'flex-start' pinned
+                  the text to the top of the row in Arabic (device retest). */}
+              <Text style={[styles.noticeText, rtlText ? RTL_INLINE : null]} numberOfLines={2}>
                 {t('fm.bookings.statusFilterNotice', { status: bookingStatusLabel(status, t) })}
               </Text>
-              <Button
-                label={t('fm.bookings.showAll')}
-                variant="ghost"
-                size="sm"
-                onPress={() => setStatus('ALL')}
-              />
+              {/* Never shrinks: the copy gives way, so the button stays on one line. */}
+              <View style={styles.noticeAction}>
+                <Button
+                  label={t('fm.bookings.showAll')}
+                  variant="ghost"
+                  size="sm"
+                  onPress={() => setStatus(DEFAULT_STATUS_FILTER)}
+                />
+              </View>
             </View>
-          )}
+          ) : null}
         </>
       ) : null}
     </View>
@@ -352,14 +361,23 @@ const styles = StyleSheet.create((theme) => ({
   controls: { gap: theme.spacing[8], paddingBottom: theme.spacing[8] },
   padded: { paddingHorizontal: theme.spacing[16] },
   skeletons: { gap: theme.spacing[8] },
+  chipRow: { marginHorizontal: -theme.spacing[16] },
+  chipRowContent: { paddingHorizontal: theme.spacing[16] },
   notice: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     gap: theme.spacing[8],
-    paddingHorizontal: theme.spacing[12],
+    paddingVertical: theme.spacing[8],
+    paddingStart: theme.spacing[12],
+    paddingEnd: theme.spacing[4],
     borderRadius: theme.radius.md,
     backgroundColor: theme.colors.infoSubtle,
   },
-  noticeText: { flex: 1, fontSize: theme.type.body.sm.size, color: theme.colors.textPrimary },
+  noticeText: {
+    flex: 1,
+    flexShrink: 1,
+    fontSize: theme.type.body.sm.size,
+    color: theme.colors.textPrimary,
+  },
+  noticeAction: { flexShrink: 0 },
 }));

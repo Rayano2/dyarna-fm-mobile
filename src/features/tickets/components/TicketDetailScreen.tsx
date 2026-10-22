@@ -18,14 +18,18 @@ import {
 } from '@/shared/ui';
 import type { ResolutionStatus } from '../api/update-status';
 import { assignErrorKind } from '../api/assign-ticket';
-import { useAssignableUsers } from '../hooks/useAssignableUsers';
 import { useAssignTicket } from '../hooks/useAssignTicket';
 import { useTicket } from '../hooks/useTicket';
 import { useTicketComments } from '../hooks/useTicketComments';
 import { useResolveTicket, useUpdateTicketStatus } from '../hooks/useUpdateTicketStatus';
 import { ltr } from '../lib/ltr';
-import { isSelfAssignable } from '../lib/assignee-rows';
-import { canAssign, getTicketAction, isAssignedTo, needsAssignment } from '../lib/ticket-status';
+import {
+  assigneeDisplayName,
+  getActionButtons,
+  getTicketAction,
+  needsAssignment,
+  needsTakeOverConfirm,
+} from '../lib/ticket-status';
 import type { FmTicketDetail } from '../types';
 import { AttachmentsGallery } from './detail/AttachmentsGallery';
 import { CommentsSection } from './detail/CommentsSection';
@@ -37,6 +41,7 @@ import { AssigneePickerSheet } from './AssigneePickerSheet';
 import { ResolveTicketSheet } from './ResolveTicketSheet';
 import { SlaChip, useSlaTickerWhileFocused } from './SlaChip';
 import { StatusBadge } from './StatusBadge';
+import { TakeOverSheet } from './TakeOverSheet';
 import { TicketActionBar } from './TicketActionBar';
 
 /** Far enough to slide the tab bar fully off-screen (its own hide offset is 80). */
@@ -128,6 +133,7 @@ function LoadedTicket({
   const start = useUpdateTicketStatus(ticket.tktNumber);
   const resolveSheet = useRef<BottomSheetRef>(null);
   const assigneeSheet = useRef<BottomSheetRef>(null);
+  const takeOverSheet = useRef<BottomSheetRef>(null);
   const [resolution, setResolution] = useState<ResolutionStatus>('RESOLVED');
   const resolve = useResolveTicket(ticket.tktNumber, () => {
     // The hook already cleared the draft. Leaving the screen unmounts the
@@ -136,16 +142,19 @@ function LoadedTicket({
   });
 
   const action = getTicketAction(ticket);
-  const assignable = canAssign(ticket);
-  // Fetched with the detail so the bar knows whether self-assign is allowed;
-  // the picker reads the same cache entry.
-  const assignees = useAssignableUsers(ticket.tktNumber, assignable);
-  const selfAssignable = isSelfAssignable(assignees.data, userId);
+  // Ticket + me only. assignable-users is fetched by the picker when it opens.
+  const buttons = getActionButtons(ticket, userId);
   const thread = comments.data ?? ticket.comments;
 
   return (
     <>
-      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+      {/* flex:1 bounds the scroll to the space above the action bar, which
+          stays pinned at the bottom instead of being pushed off-screen. */}
+      <ScrollView
+        style={styles.fill}
+        contentContainerStyle={styles.scroll}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.badges}>
           <StatusBadge ticket={ticket} />
           <PriorityBadge code={ticket.priorityCode} />
@@ -217,13 +226,17 @@ function LoadedTicket({
 
       <TicketActionBar
         action={action}
-        canAssign={assignable}
-        canSelfAssign={selfAssignable}
-        assignedToMe={isAssignedTo(ticket, userId)}
+        buttons={buttons}
         assigning={assign.isPending}
         starting={start.isPending}
         onAssignToMe={() => {
-          // Unreachable without an id: canSelfAssign requires one.
+          // Taking a colleague's ticket asks first; unassigned is one tap.
+          if (needsTakeOverConfirm(ticket, userId)) {
+            takeOverSheet.current?.present();
+            return;
+          }
+          // PATCH /assign?userId=<me>; a failure toasts from useAssignTicket.
+          // The signed-in FM always has an id; guard for the type only.
           if (userId) assign.mutate(userId);
         }}
         onPickAssignee={() => assigneeSheet.current?.present()}
@@ -231,6 +244,18 @@ function LoadedTicket({
         onResolve={(next) => {
           setResolution(next);
           resolveSheet.current?.present();
+        }}
+      />
+
+      <TakeOverSheet
+        ref={takeOverSheet}
+        assigneeName={assigneeDisplayName(ticket)}
+        submitting={assign.isPending}
+        onConfirm={() => {
+          if (!userId) return;
+          // Closes either way: on error the toast from useAssignTicket explains,
+          // and the refetched ticket shows who holds it now.
+          assign.mutate(userId, { onSettled: () => takeOverSheet.current?.dismiss() });
         }}
       />
 
@@ -307,6 +332,7 @@ function ContactButton({
 }
 
 const styles = StyleSheet.create((theme) => ({
+  fill: { flex: 1 },
   padded: { padding: theme.spacing[16] },
   center: { flex: 1, justifyContent: 'center' },
   scroll: {

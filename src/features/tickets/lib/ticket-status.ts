@@ -7,8 +7,12 @@ export const TERMINAL_STATUSES: ReadonlySet<string> = new Set([
   'NOT_ACTIONABLE',
 ]);
 
-/** Statuses where the FM is working the ticket and can resolve it. */
-const ACTIONABLE_STATUSES: ReadonlySet<string> = new Set(['IN_PROGRESS', 'ESCALATED']);
+/**
+ * Statuses where the FM is working the ticket and can resolve it. ASSIGNED is
+ * not a bms-tms status today; it is listed for parity with the web
+ * (`tickets.tsx` canTakeAction), which has no assignee check either.
+ */
+const ACTIONABLE_STATUSES: ReadonlySet<string> = new Set(['ASSIGNED', 'IN_PROGRESS', 'ESCALATED']);
 
 /**
  * Statuses bms-tms accepts on `PATCH {n}/assign` (anything else is
@@ -53,7 +57,7 @@ export function isAssignedTo(
  * - OPEN, whoever holds it          -> assign (one-tap "Assign to me", or
  *                                      "Start progress" when it is already
  *                                      mine, plus the assignee picker)
- * - IN_PROGRESS/ESCALATED           -> takeAction (Resolved / Not actionable);
+ * - ASSIGNED/IN_PROGRESS/ESCALATED  -> takeAction (Resolved / Not actionable);
  *                                      `canAssign` adds Reassign
  * - RESOLVED/CLOSED/NOT_ACTIONABLE  -> terminal (read-only message)
  * - anything else                   -> none
@@ -76,4 +80,64 @@ export function needsAssignment(
   ticket: Pick<FmTicket, 'statusCode' | 'assignedTo' | 'assignedToId'>,
 ): boolean {
   return ticket.statusCode.toUpperCase() === 'OPEN' && isUnassigned(ticket);
+}
+
+export type PrimaryTicketAction = 'assignToMe' | 'startProgress' | 'takeAction';
+export type SecondaryTicketAction = 'assignToSomeoneElse' | 'reassign';
+
+export interface TicketActionButtons {
+  primary: PrimaryTicketAction | null;
+  secondary: SecondaryTicketAction | null;
+}
+
+/**
+ * The action bar's buttons, matching the FM web flow (FM #110 retest: "the FM
+ * selects assign to me, then works on it"). Depends on the ticket and the
+ * signed-in user only — never on the assignable-users list, which the picker
+ * fetches on open and which old bms-tms builds do not serve.
+ * - OPEN, mine                  -> Start progress
+ * - OPEN, unassigned or other's -> Assign to me (taking it over)
+ * - ASSIGNED/IN_PROGRESS/ESCALATED -> Take action, no assignee check (web parity)
+ * - secondary: the picker, where `canAssign` allows it
+ */
+export function getActionButtons(
+  ticket: Pick<FmTicket, 'statusCode' | 'assignedTo' | 'assignedToId'>,
+  myId: string | null,
+): TicketActionButtons {
+  const action = getTicketAction(ticket);
+  const picker = canAssign(ticket);
+  if (action === 'assign') {
+    return {
+      primary: isAssignedTo(ticket, myId) ? 'startProgress' : 'assignToMe',
+      secondary: picker ? (isUnassigned(ticket) ? 'assignToSomeoneElse' : 'reassign') : null,
+    };
+  }
+  if (action === 'takeAction') {
+    return { primary: 'takeAction', secondary: picker ? 'reassign' : null };
+  }
+  return { primary: null, secondary: null };
+}
+
+/**
+ * "Assign to me" would take the ticket from someone else: OPEN, held, and not
+ * by me. Asks for confirmation first (W6); unassigned stays one tap.
+ */
+export function needsTakeOverConfirm(
+  ticket: Pick<FmTicket, 'statusCode' | 'assignedTo' | 'assignedToId'>,
+  myId: string | null,
+): boolean {
+  return getActionButtons(ticket, myId).primary === 'assignToMe' && !isUnassigned(ticket);
+}
+
+/**
+ * The current assignee's name for the take-over copy. `assignedTo` may carry
+ * a name or just the id; an id is no use to the FM, so that returns null and
+ * the copy falls back to "another team member".
+ */
+export function assigneeDisplayName(
+  ticket: Pick<FmTicket, 'assignedTo' | 'assignedToId'>,
+): string | null {
+  const name = ticket.assignedTo?.trim();
+  if (!name || name === ticket.assignedToId) return null;
+  return name;
 }

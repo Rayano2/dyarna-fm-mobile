@@ -101,7 +101,7 @@ export function ResidentDetailScreen(): React.JSX.Element {
       );
     }
     return (
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView style={styles.flex} contentContainerStyle={styles.content}>
         <Card style={styles.hero}>
           <Avatar name={d.fullName} size={64} />
           <Text style={styles.name}>{d.fullName || '-'}</Text>

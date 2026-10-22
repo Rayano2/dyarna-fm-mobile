@@ -137,6 +137,7 @@ export function FacilitiesScreen() {
   } else {
     body = (
       <FlatList
+        style={styles.fill}
         data={items}
         keyExtractor={(f) => f.id}
         renderItem={({ item }) => (
@@ -204,6 +205,7 @@ export function FacilitiesScreen() {
 }
 
 const styles = StyleSheet.create((theme) => ({
+  fill: { flex: 1 },
   add: {
     width: 44,
     height: 44,

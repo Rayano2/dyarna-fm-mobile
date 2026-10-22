@@ -155,6 +155,7 @@ export function TodosScreen(): React.JSX.Element {
         />
       </View>
       <ScrollView
+        style={styles.fill}
         contentContainerStyle={[styles.scroll, { paddingBottom: tabBarClearance }]}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={() => void onRefresh()} />
@@ -169,6 +170,7 @@ export function TodosScreen(): React.JSX.Element {
 }
 
 const styles = StyleSheet.create((theme) => ({
+  fill: { flex: 1 },
   controls: {
     paddingHorizontal: theme.spacing[16],
     paddingBottom: theme.spacing[12],
