@@ -22,12 +22,10 @@ import {
   type BottomSheetRef,
 } from '@/shared/ui';
 import {
-  BOOKING_STATUSES,
   SERVER_MAX_PAGE_SIZE,
   WEEK_MAX_PAGES,
   type Booking,
   type BookingQuery,
-  type BookingStatus,
 } from '../api/bookings-api';
 import { useBookingsAgenda, useBookingsWeek, useDecideBooking } from '../hooks/useBookings';
 import { countByDay } from '../lib/agenda';
@@ -41,22 +39,22 @@ import {
   weekStartDay,
 } from '../lib/booking-dates';
 import { bookingStatusLabel } from '../lib/booking-meta';
+import {
+  DEFAULT_STATUS_FILTER,
+  STATUS_FILTERS,
+  isStatusFilter,
+  showsStatusNotice,
+  type StatusFilter,
+} from '../lib/status-filter';
 import { BookingAgendaList, BookingRowSkeleton } from './BookingAgendaList';
 import { BookingDetailSheet } from './BookingDetailSheet';
 import { BookingFilterSheet, type DateRange } from './BookingFilterSheet';
 import { RejectReasonSheet } from './RejectReasonSheet';
 import { WeekStrip } from './WeekStrip';
 
-type StatusFilter = BookingStatus | 'ALL';
 type View_ = 'agenda' | 'week';
 
-const DEFAULT_STATUS: StatusFilter = 'PENDING';
 const SKELETON_ROWS = [0, 1, 2, 3, 4];
-const STATUS_FILTERS: StatusFilter[] = [...BOOKING_STATUSES, 'ALL'];
-
-function isStatusFilter(value: unknown): value is StatusFilter {
-  return typeof value === 'string' && (STATUS_FILTERS as string[]).includes(value);
-}
 
 export function BookingsScreen() {
   const { t } = useTranslation();
@@ -73,7 +71,7 @@ export function BookingsScreen() {
   const tabBarClearance = useTabBarClearance();
 
   const [view, setView] = useState<View_>('agenda');
-  const [status, setStatus] = useState<StatusFilter>(DEFAULT_STATUS);
+  const [status, setStatus] = useState<StatusFilter>(DEFAULT_STATUS_FILTER);
   const [range, setRange] = useState<DateRange>({ from: null, to: null });
   const [anchor, setAnchor] = useState(() => new Date());
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
@@ -168,14 +166,15 @@ export function BookingsScreen() {
 
   const hasRange = !!range.from || !!range.to;
   const clearFilters = (): void => {
-    setStatus('ALL');
+    setStatus(DEFAULT_STATUS_FILTER);
     setRange({ from: null, to: null });
     setSelectedDay(null);
   };
 
-  const isDefaultQueue = status === DEFAULT_STATUS && !hasRange;
+  // Pending picked with no range: the approval queue is empty, not "no match".
+  const isPendingQueue = status === 'PENDING' && !hasRange;
   const isUnfiltered = status === 'ALL' && !hasRange;
-  const empty = isDefaultQueue ? (
+  const empty = isPendingQueue ? (
     <EmptyState title={t('fm.bookings.queueClear')} body={t('fm.bookings.queueClearBody')} />
   ) : isUnfiltered ? (
     <EmptyState title={t('fm.bookings.empty')} />
@@ -253,7 +252,7 @@ export function BookingsScreen() {
               {t('fm.bookings.truncated', { count: SERVER_MAX_PAGE_SIZE * WEEK_MAX_PAGES })}
             </Text>
           ) : null}
-          {status === 'ALL' ? null : (
+          {showsStatusNotice(status) ? (
             <View style={styles.notice} accessibilityLiveRegion="polite">
               {/* RTL_INLINE, not rtlText: RTL_TEXT's alignSelf:'flex-start' pinned
                   the text to the top of the row in Arabic (device retest). */}
@@ -266,11 +265,11 @@ export function BookingsScreen() {
                   label={t('fm.bookings.showAll')}
                   variant="ghost"
                   size="sm"
-                  onPress={() => setStatus('ALL')}
+                  onPress={() => setStatus(DEFAULT_STATUS_FILTER)}
                 />
               </View>
             </View>
-          )}
+          ) : null}
         </>
       ) : null}
     </View>
